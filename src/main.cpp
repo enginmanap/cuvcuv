@@ -1,6 +1,20 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
+#define HEIGHT  640
+#define WIDTH  480
+
+void saveToFile(Uint32 pixels[], int pixelSize){
+	SDL_Surface* surface = SDL_CreateRGBSurface(0,640,480,32,0,0,0,0);
+	Uint32 *surfacePixels = (Uint32 *)surface->pixels;
+	for (int pixel = 0; pixel < pixelSize; ++pixel) {
+		surfacePixels[pixel] = pixels[pixel];
+	}
+
+	SDL_SaveBMP(surface, "screen.bmp");
+
+}
+
 int main(int argc, char **argv){
     bool leftMouseButtonDown = false;
     bool quit = false;
@@ -14,8 +28,9 @@ int main(int argc, char **argv){
     SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_Texture * texture = SDL_CreateTexture(renderer,
         SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
-    Uint32 * pixels = new Uint32[640 * 480];
-    memset(pixels, 255, 640 * 480 * sizeof(Uint32));
+
+    Uint32 * pixels = new Uint32[HEIGHT * WIDTH];
+    memset(pixels, 255, HEIGHT * WIDTH * sizeof(Uint32));
 
     while (!quit)
     {
@@ -24,7 +39,9 @@ int main(int argc, char **argv){
 
         switch (event.type)
         {
+
         case SDL_QUIT:
+        	saveToFile(pixels, HEIGHT * WIDTH);
             quit = true;
             break;
         }
