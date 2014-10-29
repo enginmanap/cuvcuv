@@ -27,7 +27,7 @@ bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,
 		delete camera;
 	}
 	camera = new Camera(lookfromx, lookfromy, lookfromz, lookatx, lookaty,
-			lookatz, upx, upy, upz, fovy);
+			lookatz, upx, upy, upz, fovy, sampler->getHeight(), sampler->getWidht());
 	return true;
 }
 
@@ -55,5 +55,12 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 	spheres.push_back(sphere);
 	ObjectCount++;
 	return true;
+}
+
+void Scene::renderScene(){
+	unsigned int x=0,y=0;
+	while(this->sampler->getPoint(x,y)){
+		Ray ray = this->camera->getRay(x,y);
+	}
 }
 

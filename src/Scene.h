@@ -9,11 +9,13 @@
 #define SCENE_H_
 
 #include <vector>
-#include "sphere.h"
-#include "Camera.h"
-#include "Sampler.h"
 #include <iostream>
 #include "Vec3f.h"
+#include "Sphere.h"
+#include "Camera.h"
+#include "Sampler.h"
+#include "Ray.h"
+#include "RayTracer.h"
 
 class Scene {
 	Vec3f currentAmbientLight;
@@ -29,6 +31,9 @@ class Scene {
 	//std::vector<Triangle>
 	std::vector<Sphere> spheres;
 
+	RayTracer rayTracer;
+
+
 public:
 
 	Scene(int, int);
@@ -40,6 +45,7 @@ public:
 	bool setCurrentAmbient(float, float, float);
 	bool addSphere(float, float, float, float);
 
+	void renderScene();
 };
 
 #endif /* SCENE_H_ */

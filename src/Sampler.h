@@ -11,12 +11,16 @@
 class Sampler {
 private:
 	unsigned int height, width;
+	unsigned int currentPoint;
+
 public:
+
 	Sampler(unsigned int, unsigned int);
 	unsigned int getHeight();
 	unsigned int getWidht();
-
+	bool getPoint(unsigned int&, unsigned int&);
 	virtual ~Sampler();
-};
+}
+;
 
 #endif /* SAMPLER_H_ */

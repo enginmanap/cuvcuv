@@ -9,14 +9,20 @@
 #define CAMERA_H_
 
 #include "Vec3f.h"
+#include "Ray.h"
+#include <math.h>
 
 class Camera {
 private:
 	Vec3f position, look, up;
-	float fovy;
+	float fovy, fovx;
+	int height, width;
+	Vec3f w,u,v;
 public:
 	Camera(float, float, float, float, float, float, float, float, float,
-			float);
+			float, int, int);
+	Ray getRay(int x, int y);
+
 	virtual ~Camera();
 };
 

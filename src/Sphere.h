@@ -9,6 +9,7 @@
 #define SRC_SPHERE_H_
 
 #include "Vec3f.h"
+#include "Ray.h"
 
 class Sphere {
 	Vec3f position;
@@ -16,6 +17,7 @@ class Sphere {
 public:
 	Sphere(float, float, float, float);
 	virtual ~Sphere();
+	bool intersectiontest(Ray);
 };
 
 #endif /* SRC_SPHERE_H_ */

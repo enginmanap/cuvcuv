@@ -8,12 +8,21 @@
 #ifndef SRC_VEC3F_H_
 #define SRC_VEC3F_H_
 
+#include <math.h>
+
 class Vec3f {
 public:
-	float x,y,z;
+	float x, y, z;
 	Vec3f();
 	Vec3f(float, float, float);
 	virtual ~Vec3f();
+	static Vec3f normalize(const Vec3f&);
+	static Vec3f cross(const Vec3f&, const Vec3f&);
+
+	Vec3f operator-(const Vec3f&);
+	Vec3f operator+(const Vec3f&);
 };
+
+Vec3f operator*(float& i, const Vec3f& vector);
 
 #endif /* SRC_VEC3F_H_ */

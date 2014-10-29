@@ -19,3 +19,6 @@ Sphere::~Sphere() {
 	// TODO Auto-generated destructor stub
 }
 
+bool Sphere::intersectiontest(Ray){
+	return false;
+}

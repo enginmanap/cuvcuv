@@ -18,7 +18,7 @@ SOURCE_PATH=src/
 
 all: $(BINARY_PATH)$(EXE)
 
-$(BINARY_PATH)$(EXE): $(BINARY_PATH)Sphere.o $(BINARY_PATH)Vec3f.o $(BINARY_PATH)Sampler.o $(BINARY_PATH)Camera.o $(BINARY_PATH)Scene.o $(BINARY_PATH)FileReader.o $(BINARY_PATH)main.o 
+$(BINARY_PATH)$(EXE): $(BINARY_PATH)Ray.o $(BINARY_PATH)RayTracer.o $(BINARY_PATH)Sphere.o $(BINARY_PATH)Vec3f.o $(BINARY_PATH)Sampler.o $(BINARY_PATH)Camera.o $(BINARY_PATH)Scene.o $(BINARY_PATH)FileReader.o $(BINARY_PATH)main.o 
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINARY_PATH)main.o: $(SOURCE_PATH)main.cpp 
@@ -46,6 +46,14 @@ $(BINARY_PATH)Vec3f.o: $(SOURCE_PATH)Vec3f.cpp $(SOURCE_PATH)Vec3f.h
 	$(CXX) $(CXXFLAGS) $< -o $@
 
 $(BINARY_PATH)Sphere.o: $(SOURCE_PATH)Sphere.cpp $(SOURCE_PATH)Sphere.h
+	mkdir -p $(BINARY_PATH)
+	$(CXX) $(CXXFLAGS) $< -o $@
+	
+$(BINARY_PATH)RayTracer.o: $(SOURCE_PATH)RayTracer.cpp $(SOURCE_PATH)RayTracer.h
+	mkdir -p $(BINARY_PATH)
+	$(CXX) $(CXXFLAGS) $< -o $@
+	
+$(BINARY_PATH)Ray.o: $(SOURCE_PATH)Ray.cpp $(SOURCE_PATH)Ray.h
 	mkdir -p $(BINARY_PATH)
 	$(CXX) $(CXXFLAGS) $< -o $@
 
