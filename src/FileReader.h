@@ -19,10 +19,11 @@
 
 class FileReader {
 private:
+
 	std::string fileName;
 	std::ifstream fileReadStream;
 	Scene* scene;
-	std::string readLine();
+	bool readLine(std::string&);
 	bool readParams(std::stringstream&, float *, int);
 public:
 	FileReader(std::string filename);

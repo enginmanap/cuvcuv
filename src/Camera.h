@@ -8,9 +8,15 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
+#include "Vec3f.h"
+
 class Camera {
+private:
+	Vec3f position, look, up;
+	float fovy;
 public:
-	Camera();
+	Camera(float, float, float, float, float, float, float, float, float,
+			float);
 	virtual ~Camera();
 };
 

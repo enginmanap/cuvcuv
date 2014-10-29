@@ -22,15 +22,22 @@ Scene::Scene(int height, int width) {
 
 bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,
 		float lookatx, float lookaty, float lookatz, float upx, float upy,
-		float upz, int fovy) {
-	return false;
+		float upz, float fovy) {
+	if (camera != NULL) {
+		delete camera;
+	}
+	camera = new Camera(lookfromx, lookfromy, lookfromz, lookatx, lookaty,
+			lookatz, upx, upy, upz, fovy);
+	return true;
 }
 
 Scene::~Scene() {
 	delete this->sampler;
+	if (camera != NULL)
+		delete camera;
 }
 
-bool Scene::getSamplingSize(int& height,int& width){
+bool Scene::getSamplingSize(int& height, int& width) {
 	height = sampler->getHeight();
 	width = sampler->getWidht();
 	return true;

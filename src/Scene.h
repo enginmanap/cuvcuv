@@ -14,7 +14,6 @@
 #include "Sampler.h"
 #include <iostream>
 
-
 class Scene {
 
 	Camera *camera;
@@ -32,10 +31,10 @@ class Scene {
 public:
 	Scene(int, int);
 	bool setCamera(float, float, float, float, float, float, float, float,
-			float, int);
-	bool addSphere(float,float,float,float);
+			float, float);
+	bool addSphere(float, float, float, float);
 	virtual ~Scene();
-	bool getSamplingSize(int&,int&);
+	bool getSamplingSize(int&, int&);
 
 };
 

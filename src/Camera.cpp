@@ -7,8 +7,22 @@
 
 #include "Camera.h"
 
-Camera::Camera() {
-	// TODO Auto-generated constructor stub
+Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
+		float lookaty, float lookatz, float upx, float upy, float upz,
+		float fovy) {
+	position.x = lookfromx;
+	position.y = lookfromy;
+	position.z = lookfromz;
+
+	look.x = lookatx;
+	look.y = lookaty;
+	look.z = lookatz;
+
+	up.x = upx;
+	up.y = upy;
+	up.z = upz;
+
+	this->fovy = fovy;
 
 }
 
