@@ -8,9 +8,13 @@
 #ifndef SRC_SPHERE_H_
 #define SRC_SPHERE_H_
 
+#include "Vec3f.h"
+
 class Sphere {
+	Vec3f position;
+	float radius;
 public:
-	Sphere();
+	Sphere(float, float, float, float);
 	virtual ~Sphere();
 };
 

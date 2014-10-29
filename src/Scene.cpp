@@ -43,3 +43,17 @@ bool Scene::getSamplingSize(int& height, int& width) {
 	return true;
 }
 
+bool Scene::setCurrentAmbient(float x, float y, float z) {
+	currentAmbientLight.x = x;
+	currentAmbientLight.y = y;
+	currentAmbientLight.z = z;
+	return true;
+}
+
+bool Scene::addSphere(float x, float y, float z, float radius) {
+	Sphere sphere(x,y,z,radius);
+	spheres.push_back(sphere);
+	ObjectCount++;
+	return true;
+}
+

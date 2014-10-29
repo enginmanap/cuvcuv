@@ -7,9 +7,12 @@
 
 #include "Sphere.h"
 
-Sphere::Sphere() {
-	// TODO Auto-generated constructor stub
+Sphere::Sphere(float x, float y , float z, float rad) {
+	this->position.x = x;
+	this->position.y = y;
+	this->position.z = z;
 
+	this->radius = rad;
 }
 
 Sphere::~Sphere() {

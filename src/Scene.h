@@ -13,9 +13,10 @@
 #include "Camera.h"
 #include "Sampler.h"
 #include <iostream>
+#include "Vec3f.h"
 
 class Scene {
-
+	Vec3f currentAmbientLight;
 	Camera *camera;
 	Sampler *sampler;
 
@@ -29,12 +30,15 @@ class Scene {
 	std::vector<Sphere> spheres;
 
 public:
+
 	Scene(int, int);
 	bool setCamera(float, float, float, float, float, float, float, float,
 			float, float);
-	bool addSphere(float, float, float, float);
+
 	virtual ~Scene();
 	bool getSamplingSize(int&, int&);
+	bool setCurrentAmbient(float, float, float);
+	bool addSphere(float, float, float, float);
 
 };
 

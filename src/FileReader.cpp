@@ -30,7 +30,7 @@ bool FileReader::readLine(std::string &buffer) {
 			buffer = line;
 			return true;
 		}
-	} while (1);
+	} while (fileReadStream);
 	buffer = "";
 	return false;
 }
@@ -79,12 +79,23 @@ Scene* FileReader::readFile() {
 		std::stringstream stringStream(line);
 		stringStream >> command;
 		if (command == "camera") {
-			if (readParams(stringStream, parameters, 10))
+			if (readParams(stringStream, parameters, 10)) {
 				scene->setCamera(parameters[0], parameters[1], parameters[2],
 						parameters[3], parameters[4], parameters[5],
 						parameters[6], parameters[7], parameters[8],
 						parameters[9]);
-		} else
+			}
+		} else if (command == "ambient") {
+			if (readParams(stringStream, parameters, 3)) {
+				scene->setCurrentAmbient(parameters[0], parameters[1],
+						parameters[2]);
+			}
+		} else if (command == "sphere") {
+			if (readParams(stringStream, parameters, 4)) {
+				scene->addSphere(parameters[0],parameters[1],parameters[2],parameters[3]);
+			}
+		}
+		else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
 
 	}
