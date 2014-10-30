@@ -18,6 +18,9 @@ Scene::Scene(int height, int width) {
 	this->ObjectCount = 0;
 	this->lightCount = 0;
 
+	this->pixels = new Uint32[height * width];
+	memset(this->pixels, 255, height * width * sizeof(Uint32));
+
 }
 
 bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,
@@ -27,7 +30,8 @@ bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,
 		delete camera;
 	}
 	camera = new Camera(lookfromx, lookfromy, lookfromz, lookatx, lookaty,
-			lookatz, upx, upy, upz, fovy, sampler->getHeight(), sampler->getWidht());
+			lookatz, upx, upy, upz, fovy, sampler->getHeight(),
+			sampler->getWidht());
 	return true;
 }
 
@@ -35,6 +39,7 @@ Scene::~Scene() {
 	delete this->sampler;
 	if (camera != NULL)
 		delete camera;
+	delete pixels;
 }
 
 bool Scene::getSamplingSize(int& height, int& width) {
@@ -51,16 +56,23 @@ bool Scene::setCurrentAmbient(float x, float y, float z) {
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
-	Sphere sphere(x,y,z,radius);
+	Sphere sphere(x, y, z, radius);
 	spheres.push_back(sphere);
 	ObjectCount++;
 	return true;
 }
 
-void Scene::renderScene(){
-	unsigned int x=0,y=0;
-	while(this->sampler->getPoint(x,y)){
-		Ray ray = this->camera->getRay(x,y);
+void Scene::renderScene() {
+	unsigned int x = 0, y = 0;
+	while (this->sampler->getPoint(x, y)) {
+		Ray ray = this->camera->getRay(x, y);
+		Vec3f color = rayTracer.trace(ray, spheres);
 	}
+}
+
+Uint32* Scene::getPixels(int& height, int& width) {
+	height = sampler->getHeight();
+	width = sampler->getWidht();
+	return this->pixels;
 }
 

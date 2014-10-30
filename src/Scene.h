@@ -16,11 +16,14 @@
 #include "Sampler.h"
 #include "Ray.h"
 #include "RayTracer.h"
+//SDL defines portable Uint32
+#include "SDL2/SDL.h"
 
 class Scene {
 	Vec3f currentAmbientLight;
 	Camera *camera;
 	Sampler *sampler;
+	Uint32* pixels;
 
 	short lightCount;
 	//std::vector<Light> lightVector;
@@ -33,7 +36,6 @@ class Scene {
 
 	RayTracer rayTracer;
 
-
 public:
 
 	Scene(int, int);
@@ -45,6 +47,7 @@ public:
 	bool setCurrentAmbient(float, float, float);
 	bool addSphere(float, float, float, float);
 
+	Uint32* getPixels(int&, int&);
 	void renderScene();
 };
 
