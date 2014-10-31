@@ -23,9 +23,9 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	up.y = upy;
 	up.z = upz;
 
-	this->fovy = fovy;
-	this->fovx = fovy * (width / height);
-
+	this->fovy = fovy * M_PI / 180;
+	this->fovx = this->fovy * ((float)width/(float)height);
+	std::cout << "fovy " << this->fovy << " fovx " << this->fovx << std::endl;
 	this->height = height;
 	this->width = width;
 
@@ -33,13 +33,13 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 
 	Vec3f positionMinusCenter = position - look;
 
-	w = Vec3f::normalize(position);
+	w = Vec3f::normalize(positionMinusCenter);
 	u = Vec3f::normalize(Vec3f::cross(up, w));
 	v = Vec3f::cross(w, u);
 
-	std::cout << "w: " << w.x << ", " << w.y << ", " << w.z << std::endl;
-	std::cout << "u: " << u.x << ", " << u.y << ", " << u.z << std::endl;
-	std::cout << "v: " << v.x << ", " << v.y << ", " << v.z << std::endl;
+	std::cout << "w: " << w << std::endl;
+	std::cout << "u: " << u << std::endl;
+	std::cout << "v: " << v << std::endl;
 
 }
 
@@ -51,10 +51,18 @@ Ray Camera::getRay(int x, int y) {
 	//Calculate the direction
 	//since grader wants pixel centers, we will add 0.5 to pixels.
 
-	float horizontalChange = tan(fovx / 2) * (((float)x + 0.5f - (width / 2)) / (width / 2));
-	float verticalChange = tan(fovy / 2) * (((height / 2) - (y + 0.5f)) / (height / 2));
+	float horizontalChange = tan(fovy / 2) * (((float)x + 0.5f - ((float)height / 2)) / ((float) height / 2));
 
-	Vec3f direction = (horizontalChange * u + verticalChange * v - w);
+	float verticalChange = tan(fovx / 2) * ((((float) width/ 2) - ((float)y + 0.5f)) / ((float) width / 2));
+	//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
+	Vec3f direction = (horizontalChange * u) + (verticalChange * v) - w;
+	//Vec3f direction = (verticalChange * u) + (horizontalChange* v) - w;
+	//Vec3f directionPart = verticalChange * v;
+
+	direction = Vec3f::normalize(direction);
+
+	//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
+
 
 	Ray temp(position, direction, 0, 100);
 	return temp;
