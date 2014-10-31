@@ -67,6 +67,11 @@ void Scene::renderScene() {
 	while (this->sampler->getPoint(x, y)) {
 		Ray ray = this->camera->getRay(x, y);
 		Vec3f color = rayTracer.trace(ray, spheres);
+		Uint32 color32 = (int)color.x << 16;
+		color32 += (int)color.y << 8;
+		color32 += (int)color.z;
+
+		pixels[this->sampler->getHeight() * y + x ] = color32;
 	}
 }
 
