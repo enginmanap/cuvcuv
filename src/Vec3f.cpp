@@ -39,23 +39,31 @@ Vec3f Vec3f::cross(const Vec3f& vector1, const Vec3f& vector2) {
 	return temp;
 }
 
+float Vec3f::dot(const Vec3f& vector1, const Vec3f& vector2) {
+	return vector1.x * vector2.x +vector1.y * vector2.y +vector1.z * vector2.z;
+}
+
 Vec3f Vec3f::operator-(const Vec3f& vector2) {
 	Vec3f temp;
 	temp.x = x - vector2.x;
-	temp.x = y - vector2.y;
-	temp.x = z - vector2.z;
+	temp.y = y - vector2.y;
+	temp.z = z - vector2.z;
 	return temp;
 }
 
 Vec3f Vec3f::operator+(const Vec3f& vector2) {
 	Vec3f temp;
 	temp.x = x + vector2.x;
-	temp.x = y + vector2.y;
-	temp.x = z + vector2.z;
+	temp.y = y + vector2.y;
+	temp.z = z + vector2.z;
 	return temp;
 }
 
 Vec3f operator*(float& i, const Vec3f& vector) {
 
 	return Vec3f(i * vector.x, i * vector.y, i * vector.z);
+}
+
+std::ostream& operator<<(std::ostream &strm, const Vec3f &vector) {
+  return strm << "(" << vector.x << ", " << vector.y << ", "<< vector.z << ")";
 }

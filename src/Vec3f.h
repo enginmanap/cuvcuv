@@ -9,6 +9,7 @@
 #define SRC_VEC3F_H_
 
 #include <math.h>
+#include <iostream>
 
 class Vec3f {
 public:
@@ -18,11 +19,14 @@ public:
 	virtual ~Vec3f();
 	static Vec3f normalize(const Vec3f&);
 	static Vec3f cross(const Vec3f&, const Vec3f&);
+	static float dot(const Vec3f&, const Vec3f&);
 
 	Vec3f operator-(const Vec3f&);
 	Vec3f operator+(const Vec3f&);
+
 };
 
+std::ostream& operator<<(std::ostream &strm, const Vec3f &vector);
 Vec3f operator*(float& i, const Vec3f& vector);
 
 #endif /* SRC_VEC3F_H_ */
