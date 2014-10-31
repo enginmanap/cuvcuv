@@ -15,6 +15,8 @@ private:
 	Vec3f position, direction;
 	float minDistance, maxDistance;
 public:
+	Vec3f getPosition();
+	Vec3f getDirection();
 	Ray(Vec3f, Vec3f, float,float);
 	virtual ~Ray();
 };

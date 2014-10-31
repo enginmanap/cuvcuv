@@ -19,3 +19,10 @@ Ray::~Ray() {
 	// TODO Auto-generated destructor stub
 }
 
+Vec3f Ray::getPosition(){
+	return position;
+}
+
+Vec3f Ray::getDirection(){
+	return direction;
+}
