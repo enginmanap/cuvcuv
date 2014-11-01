@@ -17,7 +17,8 @@ class Sphere {
 public:
 	Sphere(float, float, float, float);
 	virtual ~Sphere();
-	bool intersectiontest(Ray);
-};
+	bool intersectiontest(Ray, float&, Vec3f&);
+	Vec3f getColorForRay(Ray, Vec3f);
 
+};
 #endif /* SRC_SPHERE_H_ */

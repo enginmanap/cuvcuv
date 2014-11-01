@@ -12,6 +12,7 @@
 #include "Ray.h"
 #include "Sphere.h"
 #include "Vec3f.h"
+#include <limits>
 
 class RayTracer {
 public:

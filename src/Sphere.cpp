@@ -19,7 +19,21 @@ Sphere::~Sphere() {
 	// TODO Auto-generated destructor stub
 }
 
-bool Sphere::intersectiontest(Ray ray){
+
+/**
+ * This function gets a ray, calculates if there is an intersection with sphere,
+ * if there is returns true, else returns false.
+ * if there is a intersection, distance is the intersection distance,
+ * if there is no intersection, distance is not altered.
+ *
+ * params:
+ * 		Ray: ray to test intersection
+ * 		float: distance to intersect
+ *
+ * 	returns:
+ * 		bool: if there is an intersection
+ */
+bool Sphere::intersectiontest(Ray ray, float& distance, Vec3f& intersectionPoint){
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
 	float p1s = Vec3f::dot(ray.getDirection(), ray.getDirection());
@@ -44,4 +58,8 @@ bool Sphere::intersectiontest(Ray ray){
 	}
 
 	return false;
+}
+
+Vec3f Sphere::getColorForRay(Ray ray, Vec3f intersectedPoint) {
+	return Vec3f(255.0f,0.2f,0.2f);
 }
