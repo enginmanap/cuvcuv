@@ -13,7 +13,9 @@
 
 class Vec3f {
 public:
-	float x, y, z;
+	float x;
+	float y;
+	float z;
 	Vec3f();
 	Vec3f(float, float, float);
 	virtual ~Vec3f();

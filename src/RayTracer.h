@@ -11,6 +11,7 @@
 #include <vector>
 #include "Ray.h"
 #include "Sphere.h"
+#include "Triangle.h"
 #include "Vec3f.h"
 #include <limits>
 
@@ -19,7 +20,7 @@ public:
 	RayTracer();
 	virtual ~RayTracer();
 
-	Vec3f trace(Ray, std::vector<Sphere>&);
+	Vec3f trace(Ray, std::vector<Sphere>&,std::vector<Triangle>&);
 };
 
 #endif /* SRC_RAYTRACER_H_ */

@@ -40,7 +40,7 @@ bool FileReader::readParams(std::stringstream &stringStream, float *parameters,
 	for (int param = 0; param < parameterCount; ++param) {
 		stringStream >> parameters[param];
 		if (stringStream.fail()) {
-			std::cout << "reading failed for " << param << std::endl;
+			std::cerr << "reading failed for " << param << std::endl;
 			return false;
 		}
 	}
@@ -92,10 +92,22 @@ Scene* FileReader::readFile() {
 			}
 		} else if (command == "sphere") {
 			if (readParams(stringStream, parameters, 4)) {
-				scene->addSphere(parameters[0],parameters[1],parameters[2],parameters[3]);
+				scene->addSphere(parameters[0], parameters[1], parameters[2],
+						parameters[3]);
 			}
-		}
-		else
+		} else if (command == "maxverts") {
+			if (readParams(stringStream, parameters, 1)) {
+				scene->createVertexSpace(parameters[0]);
+			}
+		} else if (command == "vertex") {
+			if (readParams(stringStream, parameters, 3)) {
+				scene->addVertex(parameters[0], parameters[1], parameters[2]);
+			}
+		} else if (command == "tri") {
+			if (readParams(stringStream, parameters, 3)) {
+				scene->addTriangle((int)parameters[0], (int)parameters[1], (int)parameters[2]);
+			}
+		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
 
 	}

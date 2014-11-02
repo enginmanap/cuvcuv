@@ -134,5 +134,5 @@ Vec3f Sphere::getColorForRay(Ray ray, float distance) {
 	Vec3f color = calculateColorPerLight(normalisedLightPos, lightColor, normal,
 			halfVec, diffuse, specular, 100.0f);
 	//Opengl auto clamps, we should do it manually;
-	return Vec3f::clamp(color+ ambientLight,0,1);
+	return Vec3f::clamp(color+ ambientLight,0,1);//TODO move clamping to last step, just before writing the pixel.
 }

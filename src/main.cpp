@@ -6,15 +6,17 @@
 #define WIDTH  480
 
 void saveToFile(Uint32 pixels[], int height, int width) {
+	std::cout << "dumping to file " << std::endl;
 	SDL_Surface* surface = SDL_CreateRGBSurface(0, height, width, 32, 0, 0, 0,
 			0);
+
 	Uint32 *surfacePixels = (Uint32 *) surface->pixels;
 	for (int pixel = 0; pixel < (height * width); ++pixel) {
 		surfacePixels[pixel] = pixels[pixel];
+
 	}
-
 	SDL_SaveBMP(surface, "screen.bmp");
-
+	std::cout << ", done" << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -29,7 +31,7 @@ int main(int argc, char **argv) {
 	Scene* scene = NULL;
 	//read the file
 	try {
-		 reader = new FileReader("scene1.test");
+		reader = new FileReader("scene1.test");
 
 		scene = reader->readFile();
 		scene->getSamplingSize(height, width);
@@ -40,7 +42,6 @@ int main(int argc, char **argv) {
 	}
 
 	Uint32* pixels = scene->getPixels(height, width);
-
 
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -72,7 +73,7 @@ int main(int argc, char **argv) {
 			}
 			break;
 		case SDL_QUIT:
-			saveToFile(pixels, height, width);
+
 			quit = true;
 			break;
 		}
@@ -81,9 +82,9 @@ int main(int argc, char **argv) {
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
 		SDL_RenderPresent(renderer);
 	}
-
+	saveToFile(pixels, height, width);
 	delete reader;
-	//delete scene; since it is managed by reader;
+	//delete scene; not needed since it is managed by reader;
 	SDL_DestroyTexture(texture);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);

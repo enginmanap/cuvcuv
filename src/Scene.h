@@ -12,6 +12,7 @@
 #include <iostream>
 #include "Vec3f.h"
 #include "Sphere.h"
+#include "Triangle.h"
 #include "Camera.h"
 #include "Sampler.h"
 #include "Ray.h"
@@ -26,15 +27,18 @@ class Scene {
 	Vec3f currentAmbientLight;
 	Camera *camera;
 	Sampler *sampler;
+
 	Uint32* pixels;
 
 	short lightCount;
 	//std::vector<Light> lightVector;
-	int vertexCount;
-	//std::vector<Vec3> vectors;
+	int maxVertexCount, currentVertex;
+	Vec3f* vertexArray;
 
-	int ObjectCount;
-	//std::vector<Triangle>
+
+	int triangleCount;
+	std::vector<Triangle> triangles;
+	int SphereCount;
 	std::vector<Sphere> spheres;
 
 	RayTracer rayTracer;
@@ -52,6 +56,10 @@ public:
 
 	Uint32* getPixels(int&, int&);
 	void renderScene();
+	bool createVertexSpace(int);
+	bool addVertex(float,float,float);
+	bool addTriangle(int,int,int);
+	void printVertexes();
 };
 
 #endif /* SCENE_H_ */
