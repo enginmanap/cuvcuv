@@ -8,14 +8,13 @@
 #include "Sphere.h"
 
 Sphere::Sphere(float x, float y, float z, float rad, Vec3f ambientLight) {
-	colorRange = pow(2, COLOR_DEPTH) - 1;//for 8 bits, this means 255
 	this->position.x = x;
 	this->position.y = y;
 	this->position.z = z;
 
 	this->radius = rad;
 
-	this->ambientLight = this->colorRange * ambientLight;
+	this->ambientLight = ambientLight;
 }
 
 Sphere::~Sphere() {
@@ -23,7 +22,7 @@ Sphere::~Sphere() {
 }
 
 bool Sphere::setAmbientLight(Vec3f ambientLight) {
-	this->ambientLight = colorRange * ambientLight;
+	this->ambientLight = ambientLight;
 	return true;
 }
 
@@ -134,7 +133,6 @@ Vec3f Sphere::getColorForRay(Ray ray, float distance) {
 	Vec3f halfVec = Vec3f::normalize(eyeDirn + normalisedLightPos);
 	Vec3f color = calculateColorPerLight(normalisedLightPos, lightColor, normal,
 			halfVec, diffuse, specular, 100.0f);
-	color = colorRange * color;
 	//Opengl auto clamps, we should do it manually;
-	return Vec3f::clamp(color+ ambientLight,0,255);
+	return Vec3f::clamp(color+ ambientLight,0,1);
 }

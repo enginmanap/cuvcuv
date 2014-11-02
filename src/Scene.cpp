@@ -17,7 +17,7 @@ Scene::Scene(int height, int width) {
 	this->vertexCount = 0;
 	this->ObjectCount = 0;
 	this->lightCount = 0;
-
+	this->colorRange = pow(2, COLOR_DEPTH) - 1;//for 8 bits, this means 255
 	this->pixels = new Uint32[height * width];
 	memset(this->pixels, 0, height * width * sizeof(Uint32));
 
@@ -67,6 +67,7 @@ void Scene::renderScene() {
 	while (this->sampler->getPoint(x, y)) {
 		Ray ray = this->camera->getRay(x, y);
 		Vec3f color = rayTracer.trace(ray, spheres);
+		color = colorRange * color;
 		Uint32 color32 = (int)color.x << 16;
 		color32 += (int)color.y << 8;
 		color32 += (int)color.z;

@@ -12,10 +12,8 @@
 #include "Ray.h"
 
 #define EPSILON 0.0001F
-#define COLOR_DEPTH 8
 
 class Sphere {
-	float colorRange;
 	Vec3f position;
 	Vec3f ambientLight;
 	float radius;

@@ -19,7 +19,10 @@
 //SDL defines portable Uint32
 #include "SDL2/SDL.h"
 
+#define COLOR_DEPTH 8
+
 class Scene {
+	float colorRange;
 	Vec3f currentAmbientLight;
 	Camera *camera;
 	Sampler *sampler;
