@@ -7,6 +7,9 @@
 
 #include "Vec3f.h"
 
+/**
+ * if no value is given, all elements are zero
+ */
 Vec3f::Vec3f() {
 	x = y = z = 0;
 }
@@ -43,6 +46,21 @@ float Vec3f::dot(const Vec3f& vector1, const Vec3f& vector2) {
 	return vector1.x * vector2.x +vector1.y * vector2.y +vector1.z * vector2.z;
 }
 
+Vec3f Vec3f::clamp(const Vec3f& vector, float min, float max){
+	if(min > max){
+		std::cerr << "clamping is not possible for min: " << min << " max" << max << std::endl;
+		return vector;
+	}
+	Vec3f temp = vector;
+	if(vector.x > max) temp.x = max;
+	else if(vector.x < min) temp.x = min;
+	if(vector.y > max) temp.y = max;
+	else if(vector.y < min) temp.y = min;
+	if(vector.z > max) temp.z = max;
+	else if(vector.z < min) temp.z = min;
+	return temp;
+}
+
 Vec3f Vec3f::operator-(const Vec3f& vector2) {
 	Vec3f temp;
 	temp.x = x - vector2.x;
@@ -59,10 +77,20 @@ Vec3f Vec3f::operator+(const Vec3f& vector2) {
 	return temp;
 }
 
+Vec3f Vec3f::operator*(const Vec3f& vector2) const {
+	Vec3f temp;
+	temp.x = x * vector2.x;
+	temp.y = y * vector2.y;
+	temp.z = z * vector2.z;
+	return temp;
+}
+
 Vec3f operator*(float& i, const Vec3f& vector) {
 
 	return Vec3f(i * vector.x, i * vector.y, i * vector.z);
 }
+
+
 
 std::ostream& operator<<(std::ostream &strm, const Vec3f &vector) {
   return strm << "(" << vector.x << ", " << vector.y << ", "<< vector.z << ")";
