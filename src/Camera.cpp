@@ -37,9 +37,9 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	u = Vec3f::normalize(Vec3f::cross(up, w));
 	v = Vec3f::cross(w, u);
 
-	std::cout << "w: " << w << std::endl;
-	std::cout << "u: " << u << std::endl;
-	std::cout << "v: " << v << std::endl;
+	//std::cout << "w: " << w << std::endl;
+	//std::cout << "u: " << u << std::endl;
+	//std::cout << "v: " << v << std::endl;
 
 }
 
