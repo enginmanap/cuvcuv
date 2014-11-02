@@ -56,7 +56,7 @@ bool Scene::setCurrentAmbient(float x, float y, float z) {
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
-	Sphere sphere(x, y, z, radius);
+	Sphere sphere(x, y, z, radius, currentAmbientLight);
 	spheres.push_back(sphere);
 	ObjectCount++;
 	return true;

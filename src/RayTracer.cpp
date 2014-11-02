@@ -20,10 +20,10 @@ Vec3f RayTracer::trace(Ray ray, std::vector<Sphere> &spheres) {
 	float distance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
 	float intersectionDistance;
 	Sphere* intersectingSphere = NULL;
-	Vec3f intersectedPoint;
+
 	for (std::vector<Sphere>::iterator it = spheres.begin();
 			it != spheres.end(); it++) {
-		if (it->intersectiontest(ray, intersectionDistance, intersectedPoint)) {
+		if (it->intersectiontest(ray, intersectionDistance)) {
 			//found intersection
 			if (distance > intersectionDistance){
 				distance = intersectionDistance;
@@ -37,7 +37,7 @@ Vec3f RayTracer::trace(Ray ray, std::vector<Sphere> &spheres) {
 		//if no intersection is found
 		return Vec3f(255.0f, 255.0f, 255.0f);
 	} else {
-		return intersectingSphere->getColorForRay(ray, intersectedPoint);
+		return intersectingSphere->getColorForRay(ray, distance);
 	}
 
 }

@@ -11,14 +11,22 @@
 #include "Vec3f.h"
 #include "Ray.h"
 
+#define EPSILON 0.0001F
+#define COLOR_DEPTH 8
+
 class Sphere {
+	float colorRange;
 	Vec3f position;
+	Vec3f ambientLight;
 	float radius;
+	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
+			const Vec3f, const Vec3f, const Vec3f, const float);
 public:
-	Sphere(float, float, float, float);
+	Sphere(float, float, float, float, Vec3f);
 	virtual ~Sphere();
-	bool intersectiontest(Ray, float&, Vec3f&);
-	Vec3f getColorForRay(Ray, Vec3f);
+	bool intersectiontest(Ray, float&);
+	Vec3f getColorForRay(Ray, float);
+	bool setAmbientLight(Vec3f);
 
 };
 #endif /* SRC_SPHERE_H_ */
