@@ -35,7 +35,7 @@ Vec3f RayTracer::trace(Ray ray, std::vector<Sphere> &spheres) {
 
 	if(intersectingSphere == NULL){
 		//if no intersection is found
-		return Vec3f(255.0f, 255.0f, 255.0f);
+		return Vec3f(0.0f, 0.0f, 0.0f);
 	} else {
 		return intersectingSphere->getColorForRay(ray, distance);
 	}

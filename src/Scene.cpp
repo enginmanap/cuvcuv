@@ -19,7 +19,7 @@ Scene::Scene(int height, int width) {
 	this->lightCount = 0;
 
 	this->pixels = new Uint32[height * width];
-	memset(this->pixels, 255, height * width * sizeof(Uint32));
+	memset(this->pixels, 0, height * width * sizeof(Uint32));
 
 }
 
