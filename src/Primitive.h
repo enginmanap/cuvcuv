@@ -14,14 +14,16 @@
 #define EPSILON 0.0001F
 
 class Primitive {
+
 protected:
 	Vec3f ambientLight, specular, diffuse;
 	float shininess;
 	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
 			const Vec3f, const Vec3f, const Vec3f, const float);
 public:
-	virtual bool intersectiontest(Ray, float&);
-	virtual Vec3f getColorForRay(Ray, float);
+	virtual ~Primitive();
+	virtual bool intersectiontest(Ray, float&) = 0;
+	virtual Vec3f getColorForRay(Ray, float) = 0;
 	bool setLightValues(Vec3f, Vec3f, Vec3f, float);
 };
 

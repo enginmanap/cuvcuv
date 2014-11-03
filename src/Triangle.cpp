@@ -12,28 +12,13 @@ Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3) {
 	b = vertice2;
 	c = vertice3;
 
-	this->shininess = 0.0f;
-
 }
 
-bool Triangle::setLightValues(Vec3f ambientLight, Vec3f diffuse, Vec3f specular,
-		float shininess) {
-	this->ambientLight = ambientLight;
-	this->diffuse = diffuse;
-	this->specular = specular;
-	this->shininess = shininess;
-	return true;
-}
 
 Triangle::~Triangle() {
 
 }
 
-Vec3f Triangle::calculateColorPerLight(const Vec3f direction, const Vec3f color,
-		const Vec3f normal, const Vec3f halfVec, const Vec3f diffuse,
-		const Vec3f specular, const float shininess) {
-	return Vec3f();
-}
 /*
  bool Triangle::intersectiontest(Ray ray, float& distance) {
  //calculate the normal

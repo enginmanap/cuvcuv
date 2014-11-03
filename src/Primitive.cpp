@@ -40,3 +40,7 @@ bool Primitive::setLightValues(Vec3f ambientLight, Vec3f diffuse, Vec3f specular
 	this->shininess = shininess;
 	return true;
 }
+
+Primitive::~Primitive(){
+
+}
