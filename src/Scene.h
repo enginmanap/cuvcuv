@@ -40,15 +40,11 @@ class Scene {
 	int maxVertexCount, currentVertex;
 	Vec3f* vertexArray;
 
-
-	int triangleCount;
-	std::vector<Triangle> triangles;
 	int SphereCount;
-	std::vector<Sphere> spheres;
-
+	int triangleCount;
+	std::vector<Primitive*> primitives;
 
 	RayTracer rayTracer;
-
 public:
 
 	Scene(int, int);

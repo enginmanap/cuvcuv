@@ -59,6 +59,10 @@ Scene::~Scene() {
 	if (this->vertexArray != NULL) {
 		delete[] this->vertexArray;
 	}
+	for (std::vector<Primitive*>::iterator it = primitives.begin();
+			it != primitives.end(); it++) {
+		delete (*it);
+	}
 	delete[] pixels;
 }
 
@@ -113,11 +117,11 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 	if (vertice1 >= 0 && vertice2 >= 0 && vertice3 >= 0
 			&& vertice1 < currentVertex && vertice2 < currentVertex
 			&& vertice3 < currentVertex) {
-		Triangle tri(this->vertexArray[vertice1], this->vertexArray[vertice2],
-				this->vertexArray[vertice3]);
-		tri.setLightValues(currentAmbientLight, currentDiffuse, currentSpecular,
-				currentShininess);
-		triangles.push_back(tri);
+		Triangle* triangle = new Triangle(this->vertexArray[vertice1],
+				this->vertexArray[vertice2], this->vertexArray[vertice3]);
+		triangle->setLightValues(currentAmbientLight, currentDiffuse,
+				currentSpecular, currentShininess);
+		primitives.push_back(triangle);
 		triangleCount++;
 		return true;
 	} else {
@@ -127,10 +131,10 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
-	Sphere sphere(x, y, z, radius);
-	sphere.setLightValues(currentAmbientLight, currentDiffuse, currentSpecular,
+	Sphere* sphere = new Sphere(x, y, z, radius);
+	sphere->setLightValues(currentAmbientLight, currentDiffuse, currentSpecular,
 			currentShininess);
-	spheres.push_back(sphere);
+	primitives.push_back(sphere);
 	SphereCount++;
 	return true;
 }
@@ -142,7 +146,7 @@ void Scene::renderScene() {
 			std::cerr << "Can't render without a camera set." << std::endl;
 		}
 		Ray ray = this->camera->getRay(x, y);
-		Vec3f color = rayTracer.trace(ray, spheres, triangles);
+		Vec3f color = rayTracer.trace(ray, primitives);
 		color = colorRange * color;
 		Uint32 color32 = (int) color.x << 16;
 		color32 += (int) color.y << 8;
