@@ -32,7 +32,7 @@ Sphere::~Sphere() {
  * 	returns:
  * 		bool: if there is an intersection
  */
-bool Sphere::intersectiontest(Ray ray, float& distance) {
+bool Sphere::intersectiontest(Ray ray, float& distance) const {
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
 	float p1s = Vec3f::dot(ray.getDirection(), ray.getDirection());
@@ -85,14 +85,13 @@ bool Sphere::intersectiontest(Ray ray, float& distance) {
 	return false;
 }
 
-Vec3f Sphere::getColorForRay(Ray ray, float distance) {
+Vec3f Sphere::getColorForRay(Ray ray, float distance) const {
 	Vec3f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
 
 	//hardcoding a light for calculation
 	Vec3f lightPos(3, 10, 3);
 	Vec3f lightColor(1.0f, 0.0f, 0.0f);
-
 
 	Vec3f normalisedLightPos = Vec3f::normalize(lightPos);
 	Vec3f normal = Vec3f::normalize(intersectionPoint - this->position);

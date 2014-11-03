@@ -9,7 +9,8 @@
 
 Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 		const Vec3f color, const Vec3f normal, const Vec3f halfVec,
-		const Vec3f diffuse, const Vec3f specular, const float shininess) {
+		const Vec3f diffuse, const Vec3f specular,
+		const float shininess) const {
 
 	Vec3f lambert, phong;
 
@@ -32,8 +33,8 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 
 }
 
-bool Primitive::setLightValues(Vec3f ambientLight, Vec3f diffuse, Vec3f specular,
-		float shininess) {
+bool Primitive::setLightValues(Vec3f ambientLight, Vec3f diffuse,
+		Vec3f specular, float shininess) {
 	this->ambientLight = ambientLight;
 	this->diffuse = diffuse;
 	this->specular = specular;
@@ -41,6 +42,6 @@ bool Primitive::setLightValues(Vec3f ambientLight, Vec3f diffuse, Vec3f specular
 	return true;
 }
 
-Primitive::~Primitive(){
+Primitive::~Primitive() {
 
 }

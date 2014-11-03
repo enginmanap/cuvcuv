@@ -24,8 +24,8 @@ public:
 	static float dot(const Vec3f&, const Vec3f&);
 	static Vec3f clamp(const Vec3f&, float, float);
 
-	Vec3f operator-(const Vec3f&);
-	Vec3f operator+(const Vec3f&);
+	Vec3f operator-(const Vec3f&) const;
+	Vec3f operator+(const Vec3f&) const;
 	Vec3f operator*(const Vec3f&) const;
 
 };

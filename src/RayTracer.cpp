@@ -15,12 +15,13 @@ RayTracer::~RayTracer() {
 
 }
 
-Vec3f RayTracer::trace(Ray ray, std::vector<Primitive*> &Primitives) {
+Vec3f RayTracer::trace(const Ray ray,
+		const std::vector<Primitive*> &Primitives) const {
 	float distance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
 	float intersectionDistance;
 	Primitive* intersectingPrimitive = NULL;
 
-	for (std::vector<Primitive*>::iterator it = Primitives.begin();
+	for (std::vector<Primitive*>::const_iterator it = Primitives.begin();
 			it != Primitives.end(); it++) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
 			//found intersection

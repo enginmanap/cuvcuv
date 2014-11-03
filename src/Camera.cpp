@@ -24,7 +24,7 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	up.z = upz;
 
 	this->fovy = fovy * M_PI / 180;
-	this->fovx = this->fovy * ((float)width/(float)height);
+	this->fovx = this->fovy * ((float) width / (float) height);
 	std::cout << "fovy " << this->fovy << " fovx " << this->fovx << std::endl;
 	this->height = height;
 	this->width = width;
@@ -51,9 +51,12 @@ Ray Camera::getRay(int x, int y) {
 	//Calculate the direction
 	//since grader wants pixel centers, we will add 0.5 to pixels.
 
-	float horizontalChange = tan(fovx / 2) * (((float)x + 0.5f - ((float)width / 2)) / ((float) width / 2));
+	float horizontalChange = tan(fovx / 2)
+			* (((float) x + 0.5f - ((float) width / 2)) / ((float) width / 2));
 
-	float verticalChange = tan(fovy / 2) * ((((float) height/ 2) - ((float)y + 0.5f)) / ((float) height / 2));
+	float verticalChange = tan(fovy / 2)
+			* ((((float) height / 2) - ((float) y + 0.5f))
+					/ ((float) height / 2));
 	//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
 	Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 	//Vec3f direction = (verticalChange * u) + (horizontalChange* v) - w;
@@ -62,7 +65,6 @@ Ray Camera::getRay(int x, int y) {
 	direction = Vec3f::normalize(direction);
 
 	//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
-
 
 	Ray temp(position, direction, 0, 100);
 	return temp;

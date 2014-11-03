@@ -19,7 +19,7 @@ public:
 	RayTracer();
 	virtual ~RayTracer();
 
-	Vec3f trace(Ray, std::vector<Primitive*>&);
+	Vec3f trace(const Ray, const std::vector<Primitive*>&) const;
 };
 
 #endif /* SRC_RAYTRACER_H_ */

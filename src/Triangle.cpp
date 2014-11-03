@@ -14,7 +14,6 @@ Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3) {
 
 }
 
-
 Triangle::~Triangle() {
 
 }
@@ -54,7 +53,7 @@ Triangle::~Triangle() {
  }
  */
 
-bool Triangle::intersectiontest(Ray ray, float& distance) {
+bool Triangle::intersectiontest(Ray ray, float& distance) const {
 	Vec3f v0v1 = b - a;
 	Vec3f v0v2 = c - a;
 	Vec3f N = Vec3f::cross(v0v1, v0v2);
@@ -106,6 +105,6 @@ bool Triangle::intersectiontest(Ray ray, float& distance) {
 	return true;
 }
 
-Vec3f Triangle::getColorForRay(Ray ray, float distance) {
+Vec3f Triangle::getColorForRay(Ray ray, float distance) const {
 	return this->ambientLight;
 }

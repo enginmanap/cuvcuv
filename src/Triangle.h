@@ -12,7 +12,7 @@
 #include "Ray.h"
 #include "Primitive.h"
 
-class Triangle : public Primitive {
+class Triangle: public Primitive {
 
 private:
 	Vec3f a, b, c;
@@ -21,8 +21,8 @@ public:
 	Triangle(Vec3f, Vec3f, Vec3f);
 	virtual ~Triangle();
 
-	bool intersectiontest(Ray, float&);
-	Vec3f getColorForRay(Ray, float);
+	bool intersectiontest(Ray, float&) const;
+	Vec3f getColorForRay(Ray, float) const;
 
 };
 

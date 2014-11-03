@@ -19,11 +19,11 @@ protected:
 	Vec3f ambientLight, specular, diffuse;
 	float shininess;
 	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
-			const Vec3f, const Vec3f, const Vec3f, const float);
+			const Vec3f, const Vec3f, const Vec3f, const float) const;
 public:
 	virtual ~Primitive();
-	virtual bool intersectiontest(Ray, float&) = 0;
-	virtual Vec3f getColorForRay(Ray, float) = 0;
+	virtual bool intersectiontest(Ray, float&) const= 0;
+	virtual Vec3f getColorForRay(Ray, float) const = 0;
 	bool setLightValues(Vec3f, Vec3f, Vec3f, float);
 };
 
