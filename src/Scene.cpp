@@ -110,18 +110,26 @@ void Scene::printVertexes() {
 }
 
 bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
-	Triangle tri(this->vertexArray[vertice1], this->vertexArray[vertice2],
-			this->vertexArray[vertice3]);
-	tri.setLightValues(currentAmbientLight,currentDiffuse,currentSpecular,currentShininess);
-	triangles.push_back(tri);
-	triangleCount++;
-	std::cout << "triangle added" << std::endl;
-	return true;
+	if (vertice1 >= 0 && vertice2 >= 0 && vertice3 >= 0
+			&& vertice1 < currentVertex && vertice2 < currentVertex
+			&& vertice3 < currentVertex) {
+		Triangle tri(this->vertexArray[vertice1], this->vertexArray[vertice2],
+				this->vertexArray[vertice3]);
+		tri.setLightValues(currentAmbientLight, currentDiffuse, currentSpecular,
+				currentShininess);
+		triangles.push_back(tri);
+		triangleCount++;
+		return true;
+	} else {
+		std::cerr << "one of the vertices used is not defined";
+		return false;
+	}
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
 	Sphere sphere(x, y, z, radius);
-	sphere.setLightValues(currentAmbientLight,currentDiffuse,currentSpecular,currentShininess);
+	sphere.setLightValues(currentAmbientLight, currentDiffuse, currentSpecular,
+			currentShininess);
 	spheres.push_back(sphere);
 	SphereCount++;
 	return true;
