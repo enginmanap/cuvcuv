@@ -17,18 +17,18 @@
 class Triangle {
 
 private:
-	Vec3f a,b,c;
-	Vec3f ambientLight;
+	Vec3f a, b, c;
+	Vec3f ambientLight, specular, diffuse;
+	float shininess;
 	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
 			const Vec3f, const Vec3f, const Vec3f, const float);
 public:
-	Triangle(Vec3f, Vec3f, Vec3f, Vec3f);
+	Triangle(Vec3f, Vec3f, Vec3f);
 	virtual ~Triangle();
 
 	bool intersectiontest(Ray, float&);
 	Vec3f getColorForRay(Ray, float);
-	bool setAmbientLight(Vec3f);
-
+	bool setLightValues(Vec3f, Vec3f, Vec3f, float);
 
 };
 

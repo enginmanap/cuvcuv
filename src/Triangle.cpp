@@ -7,23 +7,26 @@
 
 #include "Triangle.h"
 
-Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3,
-		Vec3f ambientLight) {
+Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3) {
 	a = vertice1;
 	b = vertice2;
 	c = vertice3;
 
-	this->ambientLight = ambientLight;
+	this->shininess = 0.0f;
 
 }
 
-bool Triangle::setAmbientLight(Vec3f ambientLight) {
+bool Triangle::setLightValues(Vec3f ambientLight, Vec3f diffuse, Vec3f specular,
+		float shininess) {
 	this->ambientLight = ambientLight;
+	this->diffuse = diffuse;
+	this->specular = specular;
+	this->shininess = shininess;
 	return true;
 }
 
 Triangle::~Triangle() {
-	// TODO Auto-generated destructor stub
+
 }
 
 Vec3f Triangle::calculateColorPerLight(const Vec3f direction, const Vec3f color,
@@ -71,26 +74,27 @@ bool Triangle::intersectiontest(Ray ray, float& distance) {
 	Vec3f v0v2 = c - a;
 	Vec3f N = Vec3f::cross(v0v1, v0v2);
 	float nDotRay = Vec3f::dot(N, ray.getDirection());
-	if (nDotRay == 0 || (nDotRay > 0 ) && false){
-		//std::cout << "0" << std::endl;
-		return false; // ray parallel to triangle
-	}
+	/*
+	 if (nDotRay == 0 || (nDotRay > 0 ) && false){
+	 //std::cout << "0" << std::endl;
+	 return false; // ray parallel to triangle
+	 } */
 
 	float d = Vec3f::dot(N, a);
 	float t = -(Vec3f::dot(N, ray.getPosition()) + d) / nDotRay;
-	if (t < 0){
+	if (t < 0) {
 		//std::cout << "1" << std::endl;
 		return false; // ray behind triangle
-		}
+	}
 	// inside-out test
 	Vec3f Phit = ray.getPosition() + t * ray.getDirection();
 	// inside-out test edge0
 	Vec3f v0p = Phit - a;
 	float v = Vec3f::dot(N, Vec3f::cross(v0v1, v0p));
-	if (v < 0){
+	if (v < 0) {
 		//std::cout << "2" << std::endl;
 		return false; // P outside triangle
-		}
+	}
 	// inside-out test edge1
 	Vec3f v1p = Phit - b;
 	Vec3f v1v2 = c - b;
@@ -108,11 +112,11 @@ bool Triangle::intersectiontest(Ray ray, float& distance) {
 		return false; // P outside triangle
 	}
 	/*
-	float nlen2 = Vec3f::dot(N, N);
-	isectData.t = t;
-	isectData.u = u / nlen2;
-	isectData.v = v / nlen2;
-	*/
+	 float nlen2 = Vec3f::dot(N, N);
+	 isectData.t = t;
+	 isectData.u = u / nlen2;
+	 isectData.v = v / nlen2;
+	 */
 	distance = t;
 	return true;
 }

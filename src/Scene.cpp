@@ -24,6 +24,8 @@ Scene::Scene(int height, int width) {
 	this->pixels = new Uint32[height * width];
 	memset(this->pixels, 0, height * width * sizeof(Uint32));
 
+	this->currentShininess = 0.0f;
+
 }
 
 bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,
@@ -54,7 +56,7 @@ Scene::~Scene() {
 	delete this->sampler;
 	if (camera != NULL)
 		delete camera;
-	if (this->vertexArray != NULL){
+	if (this->vertexArray != NULL) {
 		delete[] this->vertexArray;
 	}
 	delete[] pixels;
@@ -73,6 +75,25 @@ bool Scene::setCurrentAmbient(float x, float y, float z) {
 	return true;
 }
 
+bool Scene::setCurrentDiffuse(float x, float y, float z) {
+	this->currentDiffuse.x = x;
+	this->currentDiffuse.y = y;
+	this->currentDiffuse.z = z;
+	return true;
+}
+
+bool Scene::setCurrentSpecular(float x, float y, float z) {
+	this->currentSpecular.x = x;
+	this->currentSpecular.y = y;
+	this->currentSpecular.z = z;
+	return true;
+}
+
+bool Scene::setCurrentShininess(float shininess) {
+	this->currentShininess = shininess;
+	return true;
+}
+
 bool Scene::addVertex(float x, float y, float z) {
 	if (currentVertex == maxVertexCount)
 		return false;
@@ -81,14 +102,17 @@ bool Scene::addVertex(float x, float y, float z) {
 	return true;
 }
 
-void Scene::printVertexes(){
+void Scene::printVertexes() {
 	for (int i = 0; i < this->maxVertexCount; ++i) {
-		std::cout << "vertex[" << i << "]=" << this->vertexArray[i]<< std::endl;
+		std::cout << "vertex[" << i << "]=" << this->vertexArray[i]
+				<< std::endl;
 	}
 }
 
-bool Scene::addTriangle(int vertice1,int vertice2,int vertice3){
-	Triangle tri(this->vertexArray[vertice1],this->vertexArray[vertice2],this->vertexArray[vertice3],currentAmbientLight);
+bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
+	Triangle tri(this->vertexArray[vertice1], this->vertexArray[vertice2],
+			this->vertexArray[vertice3]);
+	tri.setLightValues(currentAmbientLight,currentDiffuse,currentSpecular,currentShininess);
 	triangles.push_back(tri);
 	triangleCount++;
 	std::cout << "triangle added" << std::endl;
@@ -96,7 +120,8 @@ bool Scene::addTriangle(int vertice1,int vertice2,int vertice3){
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
-	Sphere sphere(x, y, z, radius, currentAmbientLight);
+	Sphere sphere(x, y, z, radius);
+	sphere.setLightValues(currentAmbientLight,currentDiffuse,currentSpecular,currentShininess);
 	spheres.push_back(sphere);
 	SphereCount++;
 	return true;
@@ -105,11 +130,11 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 void Scene::renderScene() {
 	unsigned int x = 0, y = 0;
 	while (this->sampler->getPoint(x, y)) {
-		if(this->camera == NULL){
+		if (this->camera == NULL) {
 			std::cerr << "Can't render without a camera set." << std::endl;
 		}
 		Ray ray = this->camera->getRay(x, y);
-		Vec3f color = rayTracer.trace(ray, spheres,triangles);
+		Vec3f color = rayTracer.trace(ray, spheres, triangles);
 		color = colorRange * color;
 		Uint32 color32 = (int) color.x << 16;
 		color32 += (int) color.y << 8;

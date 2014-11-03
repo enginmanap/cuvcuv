@@ -7,22 +7,25 @@
 
 #include "Sphere.h"
 
-Sphere::Sphere(float x, float y, float z, float rad, Vec3f ambientLight) {
+Sphere::Sphere(float x, float y, float z, float rad) {
 	this->position.x = x;
 	this->position.y = y;
 	this->position.z = z;
-
 	this->radius = rad;
 
-	this->ambientLight = ambientLight;
+	this->shininess = 0.0f;
 }
 
 Sphere::~Sphere() {
-	// TODO Auto-generated destructor stub
+
 }
 
-bool Sphere::setAmbientLight(Vec3f ambientLight) {
+bool Sphere::setLightValues(Vec3f ambientLight, Vec3f diffuse, Vec3f specular,
+		float shininess) {
 	this->ambientLight = ambientLight;
+	this->diffuse = diffuse;
+	this->specular = specular;
+	this->shininess = shininess;
 	return true;
 }
 
@@ -122,17 +125,16 @@ Vec3f Sphere::getColorForRay(Ray ray, float distance) {
 	intersectionPoint = intersectionPoint + ray.getPosition();
 
 	//hardcoding a light for calculation
-	Vec3f lightPos(3, 10, -1);
-	Vec3f lightColor(0.0f, 1.0f, 0.5f);
-	Vec3f diffuse(0.5f, 0.5f, 0.5f);
-	Vec3f specular(1, 1, 1);
+	Vec3f lightPos(3, 10, 3);
+	Vec3f lightColor(1.0f, 0.0f, 0.0f);
+
 
 	Vec3f normalisedLightPos = Vec3f::normalize(lightPos);
 	Vec3f normal = Vec3f::normalize(intersectionPoint - this->position);
 	Vec3f eyeDirn = Vec3f::normalize(ray.getPosition() - intersectionPoint);
 	Vec3f halfVec = Vec3f::normalize(eyeDirn + normalisedLightPos);
 	Vec3f color = calculateColorPerLight(normalisedLightPos, lightColor, normal,
-			halfVec, diffuse, specular, 100.0f);
+			halfVec, diffuse, specular, shininess);
 	//Opengl auto clamps, we should do it manually;
-	return Vec3f::clamp(color+ ambientLight,0,1);//TODO move clamping to last step, just before writing the pixel.
+	return Vec3f::clamp(color + ambientLight, 0, 1); //TODO move clamping to last step, just before writing the pixel.
 }

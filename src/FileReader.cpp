@@ -107,6 +107,18 @@ Scene* FileReader::readFile() {
 			if (readParams(stringStream, parameters, 3)) {
 				scene->addTriangle((int)parameters[0], (int)parameters[1], (int)parameters[2]);
 			}
+		} else if (command == "diffuse") {
+			if (readParams(stringStream, parameters, 3)) {
+				scene->setCurrentDiffuse(parameters[0], parameters[1], parameters[2]);
+			}
+		} else if (command == "specular") {
+			if (readParams(stringStream, parameters, 3)) {
+				scene->setCurrentSpecular(parameters[0], parameters[1], parameters[2]);
+			}
+		} else if (command == "shininess") {
+			if (readParams(stringStream, parameters, 1)) {
+				scene->setCurrentShininess(parameters[0]);
+			}
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
 

@@ -23,11 +23,16 @@
 #define COLOR_DEPTH 8
 
 class Scene {
-	float colorRange;
+
 	Vec3f currentAmbientLight;
+	Vec3f currentDiffuse;
+	Vec3f currentSpecular;
+	float currentShininess;
+
 	Camera *camera;
 	Sampler *sampler;
 
+	float colorRange;
 	Uint32* pixels;
 
 	short lightCount;
@@ -41,6 +46,7 @@ class Scene {
 	int SphereCount;
 	std::vector<Sphere> spheres;
 
+
 	RayTracer rayTracer;
 
 public:
@@ -52,6 +58,9 @@ public:
 	virtual ~Scene();
 	bool getSamplingSize(int&, int&);
 	bool setCurrentAmbient(float, float, float);
+	bool setCurrentDiffuse(float,float,float);
+	bool setCurrentSpecular(float,float,float);
+	bool setCurrentShininess(float);
 	bool addSphere(float, float, float, float);
 
 	Uint32* getPixels(int&, int&);
