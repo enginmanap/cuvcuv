@@ -62,7 +62,7 @@ Scene* FileReader::readFile() {
 			exit(1);
 		} else {
 			if (readParams(stringStream, parameters, 2)) {
-				scene = new Scene(parameters[0], parameters[1]);
+				scene = new Scene(parameters[1], parameters[0]);
 			} else {
 				std::cerr << "size command parameters could not be read"
 						<< std::endl;

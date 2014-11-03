@@ -115,7 +115,7 @@ void Scene::renderScene() {
 		color32 += (int) color.y << 8;
 		color32 += (int) color.z;
 
-		pixels[this->sampler->getHeight() * y + x] = color32;
+		pixels[this->sampler->getWidht() * y + x] = color32;
 	}
 }
 

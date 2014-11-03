@@ -28,8 +28,8 @@ Sampler::~Sampler() {
 
 bool Sampler::getPoint(unsigned int& x, unsigned int& y) {
 	if (currentPoint < height * width) {
-		x = currentPoint / width;
-		y = currentPoint % width;
+		x = currentPoint % width;
+		y = currentPoint / width;
 		currentPoint++;
 		return true;
 	} else {

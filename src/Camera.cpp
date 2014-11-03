@@ -51,11 +51,11 @@ Ray Camera::getRay(int x, int y) {
 	//Calculate the direction
 	//since grader wants pixel centers, we will add 0.5 to pixels.
 
-	float horizontalChange = tan(fovy / 2) * (((float)x + 0.5f - ((float)height / 2)) / ((float) height / 2));
+	float horizontalChange = tan(fovx / 2) * (((float)x + 0.5f - ((float)width / 2)) / ((float) width / 2));
 
-	float verticalChange = tan(fovx / 2) * ((((float) width/ 2) - ((float)y + 0.5f)) / ((float) width / 2));
+	float verticalChange = tan(fovy / 2) * ((((float) height/ 2) - ((float)y + 0.5f)) / ((float) height / 2));
 	//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
-	Vec3f direction = (horizontalChange * u) + (verticalChange * v) - w;
+	Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 	//Vec3f direction = (verticalChange * u) + (horizontalChange* v) - w;
 	//Vec3f directionPart = verticalChange * v;
 
