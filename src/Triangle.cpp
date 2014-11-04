@@ -54,54 +54,23 @@ Triangle::~Triangle() {
  */
 
 bool Triangle::intersectiontest(Ray ray, float& distance) const {
-	Vec3f v0v1 = b - a;
-	Vec3f v0v2 = c - a;
-	Vec3f N = Vec3f::cross(v0v1, v0v2);
-	float nDotRay = Vec3f::dot(N, ray.getDirection());
-	/*
-	 if (nDotRay == 0 || (nDotRay > 0 ) && false){
-	 //std::cout << "0" << std::endl;
-	 return false; // ray parallel to triangle
-	 } */
+	Vec3f edge1 = b - a;
+	Vec3f edge2 = c - a;
+	Vec3f pvec = Vec3f::cross(ray.getDirection(), edge2);
+	float det = Vec3f::dot(edge1, pvec);
+	if (det == 0)
+		return false;
+	float invDet = 1 / det;
+	Vec3f tvec = ray.getPosition() - a;
+	float u = Vec3f::dot(tvec, pvec) * invDet;
+	if (u < 0 || u > 1)
+		return false;
+	Vec3f qvec = Vec3f::cross(tvec, edge1);
+	float v = Vec3f::dot(ray.getDirection(), qvec) * invDet;
+	if (v < 0 || u + v > 1)
+		return false;
 
-	float d = Vec3f::dot(N, a);
-	float t = -(Vec3f::dot(N, ray.getPosition()) + d) / nDotRay;
-	if (t < 0) {
-		//std::cout << "1" << std::endl;
-		return false; // ray behind triangle
-	}
-	// inside-out test
-	Vec3f Phit = ray.getPosition() + t * ray.getDirection();
-	// inside-out test edge0
-	Vec3f v0p = Phit - a;
-	float v = Vec3f::dot(N, Vec3f::cross(v0v1, v0p));
-	if (v < 0) {
-		//std::cout << "2" << std::endl;
-		return false; // P outside triangle
-	}
-	// inside-out test edge1
-	Vec3f v1p = Phit - b;
-	Vec3f v1v2 = c - b;
-	float w = Vec3f::dot(N, Vec3f::cross(v1v2, v1p));
-	if (w < 0) {
-		//std::cout << "3" << std::endl;
-		return false; // P outside triangle
-	}
-	// inside-out test edge2
-	Vec3f v2p = Phit - c;
-	Vec3f v2v0 = a - c;
-	float u = Vec3f::dot(N, Vec3f::cross(v2v0, v2p));
-	if (u < 0) {
-		//std::cout << "4" << std::endl;
-		return false; // P outside triangle
-	}
-	/*
-	 float nlen2 = Vec3f::dot(N, N);
-	 isectData.t = t;
-	 isectData.u = u / nlen2;
-	 isectData.v = v / nlen2;
-	 */
-	distance = t;
+	distance = Vec3f::dot(edge2, qvec) * invDet;
 	return true;
 }
 
