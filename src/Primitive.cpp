@@ -14,7 +14,7 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 
 	Vec3f lambert, phong;
 
-	float nDotl = Vec3f::dot(normal, direction);
+	float nDotl = vec3fNS::dot(normal, direction);
 
 	if (nDotl > 0.0f) {
 		lambert = diffuse * color;
@@ -22,7 +22,7 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 		lambert = nDotl * lambert;
 	}
 
-	float nDotH = Vec3f::dot(normal, halfVec);
+	float nDotH = vec3fNS::dot(normal, halfVec);
 	if (nDotH > 0.0f) {
 		phong = specular * color;
 		//phong = Vec3f(specular.x * color.x,specular.y * color.y,specular.z * color.z);

@@ -33,9 +33,9 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 
 	Vec3f positionMinusCenter = position - look;
 
-	w = Vec3f::normalize(positionMinusCenter);
-	u = Vec3f::normalize(Vec3f::cross(up, w));
-	v = Vec3f::cross(w, u);
+	w = vec3fNS::normalize(positionMinusCenter);
+	u = vec3fNS::normalize(vec3fNS::cross(up, w));
+	v = vec3fNS::cross(w, u);
 
 	//std::cout << "w: " << w << std::endl;
 	//std::cout << "u: " << u << std::endl;
@@ -62,7 +62,7 @@ Ray Camera::getRay(int x, int y) {
 	//Vec3f direction = (verticalChange * u) + (horizontalChange* v) - w;
 	//Vec3f directionPart = verticalChange * v;
 
-	direction = Vec3f::normalize(direction);
+	direction = vec3fNS::normalize(direction);
 
 	//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
 

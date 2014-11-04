@@ -24,7 +24,11 @@ Vec3f::~Vec3f() {
 
 }
 
-Vec3f Vec3f::normalize(const Vec3f& vector) {
+Vec3f Vec3f::normalize() const {
+	return vec3fNS::normalize(*this);
+}
+
+Vec3f vec3fNS::normalize(const Vec3f& vector) {
 	//calculate the vector size
 	float length = sqrt(
 			(vector.x * vector.x) + (vector.y * vector.y)
@@ -35,18 +39,18 @@ Vec3f Vec3f::normalize(const Vec3f& vector) {
 	return temp;
 }
 
-Vec3f Vec3f::cross(const Vec3f& vector1, const Vec3f& vector2) {
+Vec3f vec3fNS::cross(const Vec3f& vector1, const Vec3f& vector2) {
 	Vec3f temp(vector1.y * vector2.z - vector1.z * vector2.y,
 			vector1.z * vector2.x - vector1.x * vector2.z,
 			vector1.x * vector2.y - vector1.y * vector2.x);
 	return temp;
 }
 
-float Vec3f::dot(const Vec3f& vector1, const Vec3f& vector2) {
+float vec3fNS::dot(const Vec3f& vector1, const Vec3f& vector2) {
 	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
 }
 
-Vec3f Vec3f::clamp(const Vec3f& vector, float min, float max) {
+Vec3f vec3fNS::clamp(const Vec3f& vector, float min, float max) {
 	if (min > max) {
 		std::cerr << "clamping is not possible for min: " << min << " max"
 				<< max << std::endl;

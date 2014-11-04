@@ -35,16 +35,16 @@ Sphere::~Sphere() {
 bool Sphere::intersectiontest(Ray ray, float& distance) const {
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
-	float p1s = Vec3f::dot(ray.getDirection(), ray.getDirection());
+	float p1s = vec3fNS::dot(ray.getDirection(), ray.getDirection());
 	Vec3f p0MinusC = ray.getPosition() - this->position;
-	float p1timesp0mc = Vec3f::dot(ray.getDirection(), p0MinusC);
+	float p1timesp0mc = vec3fNS::dot(ray.getDirection(), p0MinusC);
 	//now the formula is this:
 	//(distance * distance) * p1s + distance * (2*p1timesp0mc) + (p0MinusC * p0MinusC) - (this->radius * this->radius) = 0
 	//Assign a,b,c so later parts should be easier to follow;
 
 	float a = p1s;
 	float b = 2 * p1timesp0mc;
-	float c = Vec3f::dot(p0MinusC, p0MinusC) - (this->radius * this->radius);
+	float c = vec3fNS::dot(p0MinusC, p0MinusC) - (this->radius * this->radius);
 
 	//calculate the discriminant
 	// discriminant = b^2 - 4ac
@@ -93,12 +93,12 @@ Vec3f Sphere::getColorForRay(Ray ray, float distance) const {
 	Vec3f lightPos(3, 10, 3);
 	Vec3f lightColor(1.0f, 0.0f, 0.0f);
 
-	Vec3f normalisedLightPos = Vec3f::normalize(lightPos);
-	Vec3f normal = Vec3f::normalize(intersectionPoint - this->position);
-	Vec3f eyeDirn = Vec3f::normalize(ray.getPosition() - intersectionPoint);
-	Vec3f halfVec = Vec3f::normalize(eyeDirn + normalisedLightPos);
+	Vec3f normalisedLightPos = vec3fNS::normalize(lightPos);
+	Vec3f normal = vec3fNS::normalize(intersectionPoint - this->position);
+	Vec3f eyeDirn = vec3fNS::normalize(ray.getPosition() - intersectionPoint);
+	Vec3f halfVec = vec3fNS::normalize(eyeDirn + normalisedLightPos);
 	Vec3f color = calculateColorPerLight(normalisedLightPos, lightColor, normal,
 			halfVec, diffuse, specular, shininess);
 	//Opengl auto clamps, we should do it manually;
-	return Vec3f::clamp(color + ambientLight, 0, 1); //TODO move clamping to last step, just before writing the pixel.
+	return vec3fNS::clamp(color + ambientLight, 0, 1); //TODO move clamping to last step, just before writing the pixel.
 }
