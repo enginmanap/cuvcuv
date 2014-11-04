@@ -10,6 +10,7 @@
 
 #include <math.h>
 #include <iostream>
+#include <cassert>
 
 class Vec3f {
 public:
@@ -27,7 +28,7 @@ public:
 	Vec3f operator-(const Vec3f&) const;
 	Vec3f operator+(const Vec3f&) const;
 	Vec3f operator*(const Vec3f&) const;
-
+	float& operator[](int); //it is not const, so we can assign to it.
 };
 
 std::ostream& operator<<(std::ostream &strm, const Vec3f &vector);

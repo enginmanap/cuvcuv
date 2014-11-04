@@ -97,6 +97,24 @@ Vec3f operator*(float& i, const Vec3f& vector) {
 	return Vec3f(i * vector.x, i * vector.y, i * vector.z);
 }
 
+float& Vec3f::operator[](int index) {
+	switch (index) {
+	case 0:
+		return x;
+		break;
+	case 1:
+		return y;
+		break;
+	case 2:
+		return z;
+		break;
+	default:
+		std::cerr << "Vecf3[] index out of range" << std::endl;
+		assert(0);
+		break;
+	}
+}
+
 std::ostream& operator<<(std::ostream &strm, const Vec3f &vector) {
 	return strm << "(" << vector.x << ", " << vector.y << ", " << vector.z
 			<< ")";
