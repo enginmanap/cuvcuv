@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 			if (leftMouseButtonDown) {
 				int mouseX = event.motion.x;
 				int mouseY = event.motion.y;
-				pixels[mouseY * height + mouseX] = 0;
+				pixels[mouseY * width + mouseX] = 0;
 			}
 			break;
 		case SDL_QUIT:
