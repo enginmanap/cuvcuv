@@ -7,9 +7,14 @@
 
 #include "Mat4f.h"
 
+/**
+ * default constructor creates identity matrix
+ */
 Mat4f::Mat4f() {
-	// TODO Auto-generated constructor stub
-
+	this->rows[0][0] = 1;
+	this->rows[1][1] = 1;
+	this->rows[2][2] = 1;
+	this->rows[3][3] = 1;
 }
 
 Vec4f& Mat4f::operator[](int index) const{
@@ -32,3 +37,4 @@ Vec4f& Mat4f::operator[](int index) const{
 		break;
 	}
 }
+
