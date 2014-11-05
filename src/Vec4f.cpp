@@ -25,7 +25,11 @@ Vec4f::~Vec4f() {
 
 }
 
-Vec4f Vec4f::normalize(const Vec4f& vector) {
+Vec4f Vec4f::normalize() const {
+	return Vec4fNS::normalize(*this);
+}
+
+Vec4f Vec4fNS::normalize(const Vec4f& vector) {
 	//calculate the vector size
 	float length = sqrt(
 			(vector.x * vector.x) + (vector.y * vector.y)
@@ -37,13 +41,12 @@ Vec4f Vec4f::normalize(const Vec4f& vector) {
 	return temp;
 }
 
-
-float Vec4f::dot(const Vec4f& vector1, const Vec4f& vector2) {
+float Vec4fNS::dot(const Vec4f& vector1, const Vec4f& vector2) {
 	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z
 			+ vector1.w * vector2.w;
 }
 
-Vec4f Vec4f::clamp(const Vec4f& vector, float min, float max) {
+Vec4f Vec4fNS::clamp(const Vec4f& vector, float min, float max) {
 	if (min > max) {
 		std::cerr << "clamping is not possible for min: " << min << " max"
 				<< max << std::endl;
@@ -94,6 +97,27 @@ Vec4f Vec4f::operator*(const Vec4f& vector2) const {
 	temp.z = z * vector2.z;
 	temp.w = w * vector2.w;
 	return temp;
+}
+
+float& Vec4f::operator[](int index) {
+	switch (index) {
+	case 0:
+		return x;
+		break;
+	case 1:
+		return y;
+		break;
+	case 2:
+		return z;
+		break;
+	case 3:
+		return w;
+		break;
+	default:
+		std::cerr << "Vecf4[] index out of range" << std::endl;
+		assert(0);
+		break;
+	}
 }
 
 Vec4f operator*(float& i, const Vec4f& vector) {
