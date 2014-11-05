@@ -17,10 +17,10 @@ Mat4f::Mat4f() {
 	this->rows[3][3] = 1;
 }
 
-Vec4f& Mat4f::operator[](int index) const{
+Vec4f& Mat4f::operator[](int index) {
 	switch (index) {
 	case 0:
-		return rows[0];
+		return (rows[0]);
 		break;
 	case 1:
 		return rows[0];

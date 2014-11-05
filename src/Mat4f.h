@@ -9,13 +9,14 @@
 #define MAT4F_H_
 
 #include <cassert>
+#include "Vec4f.h"
 
 class Mat4f {
 public:
 	Mat4f();
 	Vec4f rows[4];
 
-	Vec4f& operator[](int) const;
+	Vec4f& operator[](int);
 };
 
 #endif /* MAT4F_H_ */
