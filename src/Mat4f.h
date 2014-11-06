@@ -14,9 +14,13 @@
 class Mat4f {
 public:
 	Mat4f();
+	Mat4f(float);
 	Vec4f rows[4];
 
-	Vec4f& operator[](int);
+	Vec4f& operator[](const int);
+	Mat4f operator*(Mat4f&);
 };
+
+std::ostream& operator<<(std::ostream &strm, Mat4f &matrix);
 
 #endif /* MAT4F_H_ */
