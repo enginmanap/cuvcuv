@@ -33,6 +33,10 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 
 }
 
+bool Primitive::setTransformation(Mat4f& matrix) {
+	this->transformationMatrix = matrix;
+}
+
 bool Primitive::setLightValues(Vec3f ambientLight, Vec3f diffuse,
 		Vec3f specular, float shininess) {
 	this->ambientLight = ambientLight;
