@@ -17,7 +17,7 @@ FileReader::FileReader(std::string fileName) {
 				<< std::endl;
 		throw 1;
 	}
-
+	transformStack.push(Mat4f());//since default constructor generates identity matrix.
 }
 
 bool FileReader::readLine(std::string &buffer) {
@@ -118,6 +118,10 @@ Scene* FileReader::readFile() {
 		} else if (command == "shininess") {
 			if (readParams(stringStream, parameters, 1)) {
 				scene->setCurrentShininess(parameters[0]);
+			}
+		} else if (command == "translate") {
+			if (readParams(stringStream, parameters, 3)) {
+				transformStack.top() = Transform::translate(parameters[0],parameters[1],parameters[2]) * transformStack.top();
 			}
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;

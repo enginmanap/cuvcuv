@@ -12,14 +12,17 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "Scene.h"
 #include <stdlib.h>
+#include <stack>
+#include "Scene.h"
+#include "Mat4f.h"
+#include "Transform.h"
 
 #define MAX_PARAMS 10
 
 class FileReader {
 private:
-
+	std::stack<Mat4f> transformStack;
 	std::string fileName;
 	std::ifstream fileReadStream;
 	Scene* scene;
