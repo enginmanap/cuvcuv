@@ -9,6 +9,7 @@
 #define SCENE_H_
 
 #include <vector>
+#include <stack>
 #include <iostream>
 #include "Vec3f.h"
 #include "Sphere.h"
@@ -43,6 +44,7 @@ class Scene {
 	int SphereCount;
 	int triangleCount;
 	std::vector<Primitive*> primitives;
+	std::stack<Mat4f> transformStack;
 
 	RayTracer rayTracer;
 public:
@@ -65,6 +67,10 @@ public:
 	bool addVertex(float, float, float);
 	bool addTriangle(int, int, int);
 	void printVertexes();
+
+	bool pushTransform(Mat4f&);
+	Mat4f popTransform();
+	Mat4f addTransform(Mat4f&);
 };
 
 #endif /* SCENE_H_ */

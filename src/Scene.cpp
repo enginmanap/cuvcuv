@@ -26,6 +26,28 @@ Scene::Scene(int height, int width) {
 
 	this->currentShininess = 0.0f;
 
+	transformStack.push(Mat4f());//since default constructor generates identity matrix.
+
+}
+
+bool Scene::pushTransform(Mat4f& transform){
+	transformStack.push(transformStack.top());
+	return true;
+}
+
+Mat4f Scene::popTransform(){
+	if( transformStack.size() <= 1){
+		std::cerr << "no transform to pop" << std::endl;
+		return Mat4f();
+	}
+	Mat4f temp = transformStack.top();
+	transformStack.pop();
+	return temp;
+}
+
+Mat4f Scene::addTransform(Mat4f& transform){
+	transformStack.top() = transform * transformStack.top();
+	return transformStack.top();
 }
 
 bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,

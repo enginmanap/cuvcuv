@@ -22,7 +22,6 @@
 
 class FileReader {
 private:
-	std::stack<Mat4f> transformStack;
 	std::string fileName;
 	std::ifstream fileReadStream;
 	Scene* scene;

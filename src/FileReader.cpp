@@ -17,7 +17,6 @@ FileReader::FileReader(std::string fileName) {
 				<< std::endl;
 		throw 1;
 	}
-	transformStack.push(Mat4f());//since default constructor generates identity matrix.
 }
 
 bool FileReader::readLine(std::string &buffer) {
@@ -75,6 +74,8 @@ Scene* FileReader::readFile() {
 	//Now we have the scene, we can load camera, light etc. out of order;
 	std::string line;
 
+	Mat4f temproryMatrix;
+
 	while (readLine(line)) {
 		std::stringstream stringStream(line);
 		stringStream >> command;
@@ -121,7 +122,8 @@ Scene* FileReader::readFile() {
 			}
 		} else if (command == "translate") {
 			if (readParams(stringStream, parameters, 3)) {
-				transformStack.top() = Transform::translate(parameters[0],parameters[1],parameters[2]) * transformStack.top();
+				temproryMatrix = Transform::translate(parameters[0],parameters[1],parameters[2]);
+				scene->addTransform(temproryMatrix);
 			}
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;

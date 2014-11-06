@@ -19,6 +19,7 @@ public:
 
 	Vec4f& operator[](const int);
 	Mat4f operator*(Mat4f&);
+	static Mat4f inverse(Mat4f&);
 };
 
 std::ostream& operator<<(std::ostream &strm, Mat4f &matrix);
