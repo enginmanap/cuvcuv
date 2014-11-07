@@ -9,7 +9,10 @@
 #define MAT4F_H_
 
 #include <cassert>
+#include <cmath>
 #include "Vec4f.h"
+
+#define EPSILON 0.00001F
 
 class Mat4f {
 public:
@@ -19,7 +22,7 @@ public:
 
 	Vec4f& operator[](const int);
 	Mat4f operator*(Mat4f&);
-	static Mat4f inverse(Mat4f&);
+	static Mat4f inverse(const Mat4f&);
 };
 
 std::ostream& operator<<(std::ostream &strm, Mat4f &matrix);

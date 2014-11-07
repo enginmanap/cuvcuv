@@ -143,6 +143,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 				this->vertexArray[vertice2], this->vertexArray[vertice3]);
 		triangle->setLightValues(currentAmbientLight, currentDiffuse,
 				currentSpecular, currentShininess);
+		triangle->setTransformation(transformStack.top());
 		primitives.push_back(triangle);
 		triangleCount++;
 		return true;
@@ -157,6 +158,7 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 	sphere->setLightValues(currentAmbientLight, currentDiffuse, currentSpecular,
 			currentShininess);
 	primitives.push_back(sphere);
+	sphere->setTransformation(transformStack.top());
 	SphereCount++;
 	return true;
 }

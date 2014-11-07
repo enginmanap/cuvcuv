@@ -15,6 +15,13 @@ Mat4f::Mat4f() {
 	this->rows[1][1] = 1;
 	this->rows[2][2] = 1;
 	this->rows[3][3] = 1;
+	/*	std::cout << "created matrix:" << std::endl << *this << std::endl;
+
+	 std::cout << "row[0]:" << this->rows[0]  << std::endl;
+	 std::cout << "row[1]:" << this->rows[1]  << std::endl;
+	 std::cout << "row[2]:" << this->rows[2]  << std::endl;
+	 std::cout << "row[3]:" << this->rows[3]  << std::endl;
+	 */
 }
 
 Mat4f::Mat4f(float defaultValue) {
@@ -31,13 +38,13 @@ Vec4f& Mat4f::operator[](const int index) {
 		return (rows[0]);
 		break;
 	case 1:
-		return rows[0];
+		return rows[1];
 		break;
 	case 2:
-		return rows[0];
+		return rows[2];
 		break;
 	case 3:
-		return rows[0];
+		return rows[3];
 		break;
 	default:
 		std::cerr << "Mat4f[] index out of range" << std::endl;
@@ -60,35 +67,74 @@ Mat4f Mat4f::operator *(Mat4f& matrix) {
 
 std::ostream& operator<<(std::ostream &strm, Mat4f &matrix) {
 	for (int i = 0; i < 4; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			strm << matrix[i][j];
-		}
+		strm << matrix.rows[i] << std::endl;
 	}
 	return strm;
 }
 
 /**
- * this method assumes the
+ * this method gets the inverse of the matrix given.
+ * If there is no inverse, it throws -1.
  */
-Mat4f Mat4f::inverse(Mat4f& matrix) {
+Mat4f Mat4f::inverse(const Mat4f& matrix) {
+	Mat4f inverse, copy;
+	copy = matrix;
 
-	Mat4f inverse;/*
 	Vec4f row;
-	float diff;
-	row = matrix[0];
-	diff = row[0] - 1 / row[0]; //this is the common multiplier
-	inverse[0] = diff * row;
-	//now make the lower lines zero
-	inverse[1] = inverse - matrix[1];
-	inverse[2] = inverse - matrix[2];
-	inverse[3] = inverse - matrix[3];
+	float portion;
+	for (int i = 0; i < 4; ++i) {
+		if (fabs(copy[i][i]) < EPSILON) {
+			Vec4f temp = copy[i];
+			int rowID = 0;
+			//we should swap rows. find the biggest row.
+			for (int j = i; j < 4; ++j) {
+				if (copy[j][i] > temp[i]) {
+					temp = copy[j];
+					rowID = j;
+				}
+			}
+			if (rowID == 0) {
+				std::cerr << "no inverse possible row(" << i << ")"
+						<< std::endl;
+				std::cerr << "matrix to invert:" << std::endl << copy
+						<< std::endl;
+				throw -1;
+				return Mat4f();
+			} else {
+				copy[rowID] = copy[i];
+				copy[i] = temp;
+				temp = inverse[i];
+				inverse[i] = inverse[rowID];
+				inverse[rowID] = temp;
+			}
 
-	//now make the second row
-	row = inverse[1];
-	diff = row[1] - 1 / row[1];
-	inverse[1] = diff * row[1];
-	//now make the first line 0
-	inverse[0] = inverse[0] - inverse[1] * inverse[0][1];
-	//inverse[2] = inverse[2];*/
+		}
+
+		row = copy[i];
+
+		if (fabs(row[i] - 1.0f) > EPSILON) { //if one, than we dont need to process
+
+			portion = 1 / row[i];
+			std::cout << "diff found" << portion << std::endl;
+			row = portion * row;
+			inverse[i] = portion * inverse[i];
+			copy[i] = portion * copy[i] ;
+
+		}
+		//now make the other lines zero
+		//we know the first element is 1, so we can use it
+		for (int j = 0; j < 4; ++j) {
+			if (i == j)
+				continue;
+			if (copy[j][i] != 0) {
+				//inverse[j] = inverse[j] - copy[j][i] * copy[i];
+				inverse[j] = inverse[j] - copy[j][i] * inverse[i];
+				copy[j] = copy[j] - copy[j][i] * copy[i];
+
+			}
+		}
+	}
+
 	return inverse;
+
 }
