@@ -33,11 +33,12 @@ Sphere::~Sphere() {
  * 		bool: if there is an intersection
  */
 bool Sphere::intersectiontest(Ray ray, float& distance) const {
+	Ray transformedRay = generateTransformedRay(ray);
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
-	float p1s = vec3fNS::dot(ray.getDirection(), ray.getDirection());
-	Vec3f p0MinusC = ray.getPosition() - this->position;
-	float p1timesp0mc = vec3fNS::dot(ray.getDirection(), p0MinusC);
+	float p1s = vec3fNS::dot(transformedRay.getDirection(), transformedRay.getDirection());
+	Vec3f p0MinusC = transformedRay.getPosition() - this->position;
+	float p1timesp0mc = vec3fNS::dot(transformedRay.getDirection(), p0MinusC);
 	//now the formula is this:
 	//(distance * distance) * p1s + distance * (2*p1timesp0mc) + (p0MinusC * p0MinusC) - (this->radius * this->radius) = 0
 	//Assign a,b,c so later parts should be easier to follow;
@@ -75,7 +76,7 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 			else
 				distance = distance1;
 		}
-		//std::cout << "for ray " << ray.getPosition() << ray.getDirection() << std::endl;
+		//std::cout << "for transformedRay " << transformedRay.getPosition() << transformedRay.getDirection() << std::endl;
 		//std::cout << "distance is " << distance << std::endl;
 		return true;
 	} else { //at that point, discriminant is not near zero, and not positive, so it is negative aka no real solution.

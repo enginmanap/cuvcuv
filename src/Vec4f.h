@@ -23,10 +23,12 @@ public:
 	virtual ~Vec4f();
 	Vec4f normalize() const;
 
+	float getElement(const int) const;
 	Vec4f operator-(const Vec4f&);
 	Vec4f operator+(const Vec4f&);
 	Vec4f operator*(const Vec4f&) const;
-	float& operator[](int); //it is not const, so we can assign to it.
+
+	float& operator[](int);
 };
 
 std::ostream& operator<<(std::ostream &strm, const Vec4f &vector);

@@ -33,8 +33,13 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 
 }
 
+Ray Primitive::generateTransformedRay(const Ray ray) const {
+	//TODO only transfer is implemented yet.
+	return Ray(ray.getPosition() * transformationMatrix, ray.getDirection(), 0,100);
+}
+
 bool Primitive::setTransformation(Mat4f& matrix) {
-	this->transformationMatrix = matrix;
+	this->transformationMatrix = Mat4f::inverse(matrix);
 	return true;
 }
 

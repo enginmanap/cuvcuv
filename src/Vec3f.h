@@ -11,6 +11,7 @@
 #include <math.h>
 #include <iostream>
 #include <cassert>
+#include "Mat4f.h"
 
 class Vec3f {
 public:
@@ -21,10 +22,12 @@ public:
 	Vec3f(float, float, float);
 	virtual ~Vec3f();
 
+	float getElement(const int) const;
 	Vec3f normalize() const;
 	Vec3f operator-(const Vec3f&) const;
 	Vec3f operator+(const Vec3f&) const;
 	Vec3f operator*(const Vec3f&) const;
+	Vec3f operator*(const Mat4f&) const;
 	float& operator[](int); //it is not const, so we can assign to it.
 };
 

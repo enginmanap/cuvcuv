@@ -19,6 +19,7 @@ protected:
 	Vec3f ambientLight, specular, diffuse;
 	float shininess;
 	Mat4f transformationMatrix;
+	Ray transformedRay;
 	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
 			const Vec3f, const Vec3f, const Vec3f, const float) const;
 public:
@@ -27,6 +28,9 @@ public:
 	virtual bool intersectiontest(Ray, float&) const= 0;
 	virtual Vec3f getColorForRay(Ray, float) const = 0;
 	bool setLightValues(Vec3f, Vec3f, Vec3f, float);
+
+	Ray generateTransformedRay(const Ray) const;
+
 };
 
 #endif /* PRIMITIVE_H_ */

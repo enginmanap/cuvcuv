@@ -99,6 +99,27 @@ Vec4f Vec4f::operator*(const Vec4f& vector2) const {
 	return temp;
 }
 
+float Vec4f::getElement(const int index) const {
+	switch (index) {
+	case 0:
+		return x;
+		break;
+	case 1:
+		return y;
+		break;
+	case 2:
+		return z;
+		break;
+	case 3:
+		return w;
+		break;
+	default:
+		std::cerr << "Vecf3[] index out of range" << std::endl;
+		assert(0);
+		break;
+	}
+}
+
 float& Vec4f::operator[](int index) {
 	switch (index) {
 	case 0:

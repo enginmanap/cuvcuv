@@ -35,7 +35,7 @@ Mat4f::Mat4f(float defaultValue) {
 Vec4f& Mat4f::operator[](const int index) {
 	switch (index) {
 	case 0:
-		return (rows[0]);
+		return rows[0];
 		break;
 	case 1:
 		return rows[1];
@@ -53,21 +53,30 @@ Vec4f& Mat4f::operator[](const int index) {
 	}
 }
 
+float Mat4f::getElement(const int x, const int y) const {
+	return rows[x].getElement(y);
+}
+
 Mat4f Mat4f::operator *(Mat4f& matrix) {
+
 	Mat4f result(0);
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
 			for (int k = 0; k < 4; ++k) {
-				result[i][j] = rows[i][k] * matrix[k][j];
+				result[i][j] += rows[i][k] * matrix[k][j];
 			}
 		}
 	}
 	return result;
 }
 
+Vec4f& Mat4f::getRow(const int index) {
+	return rows[index];
+}
+
 std::ostream& operator<<(std::ostream &strm, Mat4f &matrix) {
 	for (int i = 0; i < 4; ++i) {
-		strm << matrix.rows[i] << std::endl;
+		strm << matrix.getRow(i) << std::endl;
 	}
 	return strm;
 }
@@ -118,7 +127,7 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 			std::cout << "diff found" << portion << std::endl;
 			row = portion * row;
 			inverse[i] = portion * inverse[i];
-			copy[i] = portion * copy[i] ;
+			copy[i] = portion * copy[i];
 
 		}
 		//now make the other lines zero

@@ -15,11 +15,14 @@
 #define EPSILON 0.00001F
 
 class Mat4f {
+private:
+	Vec4f rows[4];
 public:
 	Mat4f();
 	Mat4f(float);
-	Vec4f rows[4];
 
+	Vec4f& getRow(const int);
+	float getElement(const int, const int) const;
 	Vec4f& operator[](const int);
 	Mat4f operator*(Mat4f&);
 	static Mat4f inverse(const Mat4f&);
