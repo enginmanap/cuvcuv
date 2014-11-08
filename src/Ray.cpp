@@ -7,6 +7,11 @@
 
 #include "Ray.h"
 
+Ray::Ray(){
+	this->minDistance = 0;
+	this->maxDistance = 0;
+}
+
 Ray::Ray(Vec3f position, Vec3f direction, float min,float max) {
 	this->position = position;
 	this->direction = direction;
@@ -19,10 +24,10 @@ Ray::~Ray() {
 	// TODO Auto-generated destructor stub
 }
 
-Vec3f Ray::getPosition(){
+Vec3f Ray::getPosition() const{
 	return position;
 }
 
-Vec3f Ray::getDirection(){
+Vec3f Ray::getDirection() const{
 	return direction;
 }
