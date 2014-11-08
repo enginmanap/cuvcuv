@@ -21,8 +21,8 @@ Mat4f Transform::scale(const float sx, const float sy, const float sz) {
 Mat4f Transform::translate(const float tx, const float ty, const float tz) {
 	Mat4f ret;
 	ret[0].w = tx;
-	ret[0].w = ty;
-	ret[0].w = tz;
+	ret[1].w = ty;
+	ret[2].w = tz;
 	return ret;
 }
 
