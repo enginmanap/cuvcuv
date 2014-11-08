@@ -125,6 +125,11 @@ Scene* FileReader::readFile() {
 				temproryMatrix = Transform::translate(parameters[0],parameters[1],parameters[2]);
 				scene->addTransform(temproryMatrix);
 			}
+		} else if (command == "scale") {
+			if (readParams(stringStream, parameters, 3)) {
+				temproryMatrix = Transform::scale(parameters[0],parameters[1],parameters[2]);
+				scene->addTransform(temproryMatrix);
+			}
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
 
