@@ -124,7 +124,6 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 		if (fabs(row[i] - 1.0f) > EPSILON) { //if one, than we dont need to process
 
 			portion = 1 / row[i];
-			std::cout << "diff found" << portion << std::endl;
 			row = portion * row;
 			inverse[i] = portion * inverse[i];
 			copy[i] = portion * copy[i];
