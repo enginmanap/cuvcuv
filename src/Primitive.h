@@ -11,7 +11,10 @@
 #include "Vec3f.h"
 #include "Ray.h"
 #include "Mat4f.h"
+
+#ifndef EPSILON
 #define EPSILON 0.0001F
+#endif
 
 class Primitive {
 

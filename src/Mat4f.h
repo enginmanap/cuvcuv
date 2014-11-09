@@ -13,7 +13,9 @@
 #include "Vec4f.h"
 
 
-#define EPSILON 0.00001F
+#ifndef EPSILON
+#define EPSILON 0.0001F
+#endif
 
 class Mat4f {
 private:

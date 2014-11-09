@@ -12,8 +12,6 @@
 #include "Ray.h"
 #include "Primitive.h"
 
-#define EPSILON 0.0001F
-
 class Sphere: public Primitive {
 	Vec3f position;
 	float radius;
