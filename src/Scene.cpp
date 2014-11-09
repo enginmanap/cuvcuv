@@ -26,6 +26,8 @@ Scene::Scene(int height, int width) {
 
 	this->currentShininess = 0.0f;
 
+	this->saveFilename = "output.png";
+
 	transformStack.push(Mat4f());//since default constructor generates identity matrix.
 
 }
@@ -184,6 +186,7 @@ void Scene::renderScene() {
 		Uint32 color32 = (int) color.x << 16;
 		color32 += (int) color.y << 8;
 		color32 += (int) color.z;
+		color32 = color32 | 0xFF000000;
 
 		pixels[this->sampler->getWidht() * y + x] = color32;
 	}

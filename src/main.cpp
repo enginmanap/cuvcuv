@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include "FileReader.h"
+#include "FreeImage.h"
 
 #define HEIGHT  640
 #define WIDTH  480
@@ -16,11 +17,38 @@ void saveToFile(Uint32 pixels[], int height, int width, std::string filename) {
 		surfacePixels[pixel] = pixels[pixel];
 
 	}
-	SDL_SaveBMP(surface, filename.c_str());
+	//SDL_SaveBMP(surface, filename.c_str());
+
+	FIBITMAP *img = FreeImage_ConvertFromRawBits((unsigned char *)pixels, width, height, width * 4, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, true);
+
+	if(FreeImage_Save(FIF_PNG, img, filename.c_str(), 	PNG_DEFAULT)){
+		std::cout << "true" << std::endl;
+	} else
+		std::cout << "false" << std::endl;
+
+
 	std::cout << ", done" << std::endl;
 }
 
+/**
+FreeImage error handler
+@param fif Format / Plugin responsible for the error
+@param message Error message
+*/
+void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message) {
+printf("\n*** ");
+if(fif != FIF_UNKNOWN) {
+printf("%s Format\n", FreeImage_GetFormatFromFIF(fif));
+}
+printf(message);
+printf(" ***\n");
+}
+// In your main program …
+
+
 int main(int argc, char **argv) {
+	FreeImage_Initialise();
+	FreeImage_SetOutputMessage(FreeImageErrorHandler);
 	bool leftMouseButtonDown = false;
 	bool quit = false;
 
@@ -90,6 +118,6 @@ int main(int argc, char **argv) {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
-
+	FreeImage_DeInitialise();
 	return 0;
 }
