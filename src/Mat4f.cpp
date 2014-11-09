@@ -7,6 +7,8 @@
 
 #include "Mat4f.h"
 
+
+
 /**
  * default constructor creates identity matrix
  */
@@ -30,6 +32,26 @@ Mat4f::Mat4f(float defaultValue) {
 			this->rows[i][j] = defaultValue;
 		}
 	}
+}
+
+Mat4f::Mat4f(float xx,float xy,float xz,float xw,float yx,float yy,float yz,float yw,float zx,float zy,float zz,float zw,float wx,float wy ,float wz,float ww){
+	this->rows[0][0] = xx;
+	this->rows[0][1] = xy;
+	this->rows[0][2] = xz;
+	this->rows[0][3] = xw;
+	this->rows[1][0] = yx;
+	this->rows[1][1] = yy;
+	this->rows[1][2] = yz;
+	this->rows[1][3] = yw;
+	this->rows[2][0] = zx;
+	this->rows[2][1] = zy;
+	this->rows[2][2] = zz;
+	this->rows[2][3] = zw;
+	this->rows[3][0] = wx;
+	this->rows[3][1] = wy;
+	this->rows[3][2] = wz;
+	this->rows[3][3] = ww;
+
 }
 
 Vec4f& Mat4f::operator[](const int index) {
@@ -69,6 +91,7 @@ Mat4f Mat4f::operator *(Mat4f& matrix) {
 	}
 	return result;
 }
+
 
 Vec4f& Mat4f::getRow(const int index) {
 	return rows[index];
@@ -145,4 +168,24 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 
 	return inverse;
 
+}
+
+Mat4f Mat4f::operator+(const Mat4f& matrix) const{
+	Mat4f ret;
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				ret[i][j] = this->getElement(i,j) +  matrix.getElement(i,j);
+			}
+		}
+		return ret;
+}
+
+Mat4f operator*(float multipler, const Mat4f& matrix) {
+	Mat4f ret;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			ret[i][j] = multipler *  matrix.getElement(i,j);
+		}
+	}
+	return ret;
 }

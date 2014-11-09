@@ -12,6 +12,7 @@
 #include <cmath>
 #include "Vec4f.h"
 
+
 #define EPSILON 0.00001F
 
 class Mat4f {
@@ -19,15 +20,18 @@ private:
 	Vec4f rows[4];
 public:
 	Mat4f();
+	Mat4f(float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float);
 	Mat4f(float);
 
 	Vec4f& getRow(const int);
 	float getElement(const int, const int) const;
 	Vec4f& operator[](const int);
+	Mat4f operator+(const Mat4f&) const;
 	Mat4f operator*(Mat4f&);
 	static Mat4f inverse(const Mat4f&);
 };
 
 std::ostream& operator<<(std::ostream &strm, Mat4f &matrix);
+Mat4f operator*(float, const Mat4f&);
 
 #endif /* MAT4F_H_ */

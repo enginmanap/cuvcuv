@@ -22,4 +22,6 @@ public:
 	virtual ~Ray();
 };
 
+std::ostream& operator<<(std::ostream &, const Ray &);
+
 #endif /* SRC_RAY_H_ */

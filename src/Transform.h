@@ -18,7 +18,8 @@ private:
 
 public:
 	static Mat4f scale(const float, const float, const float);
-	static Mat4f translate(const float tx, const float ty, const float tz);
+	static Mat4f translate(const float, const float, const float);
+	static Mat4f rotate(const float, const float, const float, const float);
 };
 
 #endif /* TRANSFORM_H_ */

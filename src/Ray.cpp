@@ -31,3 +31,7 @@ Vec3f Ray::getPosition() const{
 Vec3f Ray::getDirection() const{
 	return direction;
 }
+
+std::ostream& operator<<(std::ostream &strm, const Ray &ray){
+	return strm << "pos(" << ray.getPosition() << "), direction(" << ray.getDirection() << ")";
+}

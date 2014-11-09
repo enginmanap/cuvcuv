@@ -105,13 +105,28 @@ Vec3f operator*(float& i, const Vec3f& vector) {
  * assumes the forth element is 1;
  */
 Vec3f Vec3f::operator*(const Mat4f& matrix) const {
-	float a = x, b = y, c = z;
-	a = a * matrix.getElement(0,0) + b * matrix.getElement(0,1) + c * matrix.getElement(0,2) + matrix.getElement(0,3);
-	b = a * matrix.getElement(1,0) + b * matrix.getElement(1,1) + c * matrix.getElement(1,2) + matrix.getElement(1,3);
-	c = a * matrix.getElement(2,0) + b * matrix.getElement(2,1) + c * matrix.getElement(2,2) + matrix.getElement(2,3);
-
-	return Vec3f(a, b, c);
+	Vec3f result;
+	for (int i = 0; i < 3; ++i) {
+			for (int k = 0; k < 3; ++k) {
+				result[i] += matrix.getElement(k,i) * this->getElement(k);
+			}
+			result[i] += matrix.getElement(3,i);
+	}
+	return result;
 }
+
+
+Vec3f operator*(const Mat4f& matrix, const Vec3f& vector){
+	Vec3f result;
+	for (int i = 0; i < 3; ++i) {
+			for (int k = 0; k < 3; ++k) {
+				result[i] += matrix.getElement(i,k) * vector.getElement(k);
+			}
+			result[i] += matrix.getElement(i,3);
+	}
+	return result;
+}
+
 
 float Vec3f::getElement(const int index) const {
 	switch (index) {
