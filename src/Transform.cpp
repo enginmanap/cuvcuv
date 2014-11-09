@@ -52,7 +52,6 @@ Mat4f Transform::rotate(const float rx, const float ry, const float rz,
 	ret = ret + ((float)sin(radiants)) * secondPartMat;
 	//now we should reset the last element
 	ret[3][3]=1.0f;
-	std::cout << "rotate matrix:" <<std::endl << ret << std::endl;
 	return ret;
 
 }
