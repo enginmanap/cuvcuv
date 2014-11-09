@@ -18,13 +18,18 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	look.x = lookatx;
 	look.y = lookaty;
 	look.z = lookatz;
+	look = vec3fNS::normalize(look);
 
 	up.x = upx;
 	up.y = upy;
 	up.z = upz;
+	up = vec3fNS::normalize(up);
 
 	this->fovy = fovy * M_PI / 180;
-	this->fovx = this->fovy * ((float) width / (float) height);
+	double d = (height * 0.5) / tan(this->fovy * 0.5);
+
+	this->fovx = (float) (2 * atan((width * 0.5) / d));
+	//this->fovx = this->fovy * ((float) width / (float) height);
 	std::cout << "fovy " << this->fovy << " fovx " << this->fovx << std::endl;
 	this->height = height;
 	this->width = width;
@@ -37,9 +42,6 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	u = vec3fNS::normalize(vec3fNS::cross(up, w));
 	v = vec3fNS::cross(w, u);
 
-	//std::cout << "w: " << w << std::endl;
-	//std::cout << "u: " << u << std::endl;
-	//std::cout << "v: " << v << std::endl;
 
 }
 
