@@ -135,6 +135,11 @@ Scene* FileReader::readFile() {
 				temproryMatrix = Transform::rotate(parameters[0],parameters[1],parameters[2],parameters[3]);
 				scene->addTransform(temproryMatrix);
 			}
+		} else if (command == "pushTransform") {
+				scene->pushTransform();
+		} else if (command == "popTransform") {
+				scene->popTransform();
+
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
 

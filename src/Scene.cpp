@@ -30,7 +30,7 @@ Scene::Scene(int height, int width) {
 
 }
 
-bool Scene::pushTransform(Mat4f& transform){
+bool Scene::pushTransform(){
 	transformStack.push(transformStack.top());
 	return true;
 }

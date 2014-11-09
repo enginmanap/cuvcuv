@@ -68,7 +68,7 @@ public:
 	bool addTriangle(int, int, int);
 	void printVertexes();
 
-	bool pushTransform(Mat4f&);
+	bool pushTransform();
 	Mat4f popTransform();
 	Mat4f addTransform(Mat4f&);
 };
