@@ -1,11 +1,12 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <string>
 #include "FileReader.h"
 
 #define HEIGHT  640
 #define WIDTH  480
 
-void saveToFile(Uint32 pixels[], int height, int width) {
+void saveToFile(Uint32 pixels[], int height, int width, std::string filename) {
 	std::cout << "dumping to file " << std::endl;
 	SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0,
 			0);
@@ -15,7 +16,7 @@ void saveToFile(Uint32 pixels[], int height, int width) {
 		surfacePixels[pixel] = pixels[pixel];
 
 	}
-	SDL_SaveBMP(surface, "screen.bmp");
+	SDL_SaveBMP(surface, filename.c_str());
 	std::cout << ", done" << std::endl;
 }
 
@@ -82,7 +83,7 @@ int main(int argc, char **argv) {
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
 		SDL_RenderPresent(renderer);
 	}
-	saveToFile(pixels, height, width);
+	saveToFile(pixels, height, width, scene->getSaveFilename());
 	delete reader;
 	//delete scene; not needed since it is managed by reader;
 	SDL_DestroyTexture(texture);

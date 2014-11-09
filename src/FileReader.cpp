@@ -86,6 +86,10 @@ Scene* FileReader::readFile() {
 						parameters[6], parameters[7], parameters[8],
 						parameters[9]);
 			}
+		} else if (command == "output") {
+			std::string outputFile;
+			stringStream >> outputFile;
+				scene->setSaveFilename(outputFile);
 		} else if (command == "ambient") {
 			if (readParams(stringStream, parameters, 3)) {
 				scene->setCurrentAmbient(parameters[0], parameters[1],

@@ -18,6 +18,7 @@
 #include "Sampler.h"
 #include "Ray.h"
 #include "RayTracer.h"
+#include <string>
 //SDL defines portable Uint32
 #include "SDL2/SDL.h"
 
@@ -29,6 +30,8 @@ class Scene {
 	Vec3f currentDiffuse;
 	Vec3f currentSpecular;
 	float currentShininess;
+	std::string saveFilename;
+
 
 	Camera *camera;
 	Sampler *sampler;
@@ -60,6 +63,8 @@ public:
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
 	bool addSphere(float, float, float, float);
+	bool setSaveFilename(std::string);
+	std::string getSaveFilename();
 
 	Uint32* getPixels(int&, int&);
 	void renderScene();

@@ -30,6 +30,15 @@ Scene::Scene(int height, int width) {
 
 }
 
+bool Scene::setSaveFilename(std::string filename){
+	this->saveFilename = filename;
+	return true;
+}
+
+std::string Scene::getSaveFilename(){
+	return saveFilename;
+}
+
 bool Scene::pushTransform(){
 	transformStack.push(transformStack.top());
 	return true;
