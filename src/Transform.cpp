@@ -20,9 +20,9 @@ Mat4f Transform::scale(const float sx, const float sy, const float sz) {
 
 Mat4f Transform::translate(const float tx, const float ty, const float tz) {
 	Mat4f ret;
-	ret[0].w = tx;
-	ret[1].w = ty;
-	ret[2].w = tz;
+	ret[3].x = tx;
+	ret[3].y = ty;
+	ret[3].z = tz;
 	return ret;
 }
 
@@ -52,6 +52,7 @@ Mat4f Transform::rotate(const float rx, const float ry, const float rz,
 	ret = ret + ((float)sin(radiants)) * secondPartMat;
 	//now we should reset the last element
 	ret[3][3]=1.0f;
+	std::cout << "rotate matrix:" <<std::endl << ret << std::endl;
 	return ret;
 
 }
