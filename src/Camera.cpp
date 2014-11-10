@@ -18,7 +18,7 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	look.x = lookatx;
 	look.y = lookaty;
 	look.z = lookatz;
-	look = vec3fNS::normalize(look);
+//	look = vec3fNS::normalize(look);
 
 	up.x = upx;
 	up.y = upy;
