@@ -9,16 +9,6 @@
 
 void saveToFile(Uint32 pixels[], int height, int width, std::string filename) {
 	std::cout << "dumping to file " << std::endl;
-	SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0,
-			0);
-
-	Uint32 *surfacePixels = (Uint32 *) surface->pixels;
-	for (int pixel = 0; pixel < (height * width); ++pixel) {
-		surfacePixels[pixel] = pixels[pixel];
-
-	}
-	//SDL_SaveBMP(surface, filename.c_str());
-
 	FIBITMAP *img = FreeImage_ConvertFromRawBits((unsigned char *)pixels, width, height, width * 4, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, true);
 
 	if(FreeImage_Save(FIF_PNG, img, filename.c_str(), 	PNG_DEFAULT)){
@@ -27,7 +17,7 @@ void saveToFile(Uint32 pixels[], int height, int width, std::string filename) {
 		std::cout << "false" << std::endl;
 
 
-	std::cout << ", done" << std::endl;
+	std::cout << "done" << std::endl;
 }
 
 /**
