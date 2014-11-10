@@ -12,12 +12,10 @@ void saveToFile(Uint32 pixels[], int height, int width, std::string filename) {
 	FIBITMAP *img = FreeImage_ConvertFromRawBits((unsigned char *)pixels, width, height, width * 4, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, true);
 
 	if(FreeImage_Save(FIF_PNG, img, filename.c_str(), 	PNG_DEFAULT)){
-		std::cout << "true" << std::endl;
+		std::cout << "file write successful." << std::endl;
 	} else
-		std::cout << "false" << std::endl;
+		std::cout << "file write failed." << std::endl;
 
-
-	std::cout << "done" << std::endl;
 }
 
 /**
