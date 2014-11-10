@@ -33,6 +33,7 @@ public:
 	Vec4f operator*(const Vec4f&) const;
 	Vec3f operator*(const Vec3f&) const;
 	static Mat4f inverse(const Mat4f&);
+	Mat4f transpose()const;
 };
 
 std::ostream& operator<<(std::ostream &strm, Mat4f &matrix);

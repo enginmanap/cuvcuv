@@ -170,6 +170,17 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 
 }
 
+Mat4f Mat4f::transpose() const{
+
+	Mat4f trans;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			trans[j][i] = this->getElement(i,j);
+		}
+	}
+	return trans;
+}
+
 Mat4f Mat4f::operator+(const Mat4f& matrix) const{
 	Mat4f ret;
 		for (int i = 0; i < 4; ++i) {
