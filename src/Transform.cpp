@@ -28,7 +28,7 @@ Mat4f Transform::translate(const float tx, const float ty, const float tz) {
 
 Mat4f Transform::rotate(const float rx, const float ry, const float rz,
 		float degrees) {
-	std::cout << rx <<", " << ry << ", " << rz<< ", " << degrees << std::endl;
+	//std::cout << rx <<", " << ry << ", " << rz<< ", " << degrees << std::endl;
 	Vec3f axis(rx, ry, rz);
 	Mat4f ret;
 
