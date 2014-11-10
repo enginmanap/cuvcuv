@@ -91,14 +91,16 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 Vec3f Sphere::getColorForRay(const Ray ray, float distance, const std::vector<Light>& lights) const {
 	Vec3f color;
 
-	Vec3f intersectionPoint = distance * ray.getDirection();
+	Vec4f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
 
+	//calculate the normal, if there were no transformations, than inverse transpose the normal.
+	Vec3f normal = ((Vec3f)(intersectionPoint * this->inverseTransformMat)) - this->position;
+	normal =Vec4f(normal,0.0f) *  this->inverseTransformMat.transpose();
+	normal = vec3fNS::normalize(normal);
 
-
-	Vec3f normal = vec3fNS::normalize(intersectionPoint - this->position);
 	Vec3f eyeDirn = vec3fNS::normalize(((Vec3f)ray.getPosition()) - intersectionPoint);
-	//for(std::vector<Light>::const_iterator it= lights.back(); it != lights.end(); it++ ) {
+
 	for(unsigned int i = 0; i < lights.size(); i++){
 		Light it = lights[i];
 		Vec3f lightPos;
@@ -110,8 +112,6 @@ Vec3f Sphere::getColorForRay(const Ray ray, float distance, const std::vector<Li
 			direction = vec3fNS::normalize(lightPos);
 		} else {
 			lightPos = (1 / it.getPosition().w) * lightPos;
-			//Vec3f eyePos = ray.getPosition();
-			//direction = vec3fNS::normalize(eyePos- lightPos);
 			direction = vec3fNS::normalize(lightPos - intersectionPoint);
 		}
 

@@ -24,7 +24,7 @@ class Primitive {
 protected:
 	Vec3f ambientLight, specular, diffuse;
 	float shininess;
-	Mat4f transformationMatrix;
+	Mat4f inverseTransformMat, transformMatrix;
 	Ray transformedRay;
 	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
 			const Vec3f, const Vec3f, const Vec3f, const float) const;

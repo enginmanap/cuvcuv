@@ -34,19 +34,22 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 	*/
 	lambert = diffuse * color;
 	lambert = std::max(nDotl, 0.0f) * lambert;
+
 	phong = specular * color;
 	phong = pow(std::max(nDotH, 0.0f), shininess) * phong;
+
 	return lambert + phong;
 
 }
 
 Ray Primitive::generateTransformedRay(const Ray ray) const {
 	//since direction has 0 as last element, translate became 0 too
-	return Ray( ray.getPosition() * transformationMatrix , ray.getDirection() * transformationMatrix, 0, 100);
+	return Ray( ray.getPosition() * inverseTransformMat , ray.getDirection() * inverseTransformMat, 0, 100);
 }
 
 bool Primitive::setTransformation(Mat4f& matrix) {
-	this->transformationMatrix = Mat4f::inverse(matrix);
+	this->transformMatrix = matrix;
+	this->inverseTransformMat = Mat4f::inverse(matrix);
 	return true;
 }
 

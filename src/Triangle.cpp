@@ -80,9 +80,11 @@ bool Triangle::intersectiontest(Ray ray, float& distance) const {
 Vec3f Triangle::getColorForRay(const Ray ray,  float distance, const std::vector<Light>& lights) const {
 	Vec3f color;
 
+
 	Vec3f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
 	Vec3f normal = vec3fNS::cross((b - a),(c - a));
+	normal =Vec4f(normal,0.0f) *  this->inverseTransformMat.transpose();
 	normal = vec3fNS::normalize(normal);
 	Vec3f eyeDirn = vec3fNS::normalize(((Vec3f)ray.getPosition()) - intersectionPoint);
 
