@@ -93,15 +93,32 @@ Vec3f Sphere::getColorForRay(const Ray ray, float distance, const std::vector<Li
 	intersectionPoint = intersectionPoint + ray.getPosition();
 
 	//hardcoding a light for calculation
-	Vec3f lightPos(3, 10, 3);
-	Vec3f lightColor(1.0f, 0.0f, 0.0f);
+	//Vec3f lightPos(3, 10, 3);
+	//Vec3f lightColor(1.0f, 0.0f, 0.0f);
 
-	Vec3f normalisedLightPos = vec3fNS::normalize(lightPos);
-	Vec3f normal = vec3fNS::normalize(intersectionPoint - this->position);
-	Vec3f eyeDirn = vec3fNS::normalize(((Vec3f)ray.getPosition()) - intersectionPoint);
-	Vec3f halfVec = vec3fNS::normalize(eyeDirn + normalisedLightPos);
-	Vec3f color = calculateColorPerLight(normalisedLightPos, lightColor, normal,
-			halfVec, diffuse, specular, shininess);
+	Vec3f color;
+	//for(std::vector<Light>::const_iterator it= lights.back(); it != lights.end(); it++ ) {
+	for(unsigned int i = 0; i < lights.size(); i++){
+		Light it = lights[i];
+		Vec3f lightPos;
+		Vec3f direction;
+		lightPos.x = it.getPosition().x;
+		lightPos.y = it.getPosition().y;
+		lightPos.z = it.getPosition().z;
+		if(fabs(it.getPosition().w) < EPSILON){
+			direction = vec3fNS::normalize(lightPos);
+		} else {
+			lightPos = (1 / it.getPosition().w) * lightPos;
+			direction = vec3fNS::normalize(lightPos - ray.getPosition());
+		}
+
+		Vec3f normal = vec3fNS::normalize(intersectionPoint - this->position);
+		Vec3f eyeDirn = vec3fNS::normalize(((Vec3f)ray.getPosition()) - intersectionPoint);
+		Vec3f halfVec = vec3fNS::normalize(eyeDirn + direction);
+		color = color + calculateColorPerLight(direction, it.getColor(), normal,
+				halfVec, diffuse, specular, shininess);
+	}
+
 	//Opengl auto clamps, we should do it manually;
 	return vec3fNS::clamp(color + ambientLight, 0, 1); //TODO move clamping to last step, just before writing the pixel.
 }

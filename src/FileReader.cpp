@@ -127,12 +127,12 @@ Scene* FileReader::readFile() {
 		} else if (command == "point") {
 			if (readParams(stringStream, parameters, 6)) {
 				//notice the 1 as 4th param
-				scene->addLight(parameters[0],parameters[0],parameters[0],1,parameters[0],parameters[0],parameters[0]);
+				scene->addLight(parameters[0],parameters[1],parameters[2],1,parameters[3],parameters[4],parameters[5]);
 			}
 		} else if (command == "directional") {
 			if (readParams(stringStream, parameters, 6)) {
 				//notice the 0 as 4th param, it means light has no position only direction
-				scene->addLight(parameters[0],parameters[0],parameters[0],0,parameters[0],parameters[0],parameters[0]);
+				scene->addLight(parameters[0],parameters[1],parameters[2],0,parameters[3],parameters[4],parameters[5]);
 			}
 		} else if (command == "translate") {
 			if (readParams(stringStream, parameters, 3)) {

@@ -30,7 +30,7 @@ public:
 };
 
 std::ostream& operator<<(std::ostream &strm, const Vec3f &vector);
-Vec3f operator*(float&, const Vec3f&);
+Vec3f operator*(float, const Vec3f&);
 
 namespace vec3fNS {
 

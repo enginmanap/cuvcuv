@@ -96,7 +96,7 @@ Vec3f Vec3f::operator*(const Vec3f& vector2) const {
 	return temp;
 }
 
-Vec3f operator*(float& i, const Vec3f& vector) {
+Vec3f operator*(float i, const Vec3f& vector) {
 
 	return Vec3f(i * vector.x, i * vector.y, i * vector.z);
 }
