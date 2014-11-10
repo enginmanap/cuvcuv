@@ -78,5 +78,35 @@ bool Triangle::intersectiontest(Ray ray, float& distance) const {
 }
 
 Vec3f Triangle::getColorForRay(const Ray ray,  float distance, const std::vector<Light>& lights) const {
-	return this->ambientLight;
+	Vec3f color;
+
+	Vec3f intersectionPoint = distance * ray.getDirection();
+	intersectionPoint = intersectionPoint + ray.getPosition();
+	Vec3f normal = vec3fNS::cross((b - a),(c - a));
+	normal = vec3fNS::normalize(normal);
+	Vec3f eyeDirn = vec3fNS::normalize(((Vec3f)ray.getPosition()) - intersectionPoint);
+
+	//for(std::vector<Light>::const_iterator it= lights.back(); it != lights.end(); it++ ) {
+	for(unsigned int i = 0; i < lights.size(); i++){
+		Light it = lights[i];
+		Vec3f lightPos;
+		Vec3f direction;
+		lightPos.x = it.getPosition().x;
+		lightPos.y = it.getPosition().y;
+		lightPos.z = it.getPosition().z;
+		if(fabs(it.getPosition().w) < EPSILON){
+			direction = vec3fNS::normalize(lightPos);
+		} else {
+			lightPos = (1 / it.getPosition().w) * lightPos;
+			direction = vec3fNS::normalize(lightPos - intersectionPoint);
+			//Vec3f eyePos = ray.getPosition();
+			//direction = vec3fNS::normalize( lightPos);
+		}
+		Vec3f halfVec = vec3fNS::normalize(eyeDirn + direction);
+		color = color + calculateColorPerLight(direction, it.getColor(), normal,
+				halfVec, diffuse, specular, shininess);
+	}
+	color = color + ambientLight;
+	//Opengl auto clamps, we should do it manually;
+	return vec3fNS::clamp(color, 0, 1); //TODO move clamping to last step, just before writing the pixel.
 }
