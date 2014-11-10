@@ -22,7 +22,8 @@ public:
 	RayTracer();
 	virtual ~RayTracer();
 
-	Vec3f trace(const Ray, const std::vector<Primitive*>&,const std::vector<Light>&) const;
+	Vec3f trace(const Ray, const std::vector<Primitive*>&,const std::vector<Light>&, const unsigned int) const;
+	bool traceToLight(const Ray ray, const std::vector<Primitive*> &Primitives, const Light light) const;
 };
 
 #endif /* SRC_RAYTRACER_H_ */

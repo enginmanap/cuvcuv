@@ -182,7 +182,7 @@ void Scene::renderScene() {
 			std::cerr << "Can't render without a camera set." << std::endl;
 		}
 		Ray ray = this->camera->getRay(x, y);
-		Vec3f color = rayTracer.trace(ray, primitives, lights);
+		Vec3f color = rayTracer.trace(ray, primitives, lights, 0);
 		color = colorRange * color;
 		Uint32 color32 = (int) color.x << 16;
 		color32 += (int) color.y << 8;
