@@ -9,17 +9,20 @@
 #define SRC_RAYTRACER_H_
 
 #include <vector>
+#include <limits>
+
 #include "Ray.h"
 #include "Primitive.h"
+#include "Light.h"
 #include "Vec3f.h"
-#include <limits>
+
 
 class RayTracer {
 public:
 	RayTracer();
 	virtual ~RayTracer();
 
-	Vec3f trace(const Ray, const std::vector<Primitive*>&) const;
+	Vec3f trace(const Ray, const std::vector<Primitive*>&,const std::vector<Light>&) const;
 };
 
 #endif /* SRC_RAYTRACER_H_ */

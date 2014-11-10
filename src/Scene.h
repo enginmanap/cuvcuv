@@ -18,6 +18,7 @@
 #include "Sampler.h"
 #include "Ray.h"
 #include "RayTracer.h"
+#include "Light.h"
 #include <string>
 //SDL defines portable Uint32
 #include "SDL2/SDL.h"
@@ -40,7 +41,7 @@ class Scene {
 	Uint32* pixels;
 
 	short lightCount;
-	//std::vector<Light> lightVector;
+	std::vector<Light> lights;
 	int maxVertexCount, currentVertex;
 	Vec3f* vertexArray;
 
@@ -62,20 +63,23 @@ public:
 	bool setCurrentDiffuse(float, float, float);
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
-	bool addSphere(float, float, float, float);
 	bool setSaveFilename(std::string);
 	std::string getSaveFilename();
 
 	Uint32* getPixels(int&, int&);
-	void renderScene();
+
 	bool createVertexSpace(int);
 	bool addVertex(float, float, float);
 	bool addTriangle(int, int, int);
+	bool addSphere(float, float, float, float);
+	bool addLight(float,float,float,float,float,float,float);
 	void printVertexes();
 
 	bool pushTransform();
 	Mat4f popTransform();
 	Mat4f addTransform(Mat4f&);
+
+	void renderScene();
 };
 
 #endif /* SCENE_H_ */

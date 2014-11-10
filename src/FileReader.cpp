@@ -124,6 +124,16 @@ Scene* FileReader::readFile() {
 			if (readParams(stringStream, parameters, 1)) {
 				scene->setCurrentShininess(parameters[0]);
 			}
+		} else if (command == "point") {
+			if (readParams(stringStream, parameters, 6)) {
+				//notice the 1 as 4th param
+				scene->addLight(parameters[0],parameters[0],parameters[0],1,parameters[0],parameters[0],parameters[0]);
+			}
+		} else if (command == "directional") {
+			if (readParams(stringStream, parameters, 6)) {
+				//notice the 0 as 4th param, it means light has no position only direction
+				scene->addLight(parameters[0],parameters[0],parameters[0],0,parameters[0],parameters[0],parameters[0]);
+			}
 		} else if (command == "translate") {
 			if (readParams(stringStream, parameters, 3)) {
 				temproryMatrix = Transform::translate(parameters[0],parameters[1],parameters[2]);

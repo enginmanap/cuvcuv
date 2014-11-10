@@ -77,6 +77,6 @@ bool Triangle::intersectiontest(Ray ray, float& distance) const {
 	return true;
 }
 
-Vec3f Triangle::getColorForRay(Ray ray, float distance) const {
+Vec3f Triangle::getColorForRay(const Ray ray,  float distance, const std::vector<Light>& lights) const {
 	return this->ambientLight;
 }

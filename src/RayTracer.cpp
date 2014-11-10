@@ -16,7 +16,7 @@ RayTracer::~RayTracer() {
 }
 
 Vec3f RayTracer::trace(const Ray ray,
-		const std::vector<Primitive*> &Primitives) const {
+		const std::vector<Primitive*> &Primitives, const std::vector<Light> &lights) const {
 	float distance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
 	float intersectionDistance;
 	Primitive* intersectingPrimitive = NULL;
@@ -34,7 +34,7 @@ Vec3f RayTracer::trace(const Ray ray,
 	}
 
 	if (intersectingPrimitive != NULL) {
-		return intersectingPrimitive->getColorForRay(ray, distance);
+		return intersectingPrimitive->getColorForRay(ray, distance, lights);
 	} else {
 		return Vec3f(0.0f, 0.0f, 0.0f);
 	}

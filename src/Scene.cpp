@@ -165,6 +165,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
+	std::cout << "add sphere with the values (" << x << ", " << z << ", " << z << ") and radius: " << radius << std::endl;
 	Sphere* sphere = new Sphere(x, y, z, radius);
 	sphere->setLightValues(currentAmbientLight, currentDiffuse, currentSpecular,
 			currentShininess);
@@ -181,7 +182,7 @@ void Scene::renderScene() {
 			std::cerr << "Can't render without a camera set." << std::endl;
 		}
 		Ray ray = this->camera->getRay(x, y);
-		Vec3f color = rayTracer.trace(ray, primitives);
+		Vec3f color = rayTracer.trace(ray, primitives, lights);
 		color = colorRange * color;
 		Uint32 color32 = (int) color.x << 16;
 		color32 += (int) color.y << 8;
@@ -197,4 +198,11 @@ Uint32* Scene::getPixels(int& height, int& width) {
 	width = sampler->getWidht();
 	return this->pixels;
 }
+
+bool Scene::addLight(float p1,float p2 ,float p3 ,float p4,float c1,float c2 ,float c3){
+	lights.push_back(Light(Vec4f(p1,p2,p3,p4), Vec3f(c1,c2,c3)));
+	lightCount++;
+	return true;
+}
+
 

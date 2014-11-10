@@ -36,9 +36,12 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 	Ray transformedRay = generateTransformedRay(ray);
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
-	float p1s = vec3fNS::dot(transformedRay.getDirection(), transformedRay.getDirection());
-	Vec3f rayPosition = transformedRay.getPosition();
 	Vec3f rayDirection = transformedRay.getDirection();
+	std::cout << "ray direction " << rayDirection<< std::endl;
+	float p1s = vec3fNS::dot(rayDirection, rayDirection);
+	Vec3f rayPosition = transformedRay.getPosition();
+
+	std::cout << "p1s " << p1s<< std::endl;
 	Vec3f p0MinusC = rayPosition - this->position;
 	float p1timesp0mc = vec3fNS::dot(rayDirection, p0MinusC);
 	//now the formula is this:
@@ -58,6 +61,7 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 	if (fabs(discriminant) < EPSILON) { // because float 0.0F is near impossible to get with calculation.
 		//this means solutions are equal
 		distance = -1 * b / (2 * a);
+		std::cout << "one result " << distance << std::endl;
 		return true;
 	} else if (discriminant > 0) { //we know that it is not near 0, so positive is positive
 		//solution1 = (-b + sqrt(discriminant)) / (2*a)
@@ -79,16 +83,17 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 				distance = distance1;
 		}
 		//std::cout << "for transformedRay " << transformedRay.getPosition() << transformedRay.getDirection() << std::endl;
-		//std::cout << "distance is " << distance << std::endl;
+		std::cout << "distance is " << distance << std::endl;
 		return true;
 	} else { //at that point, discriminant is not near zero, and not positive, so it is negative aka no real solution.
+		//std::cout << "negative disc" << std::endl;
 		return false;
 	}
-
 	return false;
 }
 
-Vec3f Sphere::getColorForRay(Ray ray, float distance) const {
+Vec3f Sphere::getColorForRay(const Ray ray, float distance, const std::vector<Light>& lights) const {
+	std::cout << "calculating color for sphere" << std::endl;
 	Vec3f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
 

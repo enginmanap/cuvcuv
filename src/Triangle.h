@@ -8,6 +8,9 @@
 #ifndef SRC_TRIANGLE_H_
 #define SRC_TRIANGLE_H_
 
+#include <vector>
+#include "Light.h"
+
 #include "Vec3f.h"
 #include "Ray.h"
 #include "Primitive.h"
@@ -22,7 +25,7 @@ public:
 	virtual ~Triangle();
 
 	bool intersectiontest(Ray, float&) const;
-	Vec3f getColorForRay(Ray, float) const;
+	Vec3f getColorForRay(const Ray,  float, const std::vector<Light>&) const;
 
 };
 
