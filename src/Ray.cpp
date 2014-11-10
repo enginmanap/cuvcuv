@@ -12,9 +12,17 @@ Ray::Ray(){
 	this->maxDistance = 0;
 }
 
-Ray::Ray(Vec3f position, Vec3f direction, float min,float max) {
+Ray::Ray(Vec4f position, Vec4f direction, float min,float max) {
 	this->position = position;
 	this->direction = direction;
+
+	this->minDistance = min;
+	this->maxDistance = max;
+}
+
+Ray::Ray(Vec3f position, Vec3f direction, float min,float max) {
+	this->position = Vec4f(position,1.0f);
+	this->direction = Vec4f(direction,0.0f);
 
 	this->minDistance = min;
 	this->maxDistance = max;
@@ -24,11 +32,11 @@ Ray::~Ray() {
 	// TODO Auto-generated destructor stub
 }
 
-Vec3f Ray::getPosition() const{
+Vec4f Ray::getPosition() const{
 	return position;
 }
 
-Vec3f Ray::getDirection() const{
+Vec4f Ray::getDirection() const{
 	return direction;
 }
 

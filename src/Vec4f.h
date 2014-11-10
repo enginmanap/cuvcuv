@@ -11,6 +11,7 @@
 #include <math.h>
 #include <iostream>
 #include <cassert>
+#include "Vec3f.h"
 
 class Vec4f {
 public:
@@ -19,6 +20,7 @@ public:
 	float z;
 	float w;
 	Vec4f();
+	Vec4f(Vec3f, float);
 	Vec4f(float, float, float, float);
 	virtual ~Vec4f();
 	Vec4f normalize() const;
@@ -27,6 +29,7 @@ public:
 	Vec4f operator-(const Vec4f&);
 	Vec4f operator+(const Vec4f&);
 	Vec4f operator*(const Vec4f&) const;
+	operator Vec3f();
 
 	float& operator[](int);
 };

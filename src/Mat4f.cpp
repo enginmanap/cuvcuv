@@ -189,3 +189,49 @@ Mat4f operator*(float multipler, const Mat4f& matrix) {
 	}
 	return ret;
 }
+
+Vec4f Mat4f::operator*(const Vec4f& vector)const {
+		Vec4f result;
+		for (int i = 0; i < 4; ++i) {
+				for (int k = 0; k < 4; ++k) {
+					result[i] += getElement(i,k) * vector.getElement(k);
+				}
+		}
+		return result;
+}
+
+Vec4f operator*(const Vec4f& vector, const Mat4f& matrix) {
+		Vec4f result;
+		for (int i = 0; i < 4; ++i) {
+				for (int k = 0; k < 4; ++k) {
+					result[i] += matrix.getElement(k,i) * vector.getElement(k);
+				}
+		}
+		return result;
+}
+
+/**
+ * assumes the forth element is 1;
+ */
+Vec3f operator*(const Vec3f vector,const Mat4f& matrix)  {
+	Vec3f result;
+	for (int i = 0; i < 3; ++i) {
+			for (int k = 0; k < 3; ++k) {
+				result[i] += matrix.getElement(k,i) * vector.getElement(k);
+			}
+			result[i] += matrix.getElement(3,i);
+	}
+	return result;
+}
+
+
+Vec3f Mat4f::operator*(const Vec3f& vector) const{
+	Vec3f result;
+	for (int i = 0; i < 3; ++i) {
+			for (int k = 0; k < 3; ++k) {
+				result[i] += getElement(i,k) * vector.getElement(k);
+			}
+			result[i] += getElement(i,3);
+	}
+	return result;
+}

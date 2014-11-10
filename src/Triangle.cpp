@@ -55,19 +55,21 @@ Triangle::~Triangle() {
 
 bool Triangle::intersectiontest(Ray ray, float& distance) const {
 	Ray transformedRay = generateTransformedRay(ray);
+	Vec3f rayPosition = transformedRay.getPosition();
+	Vec3f rayDirection = transformedRay.getDirection();
 	Vec3f edge1 = b - a;
 	Vec3f edge2 = c - a;
-	Vec3f pvec = vec3fNS::cross(transformedRay.getDirection(), edge2);
+	Vec3f pvec = vec3fNS::cross(rayDirection, edge2);
 	float det = vec3fNS::dot(edge1, pvec);
 	if (det == 0)
 		return false;
 	float invDet = 1 / det;
-	Vec3f tvec = transformedRay.getPosition() - a;
+	Vec3f tvec = rayPosition - a;
 	float u = vec3fNS::dot(tvec, pvec) * invDet;
 	if (u < 0 || u > 1)
 		return false;
 	Vec3f qvec = vec3fNS::cross(tvec, edge1);
-	float v = vec3fNS::dot(transformedRay.getDirection(), qvec) * invDet;
+	float v = vec3fNS::dot(rayDirection, qvec) * invDet;
 	if (v < 0 || u + v > 1)
 		return false;
 

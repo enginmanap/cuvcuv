@@ -34,18 +34,8 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 }
 
 Ray Primitive::generateTransformedRay(const Ray ray) const {
-	Mat4f scaleRotate = transformationMatrix, translation;
-
-	translation[3][0] = scaleRotate[3][0];
-	translation[3][1] = scaleRotate[3][1];
-	translation[3][2] = scaleRotate[3][2];
-
-	scaleRotate[3][0] = 0;
-	scaleRotate[3][1] = 0;
-	scaleRotate[3][2] = 0;
-
-	Ray temp = Ray( ray.getPosition() * scaleRotate , ray.getDirection() * scaleRotate, 0,100);
-	return Ray( temp.getPosition() * translation , temp.getDirection(), 0, 100);
+	//since direction has 0 as last element, translate became 0 too
+	return Ray( ray.getPosition() * transformationMatrix , ray.getDirection() * transformationMatrix, 0, 100);
 }
 
 bool Primitive::setTransformation(Mat4f& matrix) {

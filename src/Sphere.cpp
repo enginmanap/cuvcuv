@@ -37,8 +37,10 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
 	float p1s = vec3fNS::dot(transformedRay.getDirection(), transformedRay.getDirection());
-	Vec3f p0MinusC = transformedRay.getPosition() - this->position;
-	float p1timesp0mc = vec3fNS::dot(transformedRay.getDirection(), p0MinusC);
+	Vec3f rayPosition = transformedRay.getPosition();
+	Vec3f rayDirection = transformedRay.getDirection();
+	Vec3f p0MinusC = rayPosition - this->position;
+	float p1timesp0mc = vec3fNS::dot(rayDirection, p0MinusC);
 	//now the formula is this:
 	//(distance * distance) * p1s + distance * (2*p1timesp0mc) + (p0MinusC * p0MinusC) - (this->radius * this->radius) = 0
 	//Assign a,b,c so later parts should be easier to follow;
@@ -96,7 +98,7 @@ Vec3f Sphere::getColorForRay(Ray ray, float distance) const {
 
 	Vec3f normalisedLightPos = vec3fNS::normalize(lightPos);
 	Vec3f normal = vec3fNS::normalize(intersectionPoint - this->position);
-	Vec3f eyeDirn = vec3fNS::normalize(ray.getPosition() - intersectionPoint);
+	Vec3f eyeDirn = vec3fNS::normalize(((Vec3f)ray.getPosition()) - intersectionPoint);
 	Vec3f halfVec = vec3fNS::normalize(eyeDirn + normalisedLightPos);
 	Vec3f color = calculateColorPerLight(normalisedLightPos, lightColor, normal,
 			halfVec, diffuse, specular, shininess);

@@ -21,6 +21,14 @@ Vec4f::Vec4f(float x, float y, float z, float w) {
 	this->w = w;
 }
 
+Vec4f::Vec4f(Vec3f vector, float w){
+	//std::cout << "building from vector" << vector << std::endl;
+	this->x = vector.x;
+	this->y = vector.y;
+	this->z = vector.z;
+	this->w = w;
+}
+
 Vec4f::~Vec4f() {
 
 }
@@ -146,7 +154,12 @@ Vec4f operator*(float& i, const Vec4f& vector) {
 	return Vec4f(i * vector.x, i * vector.y, i * vector.z, i * vector.w);
 }
 
+
 std::ostream& operator<<(std::ostream &strm, const Vec4f &vector) {
 	return strm << "(" << vector.x << ", " << vector.y << ", " << vector.z
 			<< ", " << vector.w << ")";
+}
+
+Vec4f::operator Vec3f(){
+	return Vec3f(x,y,z);
 }

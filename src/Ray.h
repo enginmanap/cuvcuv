@@ -8,16 +8,17 @@
 #ifndef SRC_RAY_H_
 #define SRC_RAY_H_
 
-#include "Vec3f.h"
+#include "Vec4f.h"
 
 class Ray {
 private:
-	Vec3f position, direction;
+	Vec4f position, direction;
 	float minDistance, maxDistance;
 public:
 	Ray();
-	Vec3f getPosition() const;
-	Vec3f getDirection() const;
+	Vec4f getPosition() const;
+	Vec4f getDirection() const;
+	Ray(Vec4f, Vec4f, float,float);
 	Ray(Vec3f, Vec3f, float,float);
 	virtual ~Ray();
 };

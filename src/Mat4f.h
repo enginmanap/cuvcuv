@@ -30,10 +30,14 @@ public:
 	Vec4f& operator[](const int);
 	Mat4f operator+(const Mat4f&) const;
 	Mat4f operator*(Mat4f&);
+	Vec4f operator*(const Vec4f&) const;
+	Vec3f operator*(const Vec3f&) const;
 	static Mat4f inverse(const Mat4f&);
 };
 
 std::ostream& operator<<(std::ostream &strm, Mat4f &matrix);
 Mat4f operator*(float, const Mat4f&);
+Vec4f operator*(const Vec4f&, const Mat4f&);
+Vec3f operator*(const Vec3f&,const Mat4f&);
 
 #endif /* MAT4F_H_ */
