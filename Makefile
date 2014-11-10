@@ -78,4 +78,4 @@ $(BINARY_PATH)Transform.o: $(SOURCE_PATH)Transform.cpp $(SOURCE_PATH)Transform.h
 	$(CXX) $(CXXFLAGS) $< -o $@
 	
 clean:
-	rm -rf $(BINARY_PATH)
+	rm -rf $(BINARY_PATH)/*.o $(BINARY_PATH)/rayTracer.exe 
