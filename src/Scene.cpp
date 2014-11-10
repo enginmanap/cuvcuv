@@ -201,7 +201,7 @@ Uint32* Scene::getPixels(int& height, int& width) {
 
 bool Scene::addLight(float p1,float p2 ,float p3 ,float p4,float c1,float c2 ,float c3){
 	lights.push_back(Light(Vec4f(p1,p2,p3,p4), Vec3f(c1,c2,c3)));
-	std::cout << "add color with values (" << p1 <<", " << p2 << ", " << p3 << "," << p4 << ") (" << c1 << ", " << c2 << ", " << c3 << ")" << std::endl;
+	std::cout << "add light with values (" << p1 <<", " << p2 << ", " << p3 << "," << p4 << ") (" << c1 << ", " << c2 << ", " << c3 << ")" << std::endl;
 	lightCount++;
 	return true;
 }
