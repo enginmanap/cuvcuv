@@ -8,6 +8,8 @@
 #ifndef SAMPLER_H_
 #define SAMPLER_H_
 
+#include <iostream>
+
 class Sampler {
 private:
 	unsigned int height, width;

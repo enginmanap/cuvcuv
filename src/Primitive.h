@@ -20,7 +20,7 @@
 #endif
 
 #ifndef MAX_DEPTH
-#define MAX_DEPTH 1
+#define MAX_DEPTH 5
 #endif
 
 

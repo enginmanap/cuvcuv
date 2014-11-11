@@ -27,7 +27,7 @@ bool RayTracer::traceToLight(const Ray ray,
 			it != Primitives.end(); it++) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
 			//found intersection
-			if (distance > intersectionDistance && intersectionDistance > 0.001f) {
+			if (distance > intersectionDistance) {
 				//std::cout << "hit primitive within" << intersectionDistance << std::endl;
 				distance = intersectionDistance;
 				intersectingPrimitive = *it;

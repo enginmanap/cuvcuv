@@ -31,8 +31,12 @@ bool Sampler::getPoint(unsigned int& x, unsigned int& y) {
 		x = currentPoint % width;
 		y = currentPoint / width;
 		currentPoint++;
+		if(currentPoint % ((height * width)/100) == 0){
+			std::cout << "rendering: %" << currentPoint / ((height * width)/100) << std::endl;
+		}
 		return true;
 	} else {
+		std::cout << "no more sample to render. " << std::endl;
 		return false;
 	}
 }
