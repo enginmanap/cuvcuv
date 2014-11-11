@@ -32,8 +32,8 @@ class Scene {
 	Vec3f currentDiffuse;
 	Vec3f currentSpecular;
 	float currentShininess;
+	Vec3f currentAttenuation;
 	std::string saveFilename;
-
 
 	Camera *camera;
 	Sampler *sampler;
@@ -65,6 +65,7 @@ public:
 	bool setCurrentDiffuse(float, float, float);
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
+	bool setCurrentAttenuation(float, float, float);
 
 	bool setSaveFilename(std::string);
 	std::string getSaveFilename();
@@ -75,7 +76,7 @@ public:
 	bool addVertex(float, float, float);
 	bool addTriangle(int, int, int);
 	bool addSphere(float, float, float, float);
-	bool addLight(float,float,float,float,float,float,float);
+	bool addLight(float, float, float, float, float, float, float);
 	void printVertexes();
 
 	bool pushTransform();

@@ -15,10 +15,14 @@ class Light {
 private:
 	Vec4f position; //if 4th is zero, it means no position but direction
 	Vec3f color;
+	Vec3f attenuation;
 
 public:
 	Light();
 	Light(Vec4f,Vec3f);
+
+	bool setAttenuation(Vec3f&);
+	float getAttenuationFactor(float);
 
 	const Vec3f& getColor() const {
 		return color;

@@ -75,34 +75,37 @@ bool Triangle::intersectiontest(Ray ray, float& distance) const {
 		return false;
 
 	distance = vec3fNS::dot(edge2, qvec) * invDet;
-	if(distance < 0.0f){//object is behind the triangle
+	if (distance < 0.0f) { //object is behind the triangle
 		return false;
 	}
 	return true;
 }
 
-Vec3f Triangle::getColorForRay(const Ray ray,  float distance, const std::vector<Primitive*>& primitives, const std::vector<Light>& lights, const unsigned int depth) const {
+Vec3f Triangle::getColorForRay(const Ray ray, float distance,
+		const std::vector<Primitive*>& primitives,
+		const std::vector<Light>& lights, const unsigned int depth) const {
 	Vec3f color;
 
 	RayTracer tracer;
 
 	Vec3f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
-	Vec3f normal = vec3fNS::cross((b - a),(c - a));
-	normal =Vec4f(normal,0.0f) *  this->inverseTransformMat.transpose();
+	Vec3f normal = vec3fNS::cross((b - a), (c - a));
+	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
 	normal = vec3fNS::normalize(normal);
-	Vec4f normal4(normal,0.0f); //is must be 0, or it would make w bigger than 1
-	Vec3f eyeDirn = vec3fNS::normalize(((Vec3f)ray.getPosition()) - intersectionPoint);
+	Vec4f normal4(normal, 0.0f); //is must be 0, or it would make w bigger than 1
+	Vec3f eyeDirn = vec3fNS::normalize(
+			((Vec3f) ray.getPosition()) - intersectionPoint);
 
 	//for(std::vector<Light>::const_iterator it= lights.back(); it != lights.end(); it++ ) {
-	for(unsigned int i = 0; i < lights.size(); i++){
+	for (unsigned int i = 0; i < lights.size(); i++) {
 		Light it = lights[i];
 		Vec3f lightPos;
 		Vec3f direction;
 		lightPos.x = it.getPosition().x;
 		lightPos.y = it.getPosition().y;
 		lightPos.z = it.getPosition().z;
-		if(fabs(it.getPosition().w) < EPSILON){
+		if (fabs(it.getPosition().w) < EPSILON) {
 			direction = vec3fNS::normalize(lightPos);
 		} else {
 			lightPos = (1 / it.getPosition().w) * lightPos;
@@ -111,12 +114,18 @@ Vec3f Triangle::getColorForRay(const Ray ray,  float distance, const std::vector
 			//direction = vec3fNS::normalize( lightPos);
 		}
 
-		Ray rayToLight(intersectionPoint + EPSILON * normal4, direction ,0,100);
-		if(tracer.traceToLight(rayToLight,primitives,*(&it))){
+		Ray rayToLight(intersectionPoint + EPSILON * normal4, direction, 0,
+				100);
+		if (tracer.traceToLight(rayToLight, primitives, *(&it))) {
+			float lightDistance = (it.getPosition() - rayToLight.getPosition()).length();
 			Vec3f halfVec = vec3fNS::normalize(eyeDirn + direction);
-			color = color + calculateColorPerLight(direction, it.getColor(), normal,
-					halfVec, diffuse, specular, shininess);
-				}
+			//std::cout << "AttenuationFactor " << it.getAttenuationFactor(distance) << " for("<< distance << ")"<< std::endl;
+			color = color
+					+ it.getAttenuationFactor(lightDistance)
+							* calculateColorPerLight(direction, it.getColor(),
+									normal, halfVec, diffuse, specular,
+									shininess);
+		}
 
 	}
 	//now we have the color for this object itself, calculate reflections.

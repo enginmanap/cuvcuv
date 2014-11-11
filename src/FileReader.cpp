@@ -122,6 +122,10 @@ Scene* FileReader::readFile() {
 				//notice the 0 as 4th param, it means light has no position only direction
 				scene->addLight(parameters[0],parameters[1],parameters[2],0,parameters[3],parameters[4],parameters[5]);
 			}
+		} else if (command == "attenuation") {
+			if (readParams(stringStream, parameters, 3)) {
+				scene->setCurrentAttenuation(parameters[0],parameters[1],parameters[2]);
+			}
 		} else if (command == "sphere") {
 			if (readParams(stringStream, parameters, 4)) {
 				scene->addSphere(parameters[0], parameters[1], parameters[2],

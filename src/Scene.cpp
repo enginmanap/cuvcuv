@@ -25,6 +25,7 @@ Scene::Scene(int height, int width) {
 	memset(this->pixels, 0, height * width * sizeof(Uint32));
 
 	this->currentShininess = 0.0f;
+	this->currentAttenuation = Vec3f(1, 0, 0);
 
 	this->saveFilename = "output.png";
 
@@ -138,6 +139,14 @@ bool Scene::setCurrentShininess(float shininess) {
 	return true;
 }
 
+bool Scene::setCurrentAttenuation(float constant, float lineer,
+		float quadratic) {
+	this->currentAttenuation.x = constant;
+	this->currentAttenuation.y = lineer;
+	this->currentAttenuation.z = quadratic;
+	return true;
+}
+
 bool Scene::addVertex(float x, float y, float z) {
 	if (currentVertex == maxVertexCount)
 		return false;
@@ -209,7 +218,10 @@ Uint32* Scene::getPixels(int& height, int& width) {
 
 bool Scene::addLight(float p1, float p2, float p3, float p4, float c1, float c2,
 		float c3) {
-	lights.push_back(Light(Vec4f(p1, p2, p3, p4), Vec3f(c1, c2, c3)));
+	Light temp(Vec4f(p1, p2, p3, p4), Vec3f(c1, c2, c3));
+	temp.setAttenuation(this->currentAttenuation);
+	lights.push_back(temp);
+
 	std::cout << "add light with values (" << p1 << ", " << p2 << ", " << p3
 			<< "," << p4 << ") (" << c1 << ", " << c2 << ", " << c3 << ")"
 			<< std::endl;

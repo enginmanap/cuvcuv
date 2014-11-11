@@ -75,7 +75,7 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 				distance = distance2;
 		} else {
 			//both solutions have same sign, we should eliminate negatives{
-			if(distance1 < 0.0f)
+			if (distance1 < 0.0f)
 				return false;
 			//both solutions are positive, set the smaller one
 			if (distance1 > distance2)
@@ -109,7 +109,7 @@ Vec3f Sphere::getColorForRay(const Ray ray, float distance,
 			- this->position;
 	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
 	normal = vec3fNS::normalize(normal);
-	Vec4f normal4(normal,0.0f);
+	Vec4f normal4(normal, 0.0f);
 	Vec3f eyeDirn = vec3fNS::normalize(
 			((Vec3f) ray.getPosition()) - intersectionPoint);
 
@@ -128,16 +128,20 @@ Vec3f Sphere::getColorForRay(const Ray ray, float distance,
 		}
 		//check if light is blocked or not
 
-		Ray rayToLight(intersectionPoint + EPSILON * normal4, direction, 0, 100);
+		Ray rayToLight(intersectionPoint + EPSILON * normal4, direction, 0,
+				100);
 		//if(rayToLight.getPosition().getElement(0) * rayToLight.getPosition().getElement(0) +rayToLight.getPosition().getElement(1) * rayToLight.getPosition().getElement(1) + rayToLight.getPosition().getElement(2) * rayToLight.getPosition().getElement(2) < 1)
 		//std::cout << "ray origin (" << rayToLight.getPosition() << ") direction (" << rayToLight.getDirection()<< ")" <<std::endl;
 
 		if (tracer.traceToLight(rayToLight, primitives, *(&it))) {
+			float lightDistance = (it.getPosition() - rayToLight.getPosition()).length();
 			Vec3f halfVec = vec3fNS::normalize(direction + eyeDirn);
 
 			color = color
-					+ calculateColorPerLight(direction, it.getColor(), normal,
-							halfVec, diffuse, specular, shininess);
+					+ it.getAttenuationFactor(lightDistance)
+							* calculateColorPerLight(direction, it.getColor(),
+									normal, halfVec, diffuse, specular,
+									shininess);
 		}
 
 	}
