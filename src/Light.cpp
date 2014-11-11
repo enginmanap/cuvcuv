@@ -24,6 +24,8 @@ bool Light::setAttenuation(Vec3f& attenuation){
 }
 
 float Light::getAttenuationFactor(float distance){
+	if(fabs(this->position.w) < EPSILON)
+		return 1.0f;
 	return (1 / (attenuation.x + attenuation.y * distance + (attenuation.z * distance * distance)));
 }
 

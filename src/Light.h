@@ -11,6 +11,10 @@
 #include "Vec3f.h"
 #include "Vec4f.h"
 
+#ifndef EPSILON
+#define EPSILON 0.00001F
+#endif
+
 class Light {
 private:
 	Vec4f position; //if 4th is zero, it means no position but direction
