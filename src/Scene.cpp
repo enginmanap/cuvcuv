@@ -31,6 +31,8 @@ Scene::Scene(int height, int width) {
 
 	transformStack.push(Mat4f()); //since default constructor generates identity matrix.
 
+	this->maxDepth = 5;
+
 }
 
 bool Scene::setSaveFilename(std::string filename) {
@@ -194,19 +196,31 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 
 void Scene::renderScene() {
 	unsigned int x = 0, y = 0;
-	while (this->sampler->getPoint(x, y)) {
-		if (this->camera == NULL) {
-			std::cerr << "Can't render without a camera set." << std::endl;
-		}
-		Ray ray = this->camera->getRay(x, y);
-		Vec3f color = rayTracer.trace(ray, primitives, lights, this->maxDepth);
-		color = colorRange * color;
-		Uint32 color32 = (int) color.x << 16;
-		color32 += (int) color.y << 8;
-		color32 += (int) color.z;
-		color32 = color32 | 0xFF000000;
+	Uint32 color32 = 0;
+	Vec3f color;
+	bool morePixels;
+	Ray ray;
 
-		pixels[this->sampler->getWidht() * y + x] = color32;
+#pragma omp parallel private(color,color32,x,y,ray) shared (morePixels)
+	{
+#pragma omp critical
+		morePixels = this->sampler->getPoint(x, y);
+		do {
+			if (this->camera == NULL) {
+				std::cerr << "Can't render without a camera set." << std::endl;
+
+			}
+			ray = this->camera->getRay(x, y);
+			color = rayTracer.trace(ray, primitives, lights, this->maxDepth);
+			color = colorRange * color;
+			color32 = (int) color.x << 16;
+			color32 += (int) color.y << 8;
+			color32 += (int) color.z;
+			color32 = color32 | 0xFF000000;
+			pixels[this->sampler->getWidht() * y + x] = color32;
+#pragma omp critical
+			morePixels = this->sampler->getPoint(x, y);
+		} while (morePixels);
 	}
 }
 

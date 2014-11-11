@@ -10,8 +10,8 @@ SDL_LIB = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf
 SDL_INCLUDE = `sdl2-config --cflags`
 # You may need to change -std=c++11 to -std=c++0x if your compiler is a bit older
 #CXXFLAGS = -Wall -c -ggdb -std=c++11 $(SDL_INCLUDE)
-CXXFLAGS = -Wall -ggdb -c $(SDL_INCLUDE)
-LDFLAGS = $(SDL_LIB) -L./lib/ -lFreeImage
+CXXFLAGS = -fopenmp -Wall -ggdb -c $(SDL_INCLUDE)
+LDFLAGS = $(SDL_LIB) -L./lib/ -lFreeImage -lgomp
 EXE = rayTracer
 BINARY_PATH=bin/
 SOURCE_PATH=src/

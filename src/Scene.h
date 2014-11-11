@@ -51,7 +51,7 @@ class Scene {
 	std::vector<Primitive*> primitives;
 	std::stack<Mat4f> transformStack;
 
-	unsigned int maxDepth = 5;
+	unsigned int maxDepth;
 	RayTracer rayTracer;
 
 public:
