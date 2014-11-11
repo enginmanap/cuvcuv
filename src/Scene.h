@@ -51,7 +51,9 @@ class Scene {
 	std::vector<Primitive*> primitives;
 	std::stack<Mat4f> transformStack;
 
+	unsigned int maxDepth = 5;
 	RayTracer rayTracer;
+
 public:
 
 	Scene(int, int);
@@ -69,6 +71,7 @@ public:
 
 	bool setSaveFilename(std::string);
 	std::string getSaveFilename();
+	bool setMaxDepth(unsigned int);
 
 	Uint32* getPixels(int&, int&);
 

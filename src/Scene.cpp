@@ -199,7 +199,7 @@ void Scene::renderScene() {
 			std::cerr << "Can't render without a camera set." << std::endl;
 		}
 		Ray ray = this->camera->getRay(x, y);
-		Vec3f color = rayTracer.trace(ray, primitives, lights, 0);
+		Vec3f color = rayTracer.trace(ray, primitives, lights, this->maxDepth);
 		color = colorRange * color;
 		Uint32 color32 = (int) color.x << 16;
 		color32 += (int) color.y << 8;
@@ -229,3 +229,7 @@ bool Scene::addLight(float p1, float p2, float p3, float p4, float c1, float c2,
 	return true;
 }
 
+bool Scene::setMaxDepth(unsigned int depth) {
+	this->maxDepth = depth;
+	return 0;
+}

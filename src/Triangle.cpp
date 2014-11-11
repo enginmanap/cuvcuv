@@ -117,7 +117,8 @@ Vec3f Triangle::getColorForRay(const Ray ray, float distance,
 		Ray rayToLight(intersectionPoint + EPSILON * normal4, direction, 0,
 				100);
 		if (tracer.traceToLight(rayToLight, primitives, *(&it))) {
-			float lightDistance = (it.getPosition() - rayToLight.getPosition()).length();
+			float lightDistance =
+					(it.getPosition() - rayToLight.getPosition()).length();
 			Vec3f halfVec = vec3fNS::normalize(eyeDirn + direction);
 			//std::cout << "AttenuationFactor " << it.getAttenuationFactor(distance) << " for("<< distance << ")"<< std::endl;
 			color = color
@@ -133,7 +134,7 @@ Vec3f Triangle::getColorForRay(const Ray ray, float distance,
 			&& fabs(this->specular.z) < EPSILON) {
 		//the object is not reflective, so stop here
 	} else {
-		if (depth < MAX_DEPTH) {
+		if (depth > 0) {
 			Ray reflectionRay(intersectionPoint + EPSILON * normal4,
 					ray.getDirection()
 							- 2 * Vec4fNS::dot(ray.getDirection(), normal4)

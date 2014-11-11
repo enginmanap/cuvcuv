@@ -63,7 +63,7 @@ Vec3f RayTracer::trace(const Ray ray,
 	}
 
 	if (intersectingPrimitive != NULL) {
-		return intersectingPrimitive->getColorForRay(ray, distance, Primitives, lights, depth+1);
+		return intersectingPrimitive->getColorForRay(ray, distance, Primitives, lights, depth-1);
 	} else {
 		return Vec3f(0.0f, 0.0f, 0.0f);
 	}

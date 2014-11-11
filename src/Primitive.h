@@ -19,10 +19,6 @@
 #define EPSILON 0.00001F
 #endif
 
-#ifndef MAX_DEPTH
-#define MAX_DEPTH 5
-#endif
-
 class Primitive {
 
 protected:

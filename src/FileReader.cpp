@@ -89,7 +89,7 @@ Scene* FileReader::readFile() {
 		} else if (command == "output") {
 			std::string outputFile;
 			stringStream >> outputFile;
-				scene->setSaveFilename(outputFile);
+			scene->setSaveFilename(outputFile);
 		} else if (command == "ambient") {
 			if (readParams(stringStream, parameters, 3)) {
 				scene->setCurrentAmbient(parameters[0], parameters[1],
@@ -102,11 +102,13 @@ Scene* FileReader::readFile() {
 			}
 		} else if (command == "diffuse") {
 			if (readParams(stringStream, parameters, 3)) {
-				scene->setCurrentDiffuse(parameters[0], parameters[1], parameters[2]);
+				scene->setCurrentDiffuse(parameters[0], parameters[1],
+						parameters[2]);
 			}
 		} else if (command == "specular") {
 			if (readParams(stringStream, parameters, 3)) {
-				scene->setCurrentSpecular(parameters[0], parameters[1], parameters[2]);
+				scene->setCurrentSpecular(parameters[0], parameters[1],
+						parameters[2]);
 			}
 		} else if (command == "shininess") {
 			if (readParams(stringStream, parameters, 1)) {
@@ -115,16 +117,19 @@ Scene* FileReader::readFile() {
 		} else if (command == "point") {
 			if (readParams(stringStream, parameters, 6)) {
 				//notice the 1 as 4th param
-				scene->addLight(parameters[0],parameters[1],parameters[2],1,parameters[3],parameters[4],parameters[5]);
+				scene->addLight(parameters[0], parameters[1], parameters[2], 1,
+						parameters[3], parameters[4], parameters[5]);
 			}
 		} else if (command == "directional") {
 			if (readParams(stringStream, parameters, 6)) {
 				//notice the 0 as 4th param, it means light has no position only direction
-				scene->addLight(parameters[0],parameters[1],parameters[2],0,parameters[3],parameters[4],parameters[5]);
+				scene->addLight(parameters[0], parameters[1], parameters[2], 0,
+						parameters[3], parameters[4], parameters[5]);
 			}
 		} else if (command == "attenuation") {
 			if (readParams(stringStream, parameters, 3)) {
-				scene->setCurrentAttenuation(parameters[0],parameters[1],parameters[2]);
+				scene->setCurrentAttenuation(parameters[0], parameters[1],
+						parameters[2]);
 			}
 		} else if (command == "sphere") {
 			if (readParams(stringStream, parameters, 4)) {
@@ -141,28 +146,35 @@ Scene* FileReader::readFile() {
 			}
 		} else if (command == "tri") {
 			if (readParams(stringStream, parameters, 3)) {
-				scene->addTriangle((int)parameters[0], (int)parameters[1], (int)parameters[2]);
+				scene->addTriangle((int) parameters[0], (int) parameters[1],
+						(int) parameters[2]);
 			}
 		} else if (command == "translate") {
 			if (readParams(stringStream, parameters, 3)) {
-				temproryMatrix = Transform::translate(parameters[0],parameters[1],parameters[2]);
+				temproryMatrix = Transform::translate(parameters[0],
+						parameters[1], parameters[2]);
 				scene->addTransform(temproryMatrix);
 			}
 		} else if (command == "scale") {
 			if (readParams(stringStream, parameters, 3)) {
-				temproryMatrix = Transform::scale(parameters[0],parameters[1],parameters[2]);
+				temproryMatrix = Transform::scale(parameters[0], parameters[1],
+						parameters[2]);
 				scene->addTransform(temproryMatrix);
 			}
 		} else if (command == "rotate") {
 			if (readParams(stringStream, parameters, 4)) {
-				temproryMatrix = Transform::rotate(parameters[0],parameters[1],parameters[2],parameters[3]);
+				temproryMatrix = Transform::rotate(parameters[0], parameters[1],
+						parameters[2], parameters[3]);
 				scene->addTransform(temproryMatrix);
 			}
 		} else if (command == "pushTransform") {
-				scene->pushTransform();
+			scene->pushTransform();
 		} else if (command == "popTransform") {
-				scene->popTransform();
-
+			scene->popTransform();
+		} else if (command == "maxdepth") {
+			if (readParams(stringStream, parameters, 1)) {
+				scene->setMaxDepth((unsigned int) parameters[0]);
+			}
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
 
