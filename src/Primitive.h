@@ -16,7 +16,7 @@
 #include "Mat4f.h"
 
 #ifndef EPSILON
-#define EPSILON 0.0001F
+#define EPSILON 0.00001F
 #endif
 
 #ifndef MAX_DEPTH
