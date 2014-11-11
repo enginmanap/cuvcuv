@@ -160,7 +160,7 @@ Vec3f Sphere::getColorForRay(const Ray ray, float distance,
 
 		}
 	}
-	color = color + ambientLight;
+	color = color + ambientLight + emissionLight;
 	//Opengl auto clamps, we should do it manually;
 	return vec3fNS::clamp(color, 0, 1); //TODO move clamping to last step, just before writing the pixel.
 }

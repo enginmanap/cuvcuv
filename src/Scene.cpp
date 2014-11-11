@@ -28,26 +28,26 @@ Scene::Scene(int height, int width) {
 
 	this->saveFilename = "output.png";
 
-	transformStack.push(Mat4f());//since default constructor generates identity matrix.
+	transformStack.push(Mat4f()); //since default constructor generates identity matrix.
 
 }
 
-bool Scene::setSaveFilename(std::string filename){
+bool Scene::setSaveFilename(std::string filename) {
 	this->saveFilename = filename;
 	return true;
 }
 
-std::string Scene::getSaveFilename(){
+std::string Scene::getSaveFilename() {
 	return saveFilename;
 }
 
-bool Scene::pushTransform(){
+bool Scene::pushTransform() {
 	transformStack.push(transformStack.top());
 	return true;
 }
 
-Mat4f Scene::popTransform(){
-	if( transformStack.size() <= 1){
+Mat4f Scene::popTransform() {
+	if (transformStack.size() <= 1) {
 		std::cerr << "no transform to pop" << std::endl;
 		return Mat4f();
 	}
@@ -56,7 +56,7 @@ Mat4f Scene::popTransform(){
 	return temp;
 }
 
-Mat4f Scene::addTransform(Mat4f& transform){
+Mat4f Scene::addTransform(Mat4f& transform) {
 	transformStack.top() = transform * transformStack.top();
 	return transformStack.top();
 }
@@ -102,6 +102,13 @@ Scene::~Scene() {
 bool Scene::getSamplingSize(int& height, int& width) {
 	height = sampler->getHeight();
 	width = sampler->getWidht();
+	return true;
+}
+
+bool Scene::setCurrentEmission(float x, float y, float z) {
+	currentEmissionLight.x = x;
+	currentEmissionLight.y = y;
+	currentEmissionLight.z = z;
 	return true;
 }
 
@@ -152,8 +159,8 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 			&& vertice3 < currentVertex) {
 		Triangle* triangle = new Triangle(this->vertexArray[vertice1],
 				this->vertexArray[vertice2], this->vertexArray[vertice3]);
-		triangle->setLightValues(currentAmbientLight, currentDiffuse,
-				currentSpecular, currentShininess);
+		triangle->setLightValues(currentAmbientLight, currentEmissionLight,
+				currentDiffuse, currentSpecular, currentShininess);
 		triangle->setTransformation(transformStack.top());
 		primitives.push_back(triangle);
 		triangleCount++;
@@ -165,10 +172,11 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
-	std::cout << "add sphere with the values (" << x << ", " << z << ", " << z << ") and radius: " << radius << std::endl;
+	std::cout << "add sphere with the values (" << x << ", " << z << ", " << z
+			<< ") and radius: " << radius << std::endl;
 	Sphere* sphere = new Sphere(x, y, z, radius);
-	sphere->setLightValues(currentAmbientLight, currentDiffuse, currentSpecular,
-			currentShininess);
+	sphere->setLightValues(currentAmbientLight, currentEmissionLight,
+			currentDiffuse, currentSpecular, currentShininess);
 	primitives.push_back(sphere);
 	sphere->setTransformation(transformStack.top());
 	SphereCount++;
@@ -199,11 +207,13 @@ Uint32* Scene::getPixels(int& height, int& width) {
 	return this->pixels;
 }
 
-bool Scene::addLight(float p1,float p2 ,float p3 ,float p4,float c1,float c2 ,float c3){
-	lights.push_back(Light(Vec4f(p1,p2,p3,p4), Vec3f(c1,c2,c3)));
-	std::cout << "add light with values (" << p1 <<", " << p2 << ", " << p3 << "," << p4 << ") (" << c1 << ", " << c2 << ", " << c3 << ")" << std::endl;
+bool Scene::addLight(float p1, float p2, float p3, float p4, float c1, float c2,
+		float c3) {
+	lights.push_back(Light(Vec4f(p1, p2, p3, p4), Vec3f(c1, c2, c3)));
+	std::cout << "add light with values (" << p1 << ", " << p2 << ", " << p3
+			<< "," << p4 << ") (" << c1 << ", " << c2 << ", " << c3 << ")"
+			<< std::endl;
 	lightCount++;
 	return true;
 }
-
 

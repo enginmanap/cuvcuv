@@ -28,6 +28,7 @@
 class Scene {
 
 	Vec3f currentAmbientLight;
+	Vec3f currentEmissionLight;
 	Vec3f currentDiffuse;
 	Vec3f currentSpecular;
 	float currentShininess;
@@ -60,9 +61,11 @@ public:
 	virtual ~Scene();
 	bool getSamplingSize(int&, int&);
 	bool setCurrentAmbient(float, float, float);
+	bool setCurrentEmission(float, float, float);
 	bool setCurrentDiffuse(float, float, float);
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
+
 	bool setSaveFilename(std::string);
 	std::string getSaveFilename();
 

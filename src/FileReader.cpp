@@ -95,22 +95,10 @@ Scene* FileReader::readFile() {
 				scene->setCurrentAmbient(parameters[0], parameters[1],
 						parameters[2]);
 			}
-		} else if (command == "sphere") {
-			if (readParams(stringStream, parameters, 4)) {
-				scene->addSphere(parameters[0], parameters[1], parameters[2],
-						parameters[3]);
-			}
-		} else if (command == "maxverts") {
-			if (readParams(stringStream, parameters, 1)) {
-				scene->createVertexSpace(parameters[0]);
-			}
-		} else if (command == "vertex") {
+		} else if (command == "emission") {
 			if (readParams(stringStream, parameters, 3)) {
-				scene->addVertex(parameters[0], parameters[1], parameters[2]);
-			}
-		} else if (command == "tri") {
-			if (readParams(stringStream, parameters, 3)) {
-				scene->addTriangle((int)parameters[0], (int)parameters[1], (int)parameters[2]);
+				scene->setCurrentEmission(parameters[0], parameters[1],
+						parameters[2]);
 			}
 		} else if (command == "diffuse") {
 			if (readParams(stringStream, parameters, 3)) {
@@ -133,6 +121,23 @@ Scene* FileReader::readFile() {
 			if (readParams(stringStream, parameters, 6)) {
 				//notice the 0 as 4th param, it means light has no position only direction
 				scene->addLight(parameters[0],parameters[1],parameters[2],0,parameters[3],parameters[4],parameters[5]);
+			}
+		} else if (command == "sphere") {
+			if (readParams(stringStream, parameters, 4)) {
+				scene->addSphere(parameters[0], parameters[1], parameters[2],
+						parameters[3]);
+			}
+		} else if (command == "maxverts") {
+			if (readParams(stringStream, parameters, 1)) {
+				scene->createVertexSpace(parameters[0]);
+			}
+		} else if (command == "vertex") {
+			if (readParams(stringStream, parameters, 3)) {
+				scene->addVertex(parameters[0], parameters[1], parameters[2]);
+			}
+		} else if (command == "tri") {
+			if (readParams(stringStream, parameters, 3)) {
+				scene->addTriangle((int)parameters[0], (int)parameters[1], (int)parameters[2]);
 			}
 		} else if (command == "translate") {
 			if (readParams(stringStream, parameters, 3)) {

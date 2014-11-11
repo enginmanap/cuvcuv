@@ -23,11 +23,10 @@
 #define MAX_DEPTH 5
 #endif
 
-
 class Primitive {
 
 protected:
-	Vec3f ambientLight, specular, diffuse;
+	Vec3f ambientLight, emissionLight, specular, diffuse;
 	float shininess;
 	Mat4f inverseTransformMat, transformMatrix;
 	Ray transformedRay;
@@ -37,8 +36,10 @@ public:
 	virtual ~Primitive();
 	bool setTransformation(Mat4f&);
 	virtual bool intersectiontest(Ray, float&) const= 0;
-	virtual Vec3f getColorForRay(const Ray,  float, const std::vector<Primitive*>&, const std::vector<Light>&, const unsigned int) const = 0;
-	bool setLightValues(Vec3f, Vec3f, Vec3f, float);
+	virtual Vec3f getColorForRay(const Ray, float,
+			const std::vector<Primitive*>&, const std::vector<Light>&,
+			const unsigned int) const = 0;
+	bool setLightValues(Vec3f, Vec3f, Vec3f, Vec3f, float);
 
 	Ray generateTransformedRay(const Ray) const;
 
