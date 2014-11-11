@@ -37,6 +37,12 @@ Vec4f Vec4f::normalize() const {
 	return Vec4fNS::normalize(*this);
 }
 
+float Vec4f::length(){
+	return sqrt(
+			(x * x) + (y * y)
+					+ (z * z));
+}
+
 Vec4f Vec4fNS::normalize(const Vec4f& vector) {
 	//calculate the vector size
 	float length = sqrt(
@@ -80,7 +86,7 @@ Vec4f Vec4fNS::clamp(const Vec4f& vector, float min, float max) {
 	return temp;
 }
 
-Vec4f Vec4f::operator-(const Vec4f& vector2) {
+Vec4f Vec4f::operator-(const Vec4f& vector2) const {
 	Vec4f temp;
 	temp.x = x - vector2.x;
 	temp.y = y - vector2.y;
@@ -149,7 +155,7 @@ float& Vec4f::operator[](int index) {
 	}
 }
 
-Vec4f operator*(float& i, const Vec4f& vector) {
+Vec4f operator*(float i, const Vec4f& vector) {
 
 	return Vec4f(i * vector.x, i * vector.y, i * vector.z, i * vector.w);
 }

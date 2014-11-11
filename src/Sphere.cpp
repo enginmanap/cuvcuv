@@ -6,6 +6,7 @@
  */
 
 #include "Sphere.h"
+#include "RayTracer.h"
 
 Sphere::Sphere(float x, float y, float z, float rad) {
 	this->position.x = x;
@@ -73,13 +74,15 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 			else
 				distance = distance2;
 		} else {
-			//both solutions are positive, set the bigger one
+			//both solutions are positive, set the smaller one
 			if (distance1 > distance2)
 				distance = distance2;
 			else
 				distance = distance1;
 		}
 		//std::cout << "for transformedRay " << transformedRay.getPosition() << transformedRay.getDirection() << std::endl;
+		//std::cout << "discriminant: " << discriminant<< ", a: "<< a << ", b: " << b << ", c: " << c << std::endl;
+		//std::cout << "distances: "<< distance1 << " , " <<distance2 << std::endl;
 		return true;
 	} else { //at that point, discriminant is not near zero, and not positive, so it is negative aka no real solution.
 		//std::cout << "negative disc" << std::endl;
@@ -88,8 +91,10 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 	return false;
 }
 
-Vec3f Sphere::getColorForRay(const Ray ray, float distance, const std::vector<Light>& lights) const {
+Vec3f Sphere::getColorForRay(const Ray ray,  float distance, const std::vector<Primitive*>& primitives, const std::vector<Light>& lights, const unsigned int depth) const {
 	Vec3f color;
+
+	RayTracer tracer;
 
 	Vec4f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
@@ -114,10 +119,21 @@ Vec3f Sphere::getColorForRay(const Ray ray, float distance, const std::vector<Li
 			lightPos = (1 / it.getPosition().w) * lightPos;
 			direction = vec3fNS::normalize(lightPos - intersectionPoint);
 		}
+		//check if light is blocked or not
+		Vec4f direction4(normal,1.0f);
+		Vec4f temp(0.1f * direction4);
+		//std::cout << "direction" << direction4 << std::endl;
+		Ray rayToLight(intersectionPoint, direction ,0,100);
+		//if(rayToLight.getPosition().getElement(0) * rayToLight.getPosition().getElement(0) +rayToLight.getPosition().getElement(1) * rayToLight.getPosition().getElement(1) + rayToLight.getPosition().getElement(2) * rayToLight.getPosition().getElement(2) < 1)
+			//std::cout << "ray origin (" << rayToLight.getPosition() << ") direction (" << rayToLight.getDirection()<< ")" <<std::endl;
 
-		Vec3f halfVec = vec3fNS::normalize(direction + eyeDirn);
-		color = color + calculateColorPerLight(direction, it.getColor(), normal,
-				halfVec, diffuse, specular, shininess);
+		if(tracer.traceToLight(rayToLight,primitives,*(&it))){
+			Vec3f halfVec = vec3fNS::normalize(direction + eyeDirn);
+
+			color = color + calculateColorPerLight(direction, it.getColor(), normal,
+					halfVec, diffuse, specular, shininess);
+		}
+
 	}
 	color = color + ambientLight;
 	//Opengl auto clamps, we should do it manually;

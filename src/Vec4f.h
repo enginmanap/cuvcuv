@@ -24,9 +24,10 @@ public:
 	Vec4f(float, float, float, float);
 	virtual ~Vec4f();
 	Vec4f normalize() const;
+	float length();
 
 	float getElement(const int) const;
-	Vec4f operator-(const Vec4f&);
+	Vec4f operator-(const Vec4f&)const;
 	Vec4f operator+(const Vec4f&);
 	Vec4f operator*(const Vec4f&) const;
 	operator Vec3f();
@@ -35,7 +36,7 @@ public:
 };
 
 std::ostream& operator<<(std::ostream &strm, const Vec4f &vector);
-Vec4f operator*(float& i, const Vec4f& vector);
+Vec4f operator*(float i, const Vec4f& vector);
 
 namespace Vec4fNS {
 

@@ -23,7 +23,7 @@ public:
 	Sphere(float, float, float, float);
 	virtual ~Sphere();
 	bool intersectiontest(Ray, float&) const;
-	Vec3f getColorForRay(const Ray, float, const std::vector<Light>&) const;
+	Vec3f getColorForRay(const Ray,  float, const std::vector<Primitive*>&, const std::vector<Light>&, const unsigned int) const;
 
 };
 #endif /* SRC_SPHERE_H_ */

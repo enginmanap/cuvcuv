@@ -6,6 +6,7 @@
  */
 
 #include "Triangle.h"
+#include "RayTracer.h"
 
 Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3) {
 	a = vertice1;
@@ -77,9 +78,10 @@ bool Triangle::intersectiontest(Ray ray, float& distance) const {
 	return true;
 }
 
-Vec3f Triangle::getColorForRay(const Ray ray,  float distance, const std::vector<Light>& lights) const {
+Vec3f Triangle::getColorForRay(const Ray ray,  float distance, const std::vector<Primitive*>& primitives, const std::vector<Light>& lights, const unsigned int depth) const {
 	Vec3f color;
 
+	RayTracer tracer;
 
 	Vec3f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
@@ -104,9 +106,14 @@ Vec3f Triangle::getColorForRay(const Ray ray,  float distance, const std::vector
 			//Vec3f eyePos = ray.getPosition();
 			//direction = vec3fNS::normalize( lightPos);
 		}
-		Vec3f halfVec = vec3fNS::normalize(eyeDirn + direction);
-		color = color + calculateColorPerLight(direction, it.getColor(), normal,
-				halfVec, diffuse, specular, shininess);
+
+		Ray rayToLight(intersectionPoint, direction ,0,100);
+		if(tracer.traceToLight(rayToLight,primitives,*(&it))){
+			Vec3f halfVec = vec3fNS::normalize(eyeDirn + direction);
+			color = color + calculateColorPerLight(direction, it.getColor(), normal,
+					halfVec, diffuse, specular, shininess);
+				}
+
 	}
 	color = color + ambientLight;
 	//Opengl auto clamps, we should do it manually;

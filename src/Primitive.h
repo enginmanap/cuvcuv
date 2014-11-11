@@ -19,6 +19,11 @@
 #define EPSILON 0.0001F
 #endif
 
+#ifndef MAX_DEPTH
+#define MAX_DEPTH 1
+#endif
+
+
 class Primitive {
 
 protected:
@@ -32,7 +37,7 @@ public:
 	virtual ~Primitive();
 	bool setTransformation(Mat4f&);
 	virtual bool intersectiontest(Ray, float&) const= 0;
-	virtual Vec3f getColorForRay(const Ray,  float, const std::vector<Light>&) const = 0;
+	virtual Vec3f getColorForRay(const Ray,  float, const std::vector<Primitive*>&, const std::vector<Light>&, const unsigned int) const = 0;
 	bool setLightValues(Vec3f, Vec3f, Vec3f, float);
 
 	Ray generateTransformedRay(const Ray) const;

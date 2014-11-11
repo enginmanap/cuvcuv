@@ -17,9 +17,9 @@ RayTracer::~RayTracer() {
 
 bool RayTracer::traceToLight(const Ray ray,
 		const std::vector<Primitive*> &Primitives, const Light light) const {
-	Vec4f route = ray.getPosition() - light.getPosition();
-	Vec4f routeN =  route.normalize();
-	float distance =  route.x / routeN.x;
+	Vec4f route = light.getPosition() - ray.getPosition();
+	float distance =  route.length();
+	//std::cout << "distance to light " << distance << std::endl;
 	float intersectionDistance;
 	Primitive* intersectingPrimitive = NULL;
 
@@ -27,7 +27,8 @@ bool RayTracer::traceToLight(const Ray ray,
 			it != Primitives.end(); it++) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
 			//found intersection
-			if (distance > intersectionDistance) {
+			if (distance > intersectionDistance && intersectionDistance > 0.001f) {
+				//std::cout << "hit primitive within" << intersectionDistance << std::endl;
 				distance = intersectionDistance;
 				intersectingPrimitive = *it;
 			}
@@ -62,7 +63,7 @@ Vec3f RayTracer::trace(const Ray ray,
 	}
 
 	if (intersectingPrimitive != NULL) {
-		return intersectingPrimitive->getColorForRay(ray, distance, lights);
+		return intersectingPrimitive->getColorForRay(ray, distance, Primitives, lights, depth+1);
 	} else {
 		return Vec3f(0.0f, 0.0f, 0.0f);
 	}
