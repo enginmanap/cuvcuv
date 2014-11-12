@@ -18,7 +18,7 @@
 class Sphere: public Primitive {
 	Vec3f position;
 	float radius;
-
+	Vec3f calculateNormal(const Vec4f&) const;
 public:
 	Sphere(float, float, float, float);
 	virtual ~Sphere();

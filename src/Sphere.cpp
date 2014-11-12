@@ -6,7 +6,6 @@
  */
 
 #include "Sphere.h"
-#include "RayTracer.h"
 
 Sphere::Sphere(float x, float y, float z, float rad) {
 	this->position.x = x;
@@ -100,77 +99,9 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 	return false;
 }
 
-Vec3f Sphere::getColorForRay(const Ray ray, float distance,
-		const std::vector<Primitive*>& primitives,
-		const std::vector<Light>& lights, const unsigned int depth) const {
-	Vec3f color;
-
-	RayTracer tracer;
-
-	Vec4f intersectionPoint = distance * ray.getDirection();
-	intersectionPoint = intersectionPoint + ray.getPosition();
-
+Vec3f Sphere::calculateNormal(const Vec4f& position) const {
 	//calculate the normal, if there were no transformations, than inverse transpose the normal.
-	Vec3f normal = ((Vec3f) (intersectionPoint * this->inverseTransformMat))
-			- this->position;
-	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
-	normal = vec3fNS::normalize(normal);
-	Vec4f normal4(normal, 0.0f);
-	Vec3f eyeDirn = vec3fNS::normalize(
-			((Vec3f) ray.getPosition()) - intersectionPoint);
+	Vec3f normal = ((Vec3f) (position * this->inverseTransformMat))	- this->position;
+	return vec3fNS::normalize(Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose());
 
-	for (unsigned int i = 0; i < lights.size(); i++) {
-		Light it = lights[i];
-		Vec3f lightPos;
-		Vec3f direction;
-		lightPos.x = it.getPosition().x;
-		lightPos.y = it.getPosition().y;
-		lightPos.z = it.getPosition().z;
-		if (fabs(it.getPosition().w) < EPSILON) {
-			direction = vec3fNS::normalize(lightPos);
-		} else {
-			lightPos = (1 / it.getPosition().w) * lightPos;
-			direction = vec3fNS::normalize(lightPos - intersectionPoint);
-		}
-		//check if light is blocked or not
-		Vec4f direction4 = Vec4f(direction, 0.0f);
-		Ray rayToLight(intersectionPoint + EPSILON * 10.0f * direction4,
-				direction, 0, 100);
-		//if(rayToLight.getPosition().getElement(0) * rayToLight.getPosition().getElement(0) +rayToLight.getPosition().getElement(1) * rayToLight.getPosition().getElement(1) + rayToLight.getPosition().getElement(2) * rayToLight.getPosition().getElement(2) < 1)
-		//std::cout << "ray origin (" << rayToLight.getPosition() << ") direction (" << rayToLight.getDirection()<< ")" <<std::endl;
-
-		if (tracer.traceToLight(rayToLight, primitives, *(&it))) {
-			float lightDistance =
-					(it.getPosition() - rayToLight.getPosition()).length();
-			Vec3f halfVec = vec3fNS::normalize(direction + eyeDirn);
-
-			color = color
-					+ it.getAttenuationFactor(lightDistance)
-							* calculateColorPerLight(direction, it.getColor(),
-									normal, halfVec, diffuse, specular,
-									shininess);
-		}
-
-	}
-	//now we have the color for this object itself, calculate reflections.
-	if (fabs(this->specular.x) < EPSILON && fabs(this->specular.y) < EPSILON
-			&& fabs(this->specular.z) < EPSILON) {
-		//the object is not reflective, so stop here
-	} else {
-		if (depth > 0) {
-			Ray reflectionRay(intersectionPoint + EPSILON * 10.0f * normal4,
-					ray.getDirection()
-							- 2 * Vec4fNS::dot(ray.getDirection(), normal4)
-									* normal4, 0, 100);
-			Vec3f reflectedColor = tracer.trace(reflectionRay, primitives,
-					lights, depth);
-			reflectedColor = vec3fNS::clamp(reflectedColor, 0, 1);
-			//std::cout << "reflection " << reflectedColor << std::endl;
-			color = color + specular * reflectedColor;
-
-		}
-	}
-	color = color + ambientLight + emissionLight;
-	//Opengl auto clamps, we should do it manually;
-	return vec3fNS::clamp(color, 0, 1); //TODO move clamping to last step, just before writing the pixel.
 }

@@ -6,7 +6,6 @@
  */
 
 #include "Triangle.h"
-#include "RayTracer.h"
 
 Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3) {
 	a = vertice1;
@@ -81,73 +80,8 @@ bool Triangle::intersectiontest(Ray ray, float& distance) const {
 	return true;
 }
 
-Vec3f Triangle::getColorForRay(const Ray ray, float distance,
-		const std::vector<Primitive*>& primitives,
-		const std::vector<Light>& lights, const unsigned int depth) const {
-	Vec3f color;
-
-	RayTracer tracer;
-
-	Vec3f intersectionPoint = distance * ray.getDirection();
-	intersectionPoint = intersectionPoint + ray.getPosition();
+Vec3f Triangle::calculateNormal(const Vec4f& position) const {
 	Vec3f normal = vec3fNS::cross((b - a), (c - a));
 	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
-	normal = vec3fNS::normalize(normal);
-	Vec4f normal4(normal, 0.0f); //is must be 0, or it would make w bigger than 1
-	Vec3f eyeDirn = vec3fNS::normalize(
-			((Vec3f) ray.getPosition()) - intersectionPoint);
-
-	//for(std::vector<Light>::const_iterator it= lights.back(); it != lights.end(); it++ ) {
-	for (unsigned int i = 0; i < lights.size(); i++) {
-		Light it = lights[i];
-		Vec3f lightPos;
-		Vec3f direction;
-		lightPos.x = it.getPosition().x;
-		lightPos.y = it.getPosition().y;
-		lightPos.z = it.getPosition().z;
-		if (fabs(it.getPosition().w) < EPSILON) {
-			direction = vec3fNS::normalize(lightPos);
-		} else {
-			lightPos = (1 / it.getPosition().w) * lightPos;
-			direction = vec3fNS::normalize(lightPos - intersectionPoint);
-			//Vec3f eyePos = ray.getPosition();
-			//direction = vec3fNS::normalize( lightPos);
-		}
-
-		Ray rayToLight(intersectionPoint + EPSILON * normal4, direction, 0,
-				100);
-		if (tracer.traceToLight(rayToLight, primitives, *(&it))) {
-			float lightDistance =
-					(it.getPosition() - rayToLight.getPosition()).length();
-			Vec3f halfVec = vec3fNS::normalize(eyeDirn + direction);
-			//std::cout << "AttenuationFactor " << it.getAttenuationFactor(distance) << " for("<< distance << ")"<< std::endl;
-			color = color
-					+ it.getAttenuationFactor(lightDistance)
-							* calculateColorPerLight(direction, it.getColor(),
-									normal, halfVec, diffuse, specular,
-									shininess);
-		}
-
-	}
-	//now we have the color for this object itself, calculate reflections.
-	if (fabs(this->specular.x) < EPSILON && fabs(this->specular.y) < EPSILON
-			&& fabs(this->specular.z) < EPSILON) {
-		//the object is not reflective, so stop here
-	} else {
-		if (depth > 0) {
-			Ray reflectionRay(intersectionPoint + EPSILON * normal4,
-					ray.getDirection()
-							- 2 * Vec4fNS::dot(ray.getDirection(), normal4)
-									* normal4, 0, 100);
-			Vec3f reflectedColor = tracer.trace(reflectionRay, primitives,
-					lights, depth);
-			reflectedColor = vec3fNS::clamp(reflectedColor, 0, 1);
-			//std::cout << "reflection " << reflectedColor << std::endl;
-			color = color + specular * reflectedColor;
-
-		}
-	}
-	color = color + ambientLight + emissionLight;
-	//Opengl auto clamps, we should do it manually;
-	return vec3fNS::clamp(color, 0, 1); //TODO move clamping to last step, just before writing the pixel.
+	return vec3fNS::normalize(normal);
 }

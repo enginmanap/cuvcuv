@@ -12,6 +12,7 @@
 
 #include "Light.h"
 #include "Vec3f.h"
+#include "Vec4f.h"
 #include "Ray.h"
 #include "Mat4f.h"
 
@@ -28,13 +29,14 @@ protected:
 	Ray transformedRay;
 	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
 			const Vec3f, const Vec3f, const Vec3f, const float) const;
+	virtual Vec3f calculateNormal(const Vec4f&) const = 0;
 public:
 	virtual ~Primitive();
 	bool setTransformation(Mat4f&);
 	virtual bool intersectiontest(Ray, float&) const= 0;
-	virtual Vec3f getColorForRay(const Ray, float,
+	Vec3f getColorForRay(const Ray, float,
 			const std::vector<Primitive*>&, const std::vector<Light>&,
-			const unsigned int) const = 0;
+			const unsigned int) const;
 	bool setLightValues(Vec3f, Vec3f, Vec3f, Vec3f, float);
 
 	Ray generateTransformedRay(const Ray) const;

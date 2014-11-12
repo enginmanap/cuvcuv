@@ -19,7 +19,7 @@ class Triangle: public Primitive {
 
 private:
 	Vec3f a, b, c;
-
+	Vec3f calculateNormal(const Vec4f&) const;
 public:
 	Triangle(Vec3f, Vec3f, Vec3f);
 	virtual ~Triangle();
