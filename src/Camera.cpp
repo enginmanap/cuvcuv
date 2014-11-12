@@ -45,10 +45,6 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 
 }
 
-Camera::~Camera() {
-	// TODO Auto-generated destructor stub
-}
-
 Ray Camera::getRay(int x, int y) {
 	//Calculate the direction
 	//since grader wants pixel centers, we will add 0.5 to pixels.

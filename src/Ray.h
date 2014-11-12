@@ -20,7 +20,6 @@ public:
 	Vec4f getDirection() const;
 	Ray(Vec4f, Vec4f, float,float);
 	Ray(Vec3f, Vec3f, float,float);
-	virtual ~Ray();
 };
 
 std::ostream& operator<<(std::ostream &, const Ray &);

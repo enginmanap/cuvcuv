@@ -23,7 +23,6 @@ public:
 			float, int, int);
 	Ray getRay(int x, int y);
 
-	virtual ~Camera();
 };
 
 #endif /* CAMERA_H_ */

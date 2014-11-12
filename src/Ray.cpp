@@ -28,10 +28,6 @@ Ray::Ray(Vec3f position, Vec3f direction, float min,float max) {
 	this->maxDistance = max;
 }
 
-Ray::~Ray() {
-	// TODO Auto-generated destructor stub
-}
-
 Vec4f Ray::getPosition() const{
 	return position;
 }

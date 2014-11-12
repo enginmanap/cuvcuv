@@ -22,9 +22,6 @@ unsigned int Sampler::getWidht() {
 	return width;
 }
 
-Sampler::~Sampler() {
-	// TODO Auto-generated destructor stub
-}
 
 bool Sampler::getPoint(unsigned int& x, unsigned int& y) {
 	if (currentPoint < height * width) {

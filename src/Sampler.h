@@ -21,7 +21,6 @@ public:
 	unsigned int getHeight();
 	unsigned int getWidht();
 	bool getPoint(unsigned int&, unsigned int&);
-	virtual ~Sampler();
 }
 ;
 
