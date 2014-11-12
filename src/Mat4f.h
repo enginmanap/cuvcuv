@@ -14,7 +14,7 @@
 
 
 #ifndef EPSILON
-#define EPSILON 0.00001F
+#define EPSILON 0.001F
 #endif
 
 class Mat4f {

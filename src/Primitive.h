@@ -16,7 +16,7 @@
 #include "Mat4f.h"
 
 #ifndef EPSILON
-#define EPSILON 0.00001F
+#define EPSILON 0.001F
 #endif
 
 class Primitive {

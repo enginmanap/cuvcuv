@@ -195,20 +195,24 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 }
 
 void Scene::renderScene() {
+	static bool isRenderDone = false;
+	if(isRenderDone){
+		return;
+	}
 	unsigned int x = 0, y = 0;
 	Uint32 color32 = 0;
 	Vec3f color;
 	bool morePixels;
 	Ray ray;
+	int totalPixels = 0;
 
-#pragma omp parallel private(color,color32,x,y,ray) shared (morePixels)
+#pragma omp parallel private(color,color32,x,y,ray) shared (morePixels,totalPixels)
 	{
 #pragma omp critical
 		morePixels = this->sampler->getPoint(x, y);
-		do {
+		while (morePixels) {
 			if (this->camera == NULL) {
 				std::cerr << "Can't render without a camera set." << std::endl;
-
 			}
 			ray = this->camera->getRay(x, y);
 			color = rayTracer.trace(ray, primitives, lights, this->maxDepth);
@@ -219,8 +223,15 @@ void Scene::renderScene() {
 			color32 = color32 | 0xFF000000;
 			pixels[this->sampler->getWidht() * y + x] = color32;
 #pragma omp critical
-			morePixels = this->sampler->getPoint(x, y);
-		} while (morePixels);
+			totalPixels++;
+			if (totalPixels > 100) {
+				break;
+			} else {
+#pragma omp critical
+				morePixels = this->sampler->getPoint(x, y);
+				isRenderDone = !morePixels;
+			}
+		}
 	}
 }
 
