@@ -37,7 +37,6 @@ printf(" ***\n");
 int main(int argc, char **argv) {
 	FreeImage_Initialise();
 	FreeImage_SetOutputMessage(FreeImageErrorHandler);
-	bool leftMouseButtonDown = false;
 	bool quit = false;
 
 	SDL_Event event;
