@@ -57,9 +57,12 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 	//if d > 0, 2 solutions, if d=0 2 solutions are equal
 	// if d < 0 no real solutions
 
-	if (fabs(discriminant) < EPSILON) { // because float 0.0F is near impossible to get with calculation.
-		//this means solutions are equal
+	if (discriminant < EPSILON && discriminant > 0.0f) { // because float 0.0F is near impossible to get with calculation.
+	//this means solutions are equal
 		distance = -1 * b / (2 * a);
+		if (distance < EPSILON) { //this means intersection within, we should pass
+			return false;
+		}
 		return true;
 	} else if (discriminant > 0) { //we know that it is not near 0, so positive is positive
 		//solution1 = (-b + sqrt(discriminant)) / (2*a)
@@ -86,6 +89,9 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 		//std::cout << "for transformedRay " << transformedRay.getPosition() << transformedRay.getDirection() << std::endl;
 		//std::cout << "discriminant: " << discriminant<< ", a: "<< a << ", b: " << b << ", c: " << c << std::endl;
 		//std::cout << "distances: "<< distance1 << " , " <<distance2 << std::endl;
+		if (distance < EPSILON) { //this means intersection within, we should pass
+			return false;
+		}
 		return true;
 	} else { //at that point, discriminant is not near zero, and not positive, so it is negative aka no real solution.
 		//std::cout << "negative disc" << std::endl;
@@ -127,9 +133,9 @@ Vec3f Sphere::getColorForRay(const Ray ray, float distance,
 			direction = vec3fNS::normalize(lightPos - intersectionPoint);
 		}
 		//check if light is blocked or not
-
-		Ray rayToLight(intersectionPoint + EPSILON * normal4, direction, 0,
-				100);
+		Vec4f direction4 = Vec4f(direction, 0.0f);
+		Ray rayToLight(intersectionPoint + EPSILON * 10.0f * direction4,
+				direction, 0, 100);
 		//if(rayToLight.getPosition().getElement(0) * rayToLight.getPosition().getElement(0) +rayToLight.getPosition().getElement(1) * rayToLight.getPosition().getElement(1) + rayToLight.getPosition().getElement(2) * rayToLight.getPosition().getElement(2) < 1)
 		//std::cout << "ray origin (" << rayToLight.getPosition() << ") direction (" << rayToLight.getDirection()<< ")" <<std::endl;
 
@@ -152,7 +158,7 @@ Vec3f Sphere::getColorForRay(const Ray ray, float distance,
 		//the object is not reflective, so stop here
 	} else {
 		if (depth > 0) {
-			Ray reflectionRay(intersectionPoint + EPSILON * normal4,
+			Ray reflectionRay(intersectionPoint + EPSILON * 10.0f * normal4,
 					ray.getDirection()
 							- 2 * Vec4fNS::dot(ray.getDirection(), normal4)
 									* normal4, 0, 100);

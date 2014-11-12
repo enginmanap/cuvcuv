@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 
 	SDL_Init(SDL_INIT_VIDEO);
 
-	SDL_Window * window = SDL_CreateWindow("SDL2 Pixel Drawing",
+	SDL_Window * window = SDL_CreateWindow("Ray Tracer",
 	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width,height, 0);
 
 	SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
@@ -75,21 +75,6 @@ int main(int argc, char **argv) {
 		SDL_PollEvent(&event);
 
 		switch (event.type) {
-		case SDL_MOUSEBUTTONUP:
-			if (event.button.button == SDL_BUTTON_LEFT)
-				leftMouseButtonDown = false;
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-			if (event.button.button == SDL_BUTTON_LEFT)
-				leftMouseButtonDown = true;
-			/* no break */
-		case SDL_MOUSEMOTION:
-			if (leftMouseButtonDown) {
-				int mouseX = event.motion.x;
-				int mouseY = event.motion.y;
-				pixels[mouseY * width + mouseX] = 0;
-			}
-			break;
 		case SDL_QUIT:
 
 			quit = true;
