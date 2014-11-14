@@ -20,10 +20,10 @@
 #include "RayTracer.h"
 #include "Light.h"
 #include <string>
-//SDL defines portable Uint32
-#include "SDL2/SDL.h"
 
+#ifndef COLOR_DEPTH
 #define COLOR_DEPTH 8
+#endif
 
 class Scene {
 
@@ -39,7 +39,7 @@ class Scene {
 	Sampler *sampler;
 
 	float colorRange;
-	Uint32* pixels;
+	unsigned char* pixels;
 
 	short lightCount;
 	std::vector<Light> lights;
@@ -73,7 +73,7 @@ public:
 	std::string getSaveFilename();
 	bool setMaxDepth(unsigned int);
 
-	Uint32* getPixels(int&, int&);
+	unsigned char* getPixels(int&, int&);
 
 	bool createVertexSpace(int);
 	bool addVertex(float, float, float);

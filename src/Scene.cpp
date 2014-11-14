@@ -21,8 +21,8 @@ Scene::Scene(int height, int width) {
 	this->triangleCount = 0;
 	this->lightCount = 0;
 	this->colorRange = pow(2, COLOR_DEPTH) - 1; //for 8 bits, this means 255
-	this->pixels = new Uint32[height * width];
-	memset(this->pixels, 0, height * width * sizeof(Uint32));
+	this->pixels = new unsigned char[height * width * COLOR_DEPTH];
+	memset(this->pixels, 255, height * width * COLOR_DEPTH); //standart says char is 1 byte
 
 	this->currentShininess = 0.0f;
 	this->currentAttenuation = Vec3f(1, 0, 0);
@@ -200,13 +200,12 @@ void Scene::renderScene() {
 		return;
 	}
 	unsigned int x = 0, y = 0;
-	Uint32 color32 = 0;
 	Vec3f color;
 	bool morePixels;
 	Ray ray;
 	int totalPixels = 0;
 
-#pragma omp parallel private(color,color32,x,y,ray) shared (morePixels,totalPixels)
+#pragma omp parallel private(color,x,y,ray) shared (morePixels,totalPixels)
 	{
 #pragma omp critical
 		morePixels = this->sampler->getPoint(x, y);
@@ -217,11 +216,22 @@ void Scene::renderScene() {
 			ray = this->camera->getRay(x, y);
 			color = rayTracer.trace(ray, primitives, lights, this->maxDepth);
 			color = colorRange * color;
-			color32 = (int) color.x << 16;
-			color32 += (int) color.y << 8;
-			color32 += (int) color.z;
-			color32 = color32 | 0xFF000000;
-			pixels[this->sampler->getWidht() * y + x] = color32;
+			unsigned int index = 4 * (this->sampler->getWidht() * y + x);
+			pixels[index + 0] = (unsigned char)color.x;
+			pixels[index + 1] = (unsigned char)color.y;
+			pixels[index + 2] = (unsigned char)color.z;
+			pixels[index + 3] = 255;
+#pragma omp critical
+			if(x == 275 && y == 90){
+			int color32 = 255;
+            color32 = (int) color.x << 16;
+            color32 += (int) color.y << 8;
+            color32 += (int) color.z;
+            color32 = color32 | 0xFF000000;
+			std::cout << (int)pixels[index] << " " << (int)pixels[index+1]<< " " << (int)pixels[index+2]<< " " <<(int)pixels[index+3] << std::endl;
+			//std::cout << (static_cast<void*>(pixels))+index << " " << (int)pixels[index+1]<< " " << (int)pixels[index+2]<< " " <<(static_cast<void*>(pixels))+index+3 << std::endl;
+			std::cout << color32 << ": " << (int)(color32 && 0xFF000000) << " " << (int)(color32 && 0x00FF0000) << " " << (int)(color32 && 0x0000FF00) << " "<< (int)(color32 && 0x000000FF) << " " << std::endl;
+			}
 #pragma omp critical
 			totalPixels++;
 			if (totalPixels > 100) {
@@ -235,7 +245,7 @@ void Scene::renderScene() {
 	}
 }
 
-Uint32* Scene::getPixels(int& height, int& width) {
+unsigned char* Scene::getPixels(int& height, int& width) {
 	height = sampler->getHeight();
 	width = sampler->getWidht();
 	return this->pixels;

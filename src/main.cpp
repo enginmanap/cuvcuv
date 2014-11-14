@@ -1,42 +1,38 @@
+
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <string>
 #include "FileReader.h"
+#ifdef USE_FREEIMAGE_PNG
 #include "FreeImage.h"
+#else
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#endif
 
 #define HEIGHT  640
 #define WIDTH  480
 
-void saveToFile(Uint32 pixels[], int height, int width, std::string filename) {
-	std::cout << "dumping to file " << std::endl;
-	FIBITMAP *img = FreeImage_ConvertFromRawBits((unsigned char *)pixels, width, height, width * 4, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, true);
 
-	if(FreeImage_Save(FIF_PNG, img, filename.c_str(), 	PNG_DEFAULT)){
-		std::cout << "file write successful." << std::endl;
+
+
+void saveToFile(unsigned char pixels[], int height, int width, std::string filename) {
+	std::cout << "exporting to file " << std::endl;
+#ifdef USE_FREEIMAGE_PNG
+    FIBITMAP *img = FreeImage_ConvertFromRawBits(pixels, width, height, width * 4, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
+    if(FreeImage_Save(FIF_PNG, img, filename.c_str(), PNG_DEFAULT) == 0 ){
+#else
+	if(stbi_write_png(filename.c_str(), width, height, 4, pixels, width * 4) == 0){
+#endif
+		std::cerr << "png export failed." << std::endl;
 	} else
-		std::cout << "file write failed." << std::endl;
+		std::cout << "png export finished." << std::endl;
 
 }
-
-/**
-FreeImage error handler
-@param fif Format / Plugin responsible for the error
-@param message Error message
-*/
-void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message) {
-printf("\n*** ");
-if(fif != FIF_UNKNOWN) {
-printf("%s Format\n", FreeImage_GetFormatFromFIF(fif));
-}
-printf(message);
-printf(" ***\n");
-}
-// In your main program …
 
 
 int main(int argc, char **argv) {
-	FreeImage_Initialise();
-	FreeImage_SetOutputMessage(FreeImageErrorHandler);
+
 	bool quit = false;
 
 	SDL_Event event;
@@ -57,7 +53,7 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	Uint32* pixels = scene->getPixels(height, width);
+	unsigned char* pixels = scene->getPixels(height, width);
 
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -65,12 +61,16 @@ int main(int argc, char **argv) {
 	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width,height, 0);
 
 	SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
 	SDL_Texture * texture = SDL_CreateTexture(renderer,
-			SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width,height);
-
+			SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, width,height);
+#else
+	SDL_Texture * texture = SDL_CreateTexture(renderer,
+			SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, width,height);
+#endif
 	while (!quit) {
 		scene->renderScene();
-		SDL_UpdateTexture(texture, NULL, pixels, width * sizeof(Uint32));
+		SDL_UpdateTexture(texture, NULL, pixels, width * 4 ); // for 4 channels
 		SDL_PollEvent(&event);
 
 		switch (event.type) {
@@ -91,6 +91,5 @@ int main(int argc, char **argv) {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
-	FreeImage_DeInitialise();
 	return 0;
 }
