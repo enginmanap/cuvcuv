@@ -105,3 +105,46 @@ Vec3f Sphere::calculateNormal(const Vec4f& position) const {
 	return vec3fNS::normalize(Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose());
 
 }
+
+unsigned char Sphere::isInBoundingBox(const Vec3f& upperEnd, const Vec3f& lowerEnd) const {
+	//0 not in, 1 partially in 2 contained in.
+	unsigned char isIn = 0;
+	//if center is in, we atleast partially in
+	//check each vertex
+	if(this->position.x < upperEnd.x && this->position.y < upperEnd.y && this->position.z < upperEnd.z ){
+		if(this->position.x > lowerEnd.x && this->position.y > lowerEnd.y && this->position.z > lowerEnd.z ){
+			isIn = 1;
+		}
+	}
+
+	//calculate closest face of the bounding box
+	float xDiff, yDiff, zDiff;
+
+	xDiff = fabs(this->position.x - lowerEnd.x);
+
+	if(xDiff > fabs(upperEnd.x - this->position.x)) {
+		xDiff = fabs(upperEnd.x - this->position.x);
+	}
+	if(xDiff < this->radius)
+		return 1;
+
+	yDiff = fabs(this->position.y - lowerEnd.y);
+	if(yDiff > fabs(upperEnd.y - this->position.y)) {
+		yDiff = fabs(upperEnd.y - this->position.y);
+	}
+	if(yDiff < this->radius)
+		return 1;
+
+	zDiff = fabs(this->position.z - lowerEnd.z);
+	if(zDiff > fabs(upperEnd.z - this->position.z)) {
+		zDiff = fabs(upperEnd.z - this->position.z);
+	}
+	if(zDiff < this->radius)
+		return 1;
+
+	if(isIn)
+		return 2;
+	else
+		return 0;
+
+}

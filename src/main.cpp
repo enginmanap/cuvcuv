@@ -68,6 +68,7 @@ int main(int argc, char **argv) {
 	SDL_Texture * texture = SDL_CreateTexture(renderer,
 			SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, width,height);
 #endif
+	scene->buildOctree();
 	while (!quit) {
 		scene->renderScene();
 		SDL_UpdateTexture(texture, NULL, pixels, width * 4 ); // for 4 channels

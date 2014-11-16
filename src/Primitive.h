@@ -40,7 +40,10 @@ public:
 	bool setLightValues(Vec3f, Vec3f, Vec3f, Vec3f, float);
 
 	Ray generateTransformedRay(const Ray) const;
-
+	/**
+	 * return 0 means not in, 1 means partially in, 2 mean contained in.
+	 */
+	virtual unsigned char isInBoundingBox(const Vec3f&, const Vec3f&) const = 0;
 };
 
 #endif /* PRIMITIVE_H_ */

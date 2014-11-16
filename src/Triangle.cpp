@@ -85,3 +85,34 @@ Vec3f Triangle::calculateNormal(const Vec4f& position) const {
 	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
 	return vec3fNS::normalize(normal);
 }
+
+unsigned char Triangle::isInBoundingBox(const Vec3f& upperEnd, const Vec3f& lowerEnd) const {
+	//0 not in, 1 partially in 2 contained in.
+	unsigned char isIn = 0;
+	//check each vertex
+	if(this->a.x < upperEnd.x && this->a.y < upperEnd.y && this->a.z < upperEnd.z ){
+		if(this->a.x > lowerEnd.x && this->a.y > lowerEnd.y && this->a.z > lowerEnd.z ){
+			//a is in it, so atleast a partial hit.
+			isIn += 1;
+		}
+	}
+	if(this->b.x < upperEnd.x && this->b.y < upperEnd.y && this->b.z < upperEnd.z ){
+		if(this->b.x > lowerEnd.x && this->b.y > lowerEnd.y && this->b.z > lowerEnd.z ){
+			//b is in it, so atleast a partial hit.
+			isIn += 1;
+		}
+	}
+	if(this->c.x < upperEnd.x && this->c.y < upperEnd.y && this->c.z < upperEnd.z ){
+		if(this->c.x > lowerEnd.x && this->c.y > lowerEnd.y && this->c.z > lowerEnd.z ){
+			//c is in it, so atleast a partial hit.
+			isIn += 1;
+		}
+	}
+	if(isIn == 3){
+		return 2;
+	} else if (isIn == 0) {
+		return 0;
+	}
+	return 1;
+
+}

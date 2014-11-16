@@ -9,8 +9,8 @@ SDL_LIB = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf
 
 SDL_INCLUDE = `sdl2-config --cflags`
 # You may need to change -std=c++11 to -std=c++0x if your compiler is a bit older
-#CXXFLAGS = -Wall -c -ggdb -std=c++11 $(SDL_INCLUDE)
-CXXFLAGS = -fopenmp -Wall -ggdb -c $(SDL_INCLUDE) -DUSE_FREEIMAGE_PNG
+#CXXFLAGS = -Wall -c -ggdb -std=c++11 $(SDL_INCLUDE) -DUSE_FREEIMAGE_PNG
+CXXFLAGS = -fopenmp -Wall -g -c $(SDL_INCLUDE) 
 LDFLAGS = $(SDL_LIB) -L./lib/ -lFreeImage -lgomp
 EXE = rayTracer
 BINARY_PATH=bin/
@@ -18,7 +18,7 @@ SOURCE_PATH=src/
 
 all: $(BINARY_PATH)$(EXE)
 
-$(BINARY_PATH)$(EXE): $(BINARY_PATH)Light.o $(BINARY_PATH)Transform.o $(BINARY_PATH)Mat4f.o $(BINARY_PATH)Primitive.o $(BINARY_PATH)Vec4f.o $(BINARY_PATH)Triangle.o $(BINARY_PATH)Ray.o $(BINARY_PATH)RayTracer.o $(BINARY_PATH)Sphere.o $(BINARY_PATH)Vec3f.o $(BINARY_PATH)Sampler.o $(BINARY_PATH)Camera.o $(BINARY_PATH)Scene.o $(BINARY_PATH)FileReader.o $(BINARY_PATH)main.o 
+$(BINARY_PATH)$(EXE): $(BINARY_PATH)Octree.o $(BINARY_PATH)Light.o $(BINARY_PATH)Transform.o $(BINARY_PATH)Mat4f.o $(BINARY_PATH)Primitive.o $(BINARY_PATH)Vec4f.o $(BINARY_PATH)Triangle.o $(BINARY_PATH)Ray.o $(BINARY_PATH)RayTracer.o $(BINARY_PATH)Sphere.o $(BINARY_PATH)Vec3f.o $(BINARY_PATH)Sampler.o $(BINARY_PATH)Camera.o $(BINARY_PATH)Scene.o $(BINARY_PATH)FileReader.o $(BINARY_PATH)main.o 
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINARY_PATH)main.o: $(SOURCE_PATH)main.cpp 
@@ -80,6 +80,10 @@ $(BINARY_PATH)Transform.o: $(SOURCE_PATH)Transform.cpp $(SOURCE_PATH)Transform.h
 $(BINARY_PATH)Light.o: $(SOURCE_PATH)Light.cpp $(SOURCE_PATH)Light.h
 	mkdir -p $(BINARY_PATH)
 	$(CXX) $(CXXFLAGS) $< -o $@
-	
+
+$(BINARY_PATH)Octree.o: $(SOURCE_PATH)Octree.cpp $(SOURCE_PATH)Octree.h
+	mkdir -p $(BINARY_PATH)
+	$(CXX) $(CXXFLAGS) $< -o $@
+		
 clean:
 	rm -rf $(BINARY_PATH)/*.o $(BINARY_PATH)/rayTracer.exe 

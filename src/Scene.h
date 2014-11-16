@@ -19,6 +19,7 @@
 #include "Ray.h"
 #include "RayTracer.h"
 #include "Light.h"
+#include "Octree.h"
 #include <string>
 
 #ifndef COLOR_DEPTH
@@ -86,6 +87,7 @@ public:
 	Mat4f popTransform();
 	Mat4f addTransform(Mat4f&);
 
+	void buildOctree();
 	void renderScene();
 };
 

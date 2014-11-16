@@ -194,11 +194,16 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 	return true;
 }
 
+void Scene::buildOctree(){
+	Octree octreeRoot(NULL, Vec3f(128.0f,128.0f,128.0f),Vec3f(-128.0f,-128.0f,-128.0f),primitives);
+}
+
 void Scene::renderScene() {
 	static bool isRenderDone = false;
 	if(isRenderDone){
 		return;
 	}
+
 	unsigned int x = 0, y = 0;
 	Vec3f color;
 	bool morePixels;
@@ -221,17 +226,6 @@ void Scene::renderScene() {
 			pixels[index + 1] = (unsigned char)color.y;
 			pixels[index + 2] = (unsigned char)color.z;
 			pixels[index + 3] = 255;
-#pragma omp critical
-			if(x == 275 && y == 90){
-			int color32 = 255;
-            color32 = (int) color.x << 16;
-            color32 += (int) color.y << 8;
-            color32 += (int) color.z;
-            color32 = color32 | 0xFF000000;
-			std::cout << (int)pixels[index] << " " << (int)pixels[index+1]<< " " << (int)pixels[index+2]<< " " <<(int)pixels[index+3] << std::endl;
-			//std::cout << (static_cast<void*>(pixels))+index << " " << (int)pixels[index+1]<< " " << (int)pixels[index+2]<< " " <<(static_cast<void*>(pixels))+index+3 << std::endl;
-			std::cout << color32 << ": " << (int)(color32 && 0xFF000000) << " " << (int)(color32 && 0x00FF0000) << " " << (int)(color32 && 0x0000FF00) << " "<< (int)(color32 && 0x000000FF) << " " << std::endl;
-			}
 #pragma omp critical
 			totalPixels++;
 			if (totalPixels > 100) {
