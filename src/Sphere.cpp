@@ -116,7 +116,7 @@ unsigned char Sphere::isInBoundingBox(const Vec3f& upperEnd, const Vec3f& lowerE
 			isIn = 1;
 		}
 	}
-
+/*
 	//calculate closest face of the bounding box
 	float xDiff, yDiff, zDiff;
 
@@ -141,10 +141,29 @@ unsigned char Sphere::isInBoundingBox(const Vec3f& upperEnd, const Vec3f& lowerE
 	}
 	if(zDiff < this->radius)
 		return 1;
+*/
+	float xMax = (this->position.x > lowerEnd.x) ? this->position.x : lowerEnd.x;
+	float yMax = (this->position.y > lowerEnd.y) ? this->position.y : lowerEnd.y;
+	float zMax = (this->position.z > lowerEnd.z) ? this->position.z : lowerEnd.z;
 
-	if(isIn)
-		return 2;
-	else
-		return 0;
+	float xMin = (xMax < upperEnd.x) ? xMax : upperEnd.x;
+	float yMin = (yMax < upperEnd.y) ? yMax : upperEnd.y;
+	float zMin = (zMax < upperEnd.z) ? zMax : upperEnd.z;
+
+	Vec3f closestPoint(xMin,yMin,zMin);
+	Vec3f distance = closestPoint - this->position;
+
+	float distanceSQ = (distance.x * distance.x + distance.y * distance.y + distance.z * distance.z);
+
+	if(distanceSQ > radius * radius){
+		//this means there is no intersection.
+		if(isIn)
+			return 2;
+		else
+			return 0;
+	} else {
+		//there is an intersection
+		return 1;
+	}
 
 }
