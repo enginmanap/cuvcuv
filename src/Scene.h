@@ -54,6 +54,7 @@ class Scene {
 
 	unsigned int maxDepth;
 	RayTracer rayTracer;
+	Octree *spatialTree;
 
 public:
 

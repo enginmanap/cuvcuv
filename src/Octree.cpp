@@ -18,10 +18,11 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primi
 	this->lowerEnd = lowerEnd;
 	Vec3f temp = this->upperEnd + this->lowerEnd;
 	this->center = ((float)1/2) * temp;
-	std::cout << level << "up: " << upperEnd << ", low: " << lowerEnd << ", primitives: " << primitives.size() << ", center: " << center << std::endl;
+	//std::cout << level << "up: " << upperEnd << ", low: " << lowerEnd << ", primitives: " << primitives.size() << ", center: " << center << std::endl;
 	memset(children, 0,sizeof(Octree*) * 8);
 
-	std::vector<Primitive*> contained,notContained,toCheck; //this should be done by addPrimitive method.
+	std::vector<Primitive*> contained,notContained,toCheck; //TODO this should be done by addPrimitive method.
+	toCheck = primitives;
 	if(primitives.size() > 1) {
 		//we should calculate children
 		if(upperEnd.x - lowerEnd.x >1.0f) {//if we can split more
@@ -53,7 +54,7 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primi
 			down[6] = center; down[6].x = lowerEnd.x; down[6].y = lowerEnd.y;
 			down[7] = center; down[7].x = lowerEnd.x; down[7].z = lowerEnd.z;down[7].y = lowerEnd.y;
 			//std::cout << "low1: " << down[1]<< std::endl;
-			toCheck = primitives;
+
 			for (unsigned int subtree = 0; subtree < 8; ++subtree) {
 				for(unsigned int primitive=0; primitive < toCheck.size(); ++primitive) {
 					switch (toCheck[primitive]->isInBoundingBox(up[subtree],down[subtree])) {
@@ -85,10 +86,14 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primi
 			}
 		}
 	}
-
+	this->primitives = toCheck; //this leaf only has the elements that its children does not
 }
 
 Octree::~Octree() {
-	// TODO Auto-generated destructor stub
+	for (int i = 0; i < 8; ++i) {
+		if(children[i]!=0){
+			delete children[i];
+		}
+	}
 }
 

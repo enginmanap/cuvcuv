@@ -33,6 +33,8 @@ Scene::Scene(int height, int width) {
 
 	this->maxDepth = 5;
 
+	this->spatialTree = NULL;
+
 }
 
 bool Scene::setSaveFilename(std::string filename) {
@@ -195,7 +197,9 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 }
 
 void Scene::buildOctree(){
-	Octree octreeRoot(NULL, Vec3f(128.0f,128.0f,128.0f),Vec3f(-128.0f,-128.0f,-128.0f),primitives);
+	std::cout << "generating spatial tree.." <<std::endl;
+	this->spatialTree = new Octree(NULL, Vec3f(128.0f,128.0f,128.0f),Vec3f(-128.0f,-128.0f,-128.0f),primitives);
+	std::cout << "spatial tree generated."<< std::endl;
 }
 
 void Scene::renderScene() {
@@ -209,10 +213,7 @@ void Scene::renderScene() {
 	bool morePixels;
 	Ray ray;
 	int totalPixels = 0;
-
-#pragma omp parallel private(color,x,y,ray) shared (morePixels,totalPixels)
 	{
-#pragma omp critical
 		morePixels = this->sampler->getPoint(x, y);
 		while (morePixels) {
 			if (this->camera == NULL) {
@@ -226,12 +227,10 @@ void Scene::renderScene() {
 			pixels[index + 1] = (unsigned char)color.y;
 			pixels[index + 2] = (unsigned char)color.z;
 			pixels[index + 3] = 255;
-#pragma omp critical
 			totalPixels++;
 			if (totalPixels > 100) {
 				break;
 			} else {
-#pragma omp critical
 				morePixels = this->sampler->getPoint(x, y);
 				isRenderDone = !morePixels;
 			}
