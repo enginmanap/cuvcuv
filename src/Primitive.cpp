@@ -52,7 +52,7 @@ bool Primitive::setLightValues(Vec3f ambientLight, Vec3f emissionLight,
 }
 
 Vec3f Primitive::getColorForRay(const Ray ray, float distance,
-		const std::vector<Primitive*>& primitives,
+		const Octree& octree,
 		const std::vector<Light>& lights, const unsigned int depth) const {
 	Vec3f color;
 
@@ -85,7 +85,7 @@ Vec3f Primitive::getColorForRay(const Ray ray, float distance,
 		//if(rayToLight.getPosition().getElement(0) * rayToLight.getPosition().getElement(0) +rayToLight.getPosition().getElement(1) * rayToLight.getPosition().getElement(1) + rayToLight.getPosition().getElement(2) * rayToLight.getPosition().getElement(2) < 1)
 		//std::cout << "ray origin (" << rayToLight.getPosition() << ") direction (" << rayToLight.getDirection()<< ")" <<std::endl;
 
-		if (tracer.traceToLight(rayToLight, primitives, *(&it))) {
+		if (tracer.traceToLight(rayToLight, octree, *(&it))) {
 			float lightDistance =
 					(it.getPosition() - rayToLight.getPosition()).length();
 			Vec3f halfVec = vec3fNS::normalize(direction + eyeDirn);
@@ -108,7 +108,7 @@ Vec3f Primitive::getColorForRay(const Ray ray, float distance,
 					ray.getDirection()
 							- 2 * Vec4fNS::dot(ray.getDirection(), normal4)
 									* normal4, 0, 100);
-			Vec3f reflectedColor = tracer.trace(reflectionRay, primitives,
+			Vec3f reflectedColor = tracer.trace(reflectionRay, octree,
 					lights, depth);
 			reflectedColor = vec3fNS::clamp(reflectedColor, 0, 1);
 			//std::cout << "reflection " << reflectedColor << std::endl;

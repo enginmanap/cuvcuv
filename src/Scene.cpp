@@ -220,7 +220,7 @@ void Scene::renderScene() {
 				std::cerr << "Can't render without a camera set." << std::endl;
 			}
 			ray = this->camera->getRay(x, y);
-			color = rayTracer.trace(ray, primitives, lights, this->maxDepth);
+			color = rayTracer.trace(ray, *spatialTree, lights, this->maxDepth);
 			color = colorRange * color;
 			unsigned int index = 4 * (this->sampler->getWidht() * y + x);
 			pixels[index + 0] = (unsigned char)color.x;

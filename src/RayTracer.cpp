@@ -16,15 +16,16 @@ RayTracer::~RayTracer() {
 }
 
 bool RayTracer::traceToLight(const Ray ray,
-		const std::vector<Primitive*> &Primitives, const Light light) const {
+		const Octree& octree, const Light light) const {
 	Vec4f route = light.getPosition() - ray.getPosition();
 	float distance =  route.length();
 	//std::cout << "distance to light " << distance << std::endl;
 	float intersectionDistance;
 	Primitive* intersectingPrimitive = NULL;
 
-	for (std::vector<Primitive*>::const_iterator it = Primitives.begin();
-			it != Primitives.end(); it++) {
+	std::vector<Primitive*> primitives = octree.getIntersectingPrimitives(ray);
+	for (std::vector<Primitive*>::const_iterator it = primitives.begin();
+			it != primitives.end(); it++) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
 			//found intersection
 			if (distance > intersectionDistance) {
@@ -45,13 +46,17 @@ bool RayTracer::traceToLight(const Ray ray,
 }
 
 Vec3f RayTracer::trace(const Ray ray,
-		const std::vector<Primitive*> &Primitives, const std::vector<Light> &lights, const unsigned int depth) const {
+		const Octree& octree, const std::vector<Light> &lights, const unsigned int depth) const {
 	float distance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
 	float intersectionDistance;
 	Primitive* intersectingPrimitive = NULL;
 
-	for (std::vector<Primitive*>::const_iterator it = Primitives.begin();
-			it != Primitives.end(); it++) {
+	std::vector<Primitive*> primitives = octree.getIntersectingPrimitives(ray);
+	if(primitives.size() > 0){
+		//std::cout << "primitive returned" << std::endl;
+	}
+	for (std::vector<Primitive*>::const_iterator it = primitives.begin();
+			it != primitives.end(); it++) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
 			//found intersection
 			if (distance > intersectionDistance) {
@@ -63,7 +68,7 @@ Vec3f RayTracer::trace(const Ray ray,
 	}
 
 	if (intersectingPrimitive != NULL) {
-		return intersectingPrimitive->getColorForRay(ray, distance, Primitives, lights, depth-1);
+		return intersectingPrimitive->getColorForRay(ray, distance, octree, lights, depth-1);
 	} else {
 		return Vec3f(0.0f, 0.0f, 0.0f);
 	}

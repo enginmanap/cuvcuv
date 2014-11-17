@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include "Octree.h"
 #include "Light.h"
 #include "Vec3f.h"
 #include "Vec4f.h"
@@ -19,6 +20,8 @@
 #ifndef EPSILON
 #define EPSILON 0.001F
 #endif
+
+class Octree;
 
 class Primitive {
 
@@ -37,7 +40,7 @@ public:
 	bool setTransformation(Mat4f&);
 	virtual bool intersectiontest(Ray, float&) const= 0;
 	Vec3f getColorForRay(const Ray, float,
-			const std::vector<Primitive*>&, const std::vector<Light>&,
+			const Octree&, const std::vector<Light>&,
 			const unsigned int) const;
 	bool setLightValues(Vec3f, Vec3f, Vec3f, Vec3f, float);
 

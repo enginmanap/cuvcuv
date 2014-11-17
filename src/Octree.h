@@ -11,15 +11,20 @@
 #include <vector>
 #include "Vec3f.h"
 #include "Primitive.h"
+#include "Ray.h"
+
+class Primitive;
 
 class Octree {
-public:
-	Octree(Octree*, Vec3f, Vec3f, std::vector<Primitive*>);
-	virtual ~Octree();
-	std::vector<Primitive*> primitives;
+	std::vector<Primitive *> primitives;
 	Octree* parent;
 	Octree* children[8];
 	Vec3f upperEnd, lowerEnd, center;
+public:
+	Octree(Octree*, Vec3f, Vec3f, std::vector<Primitive*>);
+	virtual ~Octree();
+	bool isRayIntersects(const Ray&) const;
+	std::vector<Primitive*> getIntersectingPrimitives(const Ray&) const;
 };
 
 #endif /* SRC_OCTREE_H_ */

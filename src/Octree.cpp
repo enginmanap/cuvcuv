@@ -18,7 +18,6 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primi
 	this->lowerEnd = lowerEnd;
 	Vec3f temp = this->upperEnd + this->lowerEnd;
 	this->center = ((float)1/2) * temp;
-	//std::cout << level << "up: " << upperEnd << ", low: " << lowerEnd << ", primitives: " << primitives.size() << ", center: " << center << std::endl;
 	memset(children, 0,sizeof(Octree*) * 8);
 
 	std::vector<Primitive*> contained,notContained,toCheck; //TODO this should be done by addPrimitive method.
@@ -87,6 +86,7 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primi
 		}
 	}
 	this->primitives = toCheck; //this leaf only has the elements that its children does not
+	std::cout << level << "up: " << upperEnd << ", low: " << lowerEnd << ", primitives: " << toCheck.size() << ", center: " << center << std::endl;
 }
 
 Octree::~Octree() {
@@ -95,5 +95,74 @@ Octree::~Octree() {
 			delete children[i];
 		}
 	}
+}
+
+/*
+ * Checks if ray intersects bounding box using slab method
+ * http://www.siggraph.org/education/materials/HyperGraph/raytrace/rtinter3.htm
+ */
+bool Octree::isRayIntersects(const Ray& ray) const{
+	//FIXME inverse calculation is heavy, it should be moved to a
+	//place where it would be done once
+	Vec3f directionInverse = Vec3f(1.0/ray.getDirection().x, 1.0/ray.getDirection().y, 1.0/ray.getDirection().z);
+
+
+	  float lowerXIntersection = (lowerEnd.x - ray.getDirection().x)*directionInverse.x;
+	  float upperXIntersection = (upperEnd.x - ray.getDirection().x)*directionInverse.x;
+
+	  float tmin = std::min(lowerXIntersection, upperXIntersection);
+	  float tmax = std::max(lowerXIntersection, upperXIntersection);
+
+	  float lowerYIntersection = (lowerEnd.y - ray.getDirection().y)*directionInverse.y;
+	  float upperYIntersection = (upperEnd.y - ray.getDirection().y)*directionInverse.y;
+
+	  tmin = std::max(tmin, std::min(lowerYIntersection, upperYIntersection));
+	  tmax = std::min(tmax, std::max(lowerYIntersection, upperYIntersection));
+
+	  float loverZIntersection = (lowerEnd.z - ray.getDirection().z)*directionInverse.z;
+	  float upperZIntersection = (upperEnd.z - ray.getDirection().z)*directionInverse.z;
+
+	  tmin = std::max(tmin, std::min(loverZIntersection, upperZIntersection));
+	  tmax = std::min(tmax, std::max(loverZIntersection, upperZIntersection));
+
+	  return tmax >= std::max(0.0f, tmin); //TODO does this have to be maxed?
+}
+
+/**
+ * this function returns primitives that are
+ * possibly intersecting with the ray, in the
+ * intersection order. Normally we expect returning 1 primitive
+ * but if multiple primitives are in smallest box, it is possible.
+ */
+std::vector<Primitive*> Octree::getIntersectingPrimitives(const Ray& ray) const{
+	//std::cout << "checkFor up: " << upperEnd << ", low: " << lowerEnd << ", primitives: " << primitives.size() << std::endl;
+	std::vector<Primitive*> primitives;
+	//the camera might be in the box, in that case, the box itself is considered intersecting
+	Vec3f rayPos = ray.getPosition();
+	bool isCameraIn = false;
+	if(rayPos.x >= lowerEnd.x && rayPos.x <= upperEnd.x &&
+		rayPos.y >= lowerEnd.y && rayPos.y <= upperEnd.y &&
+		rayPos.z >= lowerEnd.z && rayPos.z <= upperEnd.z) {
+		//the equals are needed, because event though calculating exact 0 is hard, giving it is easy
+		isCameraIn = true;
+	}
+
+	if(this->isRayIntersects(ray) || isCameraIn){
+		//std::cout << "found intersection" << std::endl;
+ 		//the primitives in this element should be put in the vector
+		//FIXME the order is not correct yet
+		if(children[0] != NULL){ //we know if there is 1 child, there are 8
+		for (int i = 0; i < 8; ++i) {
+				if(children[i]->primitives.size() > 0) {
+				std::vector<Primitive*> temp = children[i]->getIntersectingPrimitives(ray);
+				primitives.insert(primitives.end(),temp.begin(),temp.end());
+				}
+			}
+		}
+		primitives.insert(primitives.end(),this->primitives.begin(),this->primitives.end());
+	}
+	//if(primitives.size() > 0)
+		//std::cout << "found primitive" << std::endl;
+	return primitives;
 }
 
