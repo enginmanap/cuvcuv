@@ -12,6 +12,7 @@ Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3) {
 	b = vertice2;
 	c = vertice3;
 
+	generateBoundingBox();
 }
 
 Triangle::~Triangle() {
@@ -20,10 +21,11 @@ Triangle::~Triangle() {
 
 
 void Triangle::generateBoundingBox(){
+	std::cout<<"generate box" << std::endl;
 	//first calculate values of the vertex points, after transformations
-	Vec3f transformedA = this->transformMatrix * Vec4f(a,1.0f); //1.0f since this is not a direction, but position
-	Vec3f transformedB = this->transformMatrix * Vec4f(b,1.0f);
-	Vec3f transformedC = this->transformMatrix * Vec4f(c,1.0f);
+	Vec3f transformedA = Vec4f(a,1.0f) * this->transformMatrix; //1.0f since this is not a direction, but position
+	Vec3f transformedB = Vec4f(b,1.0f) * this->transformMatrix;
+	Vec3f transformedC = Vec4f(c,1.0f) * this->transformMatrix;
 
 	//now calculate the bounding box
 	float xMax = std::max(transformedA.x, std::max(transformedB.x, transformedC.x));
