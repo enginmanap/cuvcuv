@@ -43,18 +43,21 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	v = vec3fNS::cross(w, u);
 
 
+	halfWidth = (float) width / 2;
+	halfHeight = (float) height / 2;
+	xChangeFactor = tan(fovx / 2) / halfWidth;
+	yChangeFactor = tan(fovy / 2) / halfHeight;
 }
 
 Ray Camera::getRay(int x, int y) {
 	//Calculate the direction
 	//since grader wants pixel centers, we will add 0.5 to pixels.
 
-	float horizontalChange = tan(fovx / 2)
-			* (((float) x + 0.5f - ((float) width / 2)) / ((float) width / 2));
+	float horizontalChange = xChangeFactor
+			* ((float) x + 0.5f - halfWidth);
 
-	float verticalChange = tan(fovy / 2)
-			* ((((float) height / 2) - ((float) y + 0.5f))
-					/ ((float) height / 2));
+	float verticalChange = yChangeFactor
+			* (halfHeight - (float)y + 0.5f);
 	//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
 	Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 	//Vec3f direction = (verticalChange * u) + (horizontalChange* v) - w;

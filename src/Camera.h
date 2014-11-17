@@ -18,6 +18,8 @@ private:
 	float fovy, fovx;
 	int height, width;
 	Vec3f w,u,v;
+
+	float xChangeFactor,yChangeFactor,halfWidth,halfHeight;
 public:
 	Camera(float, float, float, float, float, float, float, float, float,
 			float, int, int);
