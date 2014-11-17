@@ -12,12 +12,13 @@
 
 class Ray {
 private:
-	Vec4f position, direction;
+	Vec4f position, direction, inverseDirection;
 	float minDistance, maxDistance;
 public:
 	Ray();
 	Vec4f getPosition() const;
 	Vec4f getDirection() const;
+	Vec4f getInverseDirection() const;
 	Ray(Vec4f, Vec4f, float,float);
 	Ray(Vec3f, Vec3f, float,float);
 };

@@ -31,11 +31,15 @@ protected:
 	Mat4f inverseTransformMat, transformMatrix;
 	Ray transformedRay;
 	Vec3f bbUpper, bbLower, bbCenter, bbwidths;
+
+	static unsigned int lastID;
+	unsigned int id;
 	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
 			const Vec3f, const Vec3f, const Vec3f, const float) const;
 	virtual Vec3f calculateNormal(const Vec4f&) const = 0;
 	virtual void generateBoundingBox() = 0;
 public:
+	Primitive();
 	virtual ~Primitive();
 	bool setTransformation(Mat4f&);
 	virtual bool intersectiontest(Ray, float&) const= 0;

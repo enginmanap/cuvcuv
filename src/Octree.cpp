@@ -104,7 +104,7 @@ Octree::~Octree() {
 bool Octree::isRayIntersects(const Ray& ray) const{
 	//FIXME inverse calculation is heavy, it should be moved to a
 	//place where it would be done once
-	Vec3f directionInverse = Vec3f(1.0/ray.getDirection().x, 1.0/ray.getDirection().y, 1.0/ray.getDirection().z);
+	Vec3f directionInverse =ray.getInverseDirection();
 
 
 	  float lowerXIntersection = (lowerEnd.x - ray.getDirection().x)*directionInverse.x;

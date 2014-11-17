@@ -16,6 +16,8 @@ Ray::Ray(Vec4f position, Vec4f direction, float min,float max) {
 	this->position = position;
 	this->direction = direction;
 
+	this->inverseDirection = Vec4f(1.0/this->direction.x, 1.0/this->direction.y, 1.0/this->direction.z, 0.0f);
+
 	this->minDistance = min;
 	this->maxDistance = max;
 }
@@ -34,6 +36,10 @@ Vec4f Ray::getPosition() const{
 
 Vec4f Ray::getDirection() const{
 	return direction;
+}
+
+Vec4f Ray::getInverseDirection() const{
+	return inverseDirection;
 }
 
 std::ostream& operator<<(std::ostream &strm, const Ray &ray){

@@ -53,8 +53,7 @@ Vec3f RayTracer::trace(const Ray ray,
 
 	std::vector<Primitive*> primitives = octree.getIntersectingPrimitives(ray);
 	if(primitives.size() > 0){
-		//std::cout << "primitive returned" << std::endl;
-	}
+		std::cout << "intersectionTest for "<< primitives.size() << std::endl;
 	for (std::vector<Primitive*>::const_iterator it = primitives.begin();
 			it != primitives.end(); it++) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
@@ -65,6 +64,7 @@ Vec3f RayTracer::trace(const Ray ray,
 			}
 
 		}
+	}
 	}
 
 	if (intersectingPrimitive != NULL) {

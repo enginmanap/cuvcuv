@@ -31,7 +31,7 @@ void saveToFile(unsigned char pixels[], int height, int width, std::string filen
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char *argv[]) {
 
 	bool quit = false;
 
