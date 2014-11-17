@@ -20,13 +20,13 @@ class Triangle: public Primitive {
 private:
 	Vec3f a, b, c;
 	Vec3f calculateNormal(const Vec4f&) const;
+	void generateBoundingBox();
 public:
 	Triangle(Vec3f, Vec3f, Vec3f);
 	virtual ~Triangle();
 
 	bool intersectiontest(Ray, float&) const;
 	Vec3f getColorForRay(const Ray,  float, const std::vector<Primitive*>&, const std::vector<Light>&, const unsigned int) const;
-	unsigned char isInBoundingBox(const Vec3f&, const Vec3f&) const;
 };
 
 #endif /* SRC_TRIANGLE_H_ */

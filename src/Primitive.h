@@ -27,9 +27,11 @@ protected:
 	float shininess;
 	Mat4f inverseTransformMat, transformMatrix;
 	Ray transformedRay;
+	Vec3f bbUpper, bbLower, bbCenter, bbwidths;
 	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
 			const Vec3f, const Vec3f, const Vec3f, const float) const;
 	virtual Vec3f calculateNormal(const Vec4f&) const = 0;
+	virtual void generateBoundingBox() = 0;
 public:
 	virtual ~Primitive();
 	bool setTransformation(Mat4f&);
@@ -43,7 +45,7 @@ public:
 	/**
 	 * return 0 means not in, 1 means partially in, 2 mean contained in.
 	 */
-	virtual unsigned char isInBoundingBox(const Vec3f&, const Vec3f&) const = 0;
+	unsigned char isInBoundingBox(const Vec3f&, const Vec3f&) const;
 };
 
 #endif /* PRIMITIVE_H_ */

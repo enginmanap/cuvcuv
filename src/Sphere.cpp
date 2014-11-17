@@ -7,12 +7,46 @@
 
 #include "Sphere.h"
 
+
+void Sphere::generateBoundingBox(){
+	//calculate the bounding box for this sphere
+
+	//we assume it was a sphere in 0,0,0 with radius 1, we will put real values in motion afterwards
+	float xRadius, yRadius, zRadius;
+	xRadius = sqrt(pow(this->transformMatrix.getElement(0,0),2) +pow(this->transformMatrix.getElement(1,0),2) + pow(this->transformMatrix.getElement(2,0),2));
+	yRadius = sqrt(pow(this->transformMatrix.getElement(0,1),2) +pow(this->transformMatrix.getElement(1,1),2) +pow(this->transformMatrix.getElement(2,1),2));
+	zRadius = sqrt(pow(this->transformMatrix.getElement(0,2),2) +pow(this->transformMatrix.getElement(1,2),2) +pow(this->transformMatrix.getElement(2,2),2));
+
+	//now put real radius in use
+	xRadius *=this->radius;
+	yRadius *=this->radius;
+	zRadius *=this->radius;
+
+	//now calculate max and min points for bounding box. We are adding real position at this step
+	float xMax = xRadius + this->position.x + this->transformMatrix.getElement(3,0);
+	float yMax = yRadius + this->position.y + this->transformMatrix.getElement(3,1);
+	float zMax = zRadius + this->position.z + this->transformMatrix.getElement(3,2);
+	this->bbUpper = Vec3f(xMax,yMax,zMax);
+
+	float xMin = -xRadius + this->position.x + this->transformMatrix.getElement(0,3);
+	float yMin = -yRadius + this->position.y + this->transformMatrix.getElement(1,3);
+	float zMin = -zRadius + this->position.z + this->transformMatrix.getElement(2,3);
+	this->bbLower=Vec3f(xMin,yMin,zMin);
+
+	float xCenter = (xMax + xMin) /2;
+	float yCenter = (yMax + yMin) /2;
+	float zCenter = (zMax + zMin) /2;
+	this->bbCenter=Vec3f(xCenter,yCenter,zCenter);
+
+	this->bbwidths = Vec3f(xRadius,yRadius,zRadius);
+}
+
 Sphere::Sphere(float x, float y, float z, float rad) {
 	this->position.x = x;
 	this->position.y = y;
 	this->position.z = z;
 	this->radius = rad;
-
+	generateBoundingBox();
 }
 
 Sphere::~Sphere() {
@@ -103,117 +137,5 @@ Vec3f Sphere::calculateNormal(const Vec4f& position) const {
 	//calculate the normal, if there were no transformations, than inverse transpose the normal.
 	Vec3f normal = ((Vec3f) (position * this->inverseTransformMat))	- this->position;
 	return vec3fNS::normalize(Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose());
-
-}
-
-unsigned char Sphere::isInBoundingBox(const Vec3f& upperEnd, const Vec3f& lowerEnd) const {
-	/*
-	//0 not in, 1 partially in 2 contained in.
-	unsigned char isIn = 0;
-	//if center is in, we atleast partially in
-	//check each vertex
-	if(this->position.x < upperEnd.x && this->position.y < upperEnd.y && this->position.z < upperEnd.z ){
-		if(this->position.x > lowerEnd.x && this->position.y > lowerEnd.y && this->position.z > lowerEnd.z ){
-			isIn = 1;
-		}
-	}
-
-	float xMax = (this->position.x > lowerEnd.x) ? this->position.x : lowerEnd.x;
-	float yMax = (this->position.y > lowerEnd.y) ? this->position.y : lowerEnd.y;
-	float zMax = (this->position.z > lowerEnd.z) ? this->position.z : lowerEnd.z;
-
-	float xMin = (xMax < upperEnd.x) ? xMax : upperEnd.x;
-	float yMin = (yMax < upperEnd.y) ? yMax : upperEnd.y;
-	float zMin = (zMax < upperEnd.z) ? zMax : upperEnd.z;
-
-	Vec3f closestPoint(xMin,yMin,zMin);
-	Vec3f distance = closestPoint - this->position;
-
-	float distanceSQ = (distance.x * distance.x + distance.y * distance.y + distance.z * distance.z);
-
-	if(distanceSQ > radius * radius){
-		//this means there is no intersection.
-		if(isIn)
-			return 2;
-		else
-			return 0;
-	} else {
-		//there is an intersection
-		return 1;
-	}
-*/
-	//calculate the bounding box for this sphere
-
-	//we assume it was a sphere in 0,0,0 with radius 1
-	float xRadius, yRadius, zRadius;
-	xRadius = sqrt(pow(this->transformMatrix.getElement(0,0),2) +pow(this->transformMatrix.getElement(0,1),2) + pow(this->transformMatrix.getElement(0,2),2));
-	yRadius = sqrt(pow(this->transformMatrix.getElement(1,0),2) +pow(this->transformMatrix.getElement(1,1),2) +pow(this->transformMatrix.getElement(1,2),2));
-	zRadius = sqrt(pow(this->transformMatrix.getElement(2,0),2) +pow(this->transformMatrix.getElement(2,1),2) +pow(this->transformMatrix.getElement(2,2),2));
-
-	//now put radius in use
-	xRadius *=this->radius;
-	yRadius *=this->radius;
-	zRadius *=this->radius;
-
-	//now calculate max and min points for bounding box
-	float xMax = xRadius + this->position.x + this->transformMatrix.getElement(0,3);
-	float yMax = yRadius + this->position.y + this->transformMatrix.getElement(1,3);
-	float zMax = zRadius + this->position.z + this->transformMatrix.getElement(2,3);
-
-	float xMin = -xRadius + this->position.x + this->transformMatrix.getElement(0,3);
-	float yMin = -yRadius + this->position.y + this->transformMatrix.getElement(1,3);
-	float zMin = -zRadius + this->position.z + this->transformMatrix.getElement(2,3);
-
-	//intersection test.
-	float xCenter = (xMax + xMin) /2;
-	float yCenter = (yMax + yMin) /2;
-	float zCenter = (zMax + zMin) /2;
-
-	if(upperEnd.x > xMax && upperEnd.y > yMax && upperEnd.z > zMax) {
-		if(lowerEnd.x < xMin && lowerEnd.y < yMin && lowerEnd.z < zMin) {
-			//bounding box is fully in
-			return 2;
-		}
-	}
-
-	float givenCenterx = (upperEnd.x + lowerEnd.x) /2;
-	float givenCentery = (upperEnd.y + lowerEnd.y) /2;
-	float givenCenterz = (upperEnd.z + lowerEnd.z) /2;
-
-	float xDistance;
-	if(givenCenterx * xCenter > 0.0f ){ //same sign, so minus is safe
-		xDistance = fabs(givenCenterx - xCenter);
-	} else {
-		xDistance = fabs(givenCenterx + xCenter);
-	}
-	float xWidth = (upperEnd.x - givenCenterx) + (xMax - xCenter);
-	if(xDistance < xWidth) {
-		return 1;
-	}
-
-
-	float yDistance;
-	if(givenCentery * yCenter > 0.0f ){ //same sign, so minus is safe
-		yDistance = fabs(givenCentery - yCenter);
-	} else {
-		yDistance = fabs(givenCentery + yCenter);
-	}
-	float yWidth = (upperEnd.y - givenCentery) + (yMax - yCenter);
-	if(yDistance < yWidth) {
-		return 1;
-	}
-
-
-	float zDistance;
-	if(givenCenterz * zCenter > 0.0f ){ //same sign, so minus is safe
-		zDistance = fabs(givenCenterz - zCenter);
-	} else {
-		zDistance = fabs(givenCenterz + zCenter);
-	}
-	float zWidth = (upperEnd.z - givenCenterz) + (zMax - zCenter);
-	if(zDistance < zWidth) {
-		return 1;
-	}
-	return 0;
 
 }

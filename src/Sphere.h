@@ -19,11 +19,11 @@ class Sphere: public Primitive {
 	Vec3f position;
 	float radius;
 	Vec3f calculateNormal(const Vec4f&) const;
+	void generateBoundingBox();
 public:
 	Sphere(float, float, float, float);
 	virtual ~Sphere();
 	bool intersectiontest(Ray, float&) const;
 	Vec3f getColorForRay(const Ray,  float, const std::vector<Primitive*>&, const std::vector<Light>&, const unsigned int) const;
-	unsigned char isInBoundingBox(const Vec3f&, const Vec3f&) const;
 };
 #endif /* SRC_SPHERE_H_ */

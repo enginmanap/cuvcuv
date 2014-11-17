@@ -183,7 +183,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
-	std::cout << "add sphere with the values (" << x << ", " << z << ", " << z
+	std::cout << "add sphere with the values (" << x << ", " << y << ", " << z
 			<< ") and radius: " << radius << std::endl;
 	Sphere* sphere = new Sphere(x, y, z, radius);
 	sphere->setLightValues(currentAmbientLight, currentEmissionLight,

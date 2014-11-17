@@ -37,6 +37,7 @@ Ray Primitive::generateTransformedRay(const Ray ray) const {
 bool Primitive::setTransformation(Mat4f& matrix) {
 	this->transformMatrix = matrix;
 	this->inverseTransformMat = Mat4f::inverse(matrix);
+	this->generateBoundingBox();//since transformations would change it.
 	return true;
 }
 
@@ -121,5 +122,31 @@ Vec3f Primitive::getColorForRay(const Ray ray, float distance,
 }
 
 Primitive::~Primitive() {
+
+}
+
+
+unsigned char Primitive::isInBoundingBox(const Vec3f& upperEnd, const Vec3f& lowerEnd) const {
+
+	//if the bounding box is completely in the octree box
+	if(upperEnd.x > this->bbUpper.x && upperEnd.y > this->bbUpper.y && upperEnd.z > this->bbUpper.z) {
+		if(lowerEnd.x < this->bbLower.x && lowerEnd.y < this->bbLower.y && lowerEnd.z < this->bbLower.z) {
+			//bounding box is fully in
+			return 2;
+		}
+	}
+
+	//this checks if octree up is lower then bounding box low, or vice versa.
+	if(upperEnd.x > this->bbLower.x &&
+		lowerEnd.x < this->bbUpper.x &&
+		upperEnd.y > this->bbLower.y &&
+		lowerEnd.y < this->bbUpper.y &&
+		upperEnd.z > this->bbLower.z &&
+		lowerEnd.z < this->bbUpper.z
+		) {
+		return 1;
+	}
+	//intersection or inclusion is not found
+	return 0;
 
 }
