@@ -98,6 +98,14 @@ int main(int argc, char *argv[]) {
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
 		SDL_RenderPresent(renderer);
 	}
+	if (!isTimesPrinted){
+		renderAll = SDL_GetTicks() - buildOctree;
+		std::cout << "start: " << start/1000 << std::endl;
+		std::cout << "file read: " << readFile/1000<< std::endl;
+		std::cout << "building octree: " << buildOctree/1000 << std::endl;
+		std::cout << "render: " << renderAll/1000 << std::endl;
+		isTimesPrinted = true;
+	}
 	saveToFile(pixels, height, width, scene->getSaveFilename());
 	delete reader;
 	//delete scene; not needed since it is managed by reader;
