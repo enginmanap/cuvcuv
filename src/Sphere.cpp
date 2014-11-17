@@ -28,9 +28,9 @@ void Sphere::generateBoundingBox(){
 	float zMax = zRadius + this->position.z + this->transformMatrix.getElement(3,2);
 	this->bbUpper = Vec3f(xMax,yMax,zMax);
 
-	float xMin = -xRadius + this->position.x + this->transformMatrix.getElement(0,3);
-	float yMin = -yRadius + this->position.y + this->transformMatrix.getElement(1,3);
-	float zMin = -zRadius + this->position.z + this->transformMatrix.getElement(2,3);
+	float xMin = -xRadius + this->position.x + this->transformMatrix.getElement(3,0);
+	float yMin = -yRadius + this->position.y + this->transformMatrix.getElement(3,1);
+	float zMin = -zRadius + this->position.z + this->transformMatrix.getElement(3,2);
 	this->bbLower=Vec3f(xMin,yMin,zMin);
 
 	float xCenter = (xMax + xMin) /2;

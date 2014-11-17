@@ -89,7 +89,7 @@ public:
 	Mat4f addTransform(Mat4f&);
 
 	void buildOctree();
-	void renderScene();
+	bool renderScene();
 };
 
 #endif /* SCENE_H_ */

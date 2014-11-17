@@ -23,8 +23,8 @@ bool RayTracer::traceToLight(const Ray ray,
 	float intersectionDistance;
 	Primitive* intersectingPrimitive = NULL;
 
-	std::vector<Primitive*> primitives = octree.getIntersectingPrimitives(ray);
-	for (std::vector<Primitive*>::const_iterator it = primitives.begin();
+	std::set<Primitive*> primitives = octree.getIntersectingPrimitives(ray);
+	for (std::set<Primitive*>::const_iterator it = primitives.begin();
 			it != primitives.end(); it++) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
 			//found intersection
@@ -51,10 +51,10 @@ Vec3f RayTracer::trace(const Ray ray,
 	float intersectionDistance;
 	Primitive* intersectingPrimitive = NULL;
 
-	std::vector<Primitive*> primitives = octree.getIntersectingPrimitives(ray);
+	std::set<Primitive*> primitives = octree.getIntersectingPrimitives(ray);
 	if(primitives.size() > 0){
-		std::cout << "intersectionTest for "<< primitives.size() << std::endl;
-	for (std::vector<Primitive*>::const_iterator it = primitives.begin();
+		//std::cout << "intersectionTest for "<< primitives.size() << std::endl;
+	for (std::set<Primitive*>::const_iterator it = primitives.begin();
 			it != primitives.end(); it++) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
 			//found intersection

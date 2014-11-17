@@ -16,7 +16,7 @@ Ray::Ray(Vec4f position, Vec4f direction, float min,float max) {
 	this->position = position;
 	this->direction = direction;
 
-	this->inverseDirection = Vec4f(1.0/this->direction.x, 1.0/this->direction.y, 1.0/this->direction.z, 0.0f);
+	this->inverseDirection = Vec4f(1.0f/this->direction.x, 1.0f/this->direction.y, 1.0f/this->direction.z, 0.0f);
 
 	this->minDistance = min;
 	this->maxDistance = max;
@@ -25,6 +25,8 @@ Ray::Ray(Vec4f position, Vec4f direction, float min,float max) {
 Ray::Ray(Vec3f position, Vec3f direction, float min,float max) {
 	this->position = Vec4f(position,1.0f);
 	this->direction = Vec4f(direction,0.0f);
+
+	this->inverseDirection = Vec4f(1.0f/this->direction.x, 1.0f/this->direction.y, 1.0f/this->direction.z, 0.0f);
 
 	this->minDistance = min;
 	this->maxDistance = max;

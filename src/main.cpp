@@ -32,7 +32,7 @@ void saveToFile(unsigned char pixels[], int height, int width, std::string filen
 
 
 int main(int argc, char *argv[]) {
-
+	bool isTimesPrinted = false;
 	bool quit = false;
 
 	SDL_Event event;
@@ -42,11 +42,14 @@ int main(int argc, char *argv[]) {
 	FileReader* reader;
 	Scene* scene = NULL;
 	//read the file
+	Uint32 start,readFile,buildOctree,renderAll;
+	start = SDL_GetTicks();
 	try {
 		reader = new FileReader("scene1.test");
 
 		scene = reader->readFile();
 		scene->getSamplingSize(height, width);
+		readFile = SDL_GetTicks() - start;
 		std::cout << "sample size is " << height << ", " << width << std::endl;
 	} catch (int i) {
 		std::cout << "file read failed" << "exiting" << std::endl;
@@ -68,9 +71,19 @@ int main(int argc, char *argv[]) {
 	SDL_Texture * texture = SDL_CreateTexture(renderer,
 			SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, width,height);
 #endif
+
 	scene->buildOctree();
+	 buildOctree = SDL_GetTicks() - readFile;
+
 	while (!quit) {
-		scene->renderScene();
+		if (!isTimesPrinted && scene->renderScene()){
+			renderAll = SDL_GetTicks() - buildOctree;
+			std::cout << "start: " << start/1000 << std::endl;
+			std::cout << "file read: " << readFile/1000<< std::endl;
+			std::cout << "building octree: " << buildOctree/1000 << std::endl;
+			std::cout << "render: " << renderAll/1000 << std::endl;
+			isTimesPrinted = true;
+		}
 		SDL_UpdateTexture(texture, NULL, pixels, width * 4 ); // for 4 channels
 		SDL_PollEvent(&event);
 

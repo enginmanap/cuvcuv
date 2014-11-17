@@ -198,14 +198,14 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 
 void Scene::buildOctree(){
 	std::cout << "generating spatial tree.." <<std::endl;
-	this->spatialTree = new Octree(NULL, Vec3f(4.0f,4.0f,4.0f),Vec3f(-4.0f,-4.0f,-4.0f),primitives);//FIXME this values should be determined by the objects.
+	this->spatialTree = new Octree(NULL, Vec3f(64.0f,64.0f,64.0f),Vec3f(-64.0f,-64.0f,-64.0f),primitives);//FIXME this values should be determined by the objects.
 	std::cout << "spatial tree generated."<< std::endl;
 }
 
-void Scene::renderScene() {
+bool Scene::renderScene() {
 	static bool isRenderDone = false;
 	if(isRenderDone){
-		return;
+		return true;
 	}
 
 	unsigned int x = 0, y = 0;
@@ -240,6 +240,7 @@ void Scene::renderScene() {
 			}
 		}
 	}
+	return isRenderDone;
 }
 
 unsigned char* Scene::getPixels(int& height, int& width) {
