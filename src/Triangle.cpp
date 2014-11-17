@@ -54,7 +54,7 @@ bool Triangle::intersectiontest(Ray ray, float& distance) const {
 	Vec3f edge2 = c - a;
 	Vec3f pvec = vec3fNS::cross(rayDirection, edge2);
 	float det = vec3fNS::dot(edge1, pvec);
-	if (det == 0)
+	if (fabs(det) < EPSILON)
 		return false;
 	float invDet = 1 / det;
 	Vec3f tvec = rayPosition - a;
