@@ -119,9 +119,9 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd,
 	//std::set<int> fooSet( fooVec.begin(), fooVec.end() );
 	this->primitives = std::set<Primitive*>(toCheck.begin(), toCheck.end());
 	//this->primitives = toCheck; //this leaf only has the elements that its children does not
-	std::cout << level << "up: " << upperEnd << ", low: " << lowerEnd
-			<< ", primitives: " << toCheck.size() << ", center: " << center
-			<< std::endl;
+	//std::cout << level << "up: " << upperEnd << ", low: " << lowerEnd
+	//		<< ", primitives: " << toCheck.size() << ", center: " << center
+	//		<< std::endl;
 }
 
 Octree::~Octree() {
@@ -143,25 +143,26 @@ bool Octree::isRayIntersects(const Ray& ray) const {
 
 	//std::cout << "inverse 2 " << directionInverse << std::endl;
 	//std::cout << "ray " << ray.getPosition() << ", " << ray.getDirection()<< std::endl;
-	float lowerXIntersection = (lowerEnd.x - ray.getPosition().x)
+    Vec4f rayPos = ray.getPosition();
+	float lowerXIntersection = (lowerEnd.x - rayPos.x)
 			* directionInverse.x;
-	float upperXIntersection = (upperEnd.x - ray.getPosition().x)
+	float upperXIntersection = (upperEnd.x - rayPos.x)
 			* directionInverse.x;
 
 	float tmin = std::min(lowerXIntersection, upperXIntersection);
 	float tmax = std::max(lowerXIntersection, upperXIntersection);
 
-	float lowerYIntersection = (lowerEnd.y - ray.getPosition().y)
+	float lowerYIntersection = (lowerEnd.y - rayPos.y)
 			* directionInverse.y;
-	float upperYIntersection = (upperEnd.y - ray.getPosition().y)
+	float upperYIntersection = (upperEnd.y - rayPos.y)
 			* directionInverse.y;
 
 	tmin = std::max(tmin, std::min(lowerYIntersection, upperYIntersection));
 	tmax = std::min(tmax, std::max(lowerYIntersection, upperYIntersection));
 
-	float loverZIntersection = (lowerEnd.z - ray.getPosition().z)
+	float loverZIntersection = (lowerEnd.z - rayPos.z)
 			* directionInverse.z;
-	float upperZIntersection = (upperEnd.z - ray.getPosition().z)
+	float upperZIntersection = (upperEnd.z - rayPos.z)
 			* directionInverse.z;
 
 	tmin = std::max(tmin, std::min(loverZIntersection, upperZIntersection));
