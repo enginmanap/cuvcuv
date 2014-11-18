@@ -7,19 +7,6 @@
 
 #include "Vec3f.h"
 
-/**
- * if no value is given, all elements are zero
- */
-Vec3f::Vec3f() {
-	x = y = z = 0;
-}
-
-Vec3f::Vec3f(float x, float y, float z) {
-	this->x = x;
-	this->y = y;
-	this->z = z;
-}
-
 Vec3f::~Vec3f() {
 
 }
