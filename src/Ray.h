@@ -16,9 +16,9 @@ private:
 	float minDistance, maxDistance;
 public:
 	Ray();
-	Vec4f getPosition() const;
-	Vec4f getDirection() const;
-	Vec4f getInverseDirection() const;
+	Vec4f getPosition() const {return position;};
+	Vec4f getDirection() const {return direction;};
+	Vec4f getInverseDirection() const {return inverseDirection;};
 	Ray(Vec4f, Vec4f, float,float);
 	Ray(Vec3f, Vec3f, float,float);
 };
