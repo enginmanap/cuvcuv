@@ -7,28 +7,6 @@
 
 #include "Vec4f.h"
 
-/**
- * if no value is given, all elements are zero
- */
-Vec4f::Vec4f() {
-	x = y = z = w = 0;
-}
-
-Vec4f::Vec4f(float x, float y, float z, float w) {
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->w = w;
-}
-
-Vec4f::Vec4f(Vec3f vector, float w){
-	//std::cout << "building from vector" << vector << std::endl;
-	this->x = vector.x;
-	this->y = vector.y;
-	this->z = vector.z;
-	this->w = w;
-}
-
 Vec4f::~Vec4f() {
 
 }
