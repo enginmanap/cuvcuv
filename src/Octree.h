@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <set>
+#include <cstring>
 #include "Vec3f.h"
 #include "Primitive.h"
 #include "Ray.h"
