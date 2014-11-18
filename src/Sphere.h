@@ -20,6 +20,7 @@ class Sphere: public Primitive {
 	float radius;
 	Vec3f calculateNormal(const Vec4f&) const;
 	void generateBoundingBox();
+	Mat4f inverseMatrixTranspose;
 public:
 	Sphere(float, float, float, float);
 	virtual ~Sphere();

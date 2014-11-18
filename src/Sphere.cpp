@@ -47,6 +47,7 @@ Sphere::Sphere(float x, float y, float z, float rad) {
 	this->position.z = z;
 	this->radius = rad;
 	generateBoundingBox();
+	this->inverseMatrixTranspose = this->inverseTransformMat.transpose();
 }
 
 Sphere::~Sphere() {
@@ -136,6 +137,6 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 Vec3f Sphere::calculateNormal(const Vec4f& position) const {
 	//calculate the normal, if there were no transformations, than inverse transpose the normal.
 	Vec3f normal = ((Vec3f) (position * this->inverseTransformMat))	- this->position;
-	return vec3fNS::normalize(Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose());
+	return vec3fNS::normalize(Vec4f(normal, 0.0f) * this->inverseMatrixTranspose);
 
 }
