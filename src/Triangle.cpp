@@ -21,7 +21,7 @@ Triangle::~Triangle() {
 
 
 void Triangle::generateBoundingBox(){
-	std::cout<<"generate box" << std::endl;
+	//std::cout<<"generate box" << std::endl;
 	//first calculate values of the vertex points, after transformations
 	Vec3f transformedA = Vec4f(a,1.0f) * this->transformMatrix; //1.0f since this is not a direction, but position
 	Vec3f transformedB = Vec4f(b,1.0f) * this->transformMatrix;
