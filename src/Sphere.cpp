@@ -50,6 +50,13 @@ Sphere::Sphere(float x, float y, float z, float rad) {
 	this->inverseMatrixTranspose = this->inverseTransformMat.transpose();
 }
 
+bool Sphere::setTransformation(Mat4f& transformMatrix){
+	Primitive::setTransformation(transformMatrix);//call to super, so inverse will be calculated
+	this->inverseMatrixTranspose = this->inverseTransformMat.transpose();
+	return true;
+}
+
+
 Sphere::~Sphere() {
 
 }

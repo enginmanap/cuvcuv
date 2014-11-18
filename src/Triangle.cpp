@@ -13,10 +13,22 @@ Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3) {
 	c = vertice3;
 
 	generateBoundingBox();
+	Vec3f normal = vec3fNS::cross((b - a), (c - a));
+	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
+	triangleNormal = vec3fNS::normalize(normal);
+
 }
 
 Triangle::~Triangle() {
 
+}
+
+bool Triangle::setTransformation(Mat4f& transformMatrix){
+	Primitive::setTransformation(transformMatrix);//call to super, so inverse will be calculated
+	Vec3f normal = vec3fNS::cross((b - a), (c - a));
+	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
+	triangleNormal = vec3fNS::normalize(normal);
+	return true;
 }
 
 
@@ -74,7 +86,5 @@ bool Triangle::intersectiontest(Ray ray, float& distance) const {
 }
 
 Vec3f Triangle::calculateNormal(const Vec4f& position) const {
-	Vec3f normal = vec3fNS::cross((b - a), (c - a));
-	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
-	return vec3fNS::normalize(normal);
+	return triangleNormal;
 }

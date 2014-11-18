@@ -19,9 +19,11 @@ class Triangle: public Primitive {
 
 private:
 	Vec3f a, b, c;
+	Vec3f triangleNormal;
 	Vec3f calculateNormal(const Vec4f&) const;
 	void generateBoundingBox();
 public:
+	bool setTransformation(Mat4f&);
 	Triangle(Vec3f, Vec3f, Vec3f);
 	virtual ~Triangle();
 
