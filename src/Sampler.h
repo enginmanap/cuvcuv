@@ -18,8 +18,8 @@ private:
 public:
 
 	Sampler(unsigned int, unsigned int);
-	unsigned int getHeight();
-	unsigned int getWidht();
+	unsigned int getHeight() {return height;};
+	unsigned int getWidht() {return width;};
 	bool getPoint(unsigned int&, unsigned int&);
 }
 ;

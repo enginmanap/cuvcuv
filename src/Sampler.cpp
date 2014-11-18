@@ -14,14 +14,6 @@ Sampler::Sampler(unsigned int height, unsigned int width) {
 
 }
 
-unsigned int Sampler::getHeight() {
-	return height;
-}
-
-unsigned int Sampler::getWidht() {
-	return width;
-}
-
 
 bool Sampler::getPoint(unsigned int& x, unsigned int& y) {
 	if (currentPoint < height * width) {
