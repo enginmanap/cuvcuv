@@ -45,8 +45,8 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 
 	halfWidth = (float) width / 2;
 	halfHeight = (float) height / 2;
-	xChangeFactor = tan(fovx / 2) / halfWidth;
-	yChangeFactor = tan(fovy / 2) / halfHeight;
+	xChangeFactor = tan(this->fovx / 2) / halfWidth;
+	yChangeFactor = tan(this->fovy / 2) / halfHeight;
 }
 
 Ray Camera::getRay(int x, int y) {
