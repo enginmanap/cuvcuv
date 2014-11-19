@@ -11,6 +11,8 @@
 #include <vector>
 #include <set>
 #include <cstring>
+#include <iostream>
+#include <sstream>
 #include "Vec3f.h"
 #include "Primitive.h"
 #include "Ray.h"

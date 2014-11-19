@@ -33,12 +33,12 @@ protected:
 	Vec3f bbUpper, bbLower, bbCenter, bbwidths;
 
 	static unsigned int lastID;
-	unsigned int id;
 	Vec3f calculateColorPerLight(const Vec3f, const Vec3f, const Vec3f,
 			const Vec3f, const Vec3f, const Vec3f, const float) const;
 	virtual Vec3f calculateNormal(const Vec4f&) const = 0;
 	virtual void generateBoundingBox() = 0;
 public:
+	unsigned int id;
 	Primitive();
 	virtual ~Primitive();
 	virtual bool setTransformation(Mat4f&);

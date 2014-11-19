@@ -11,9 +11,9 @@
 
 Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd,
 		std::vector<Primitive*> primitives) {
-	//std::cout << "creating Octree with primitive count: " << primitives.size() << std::endl;
-	//std::cout << "and up: " << upperEnd << ", low: " << lowerEnd << std::endl;
+    //std::cout << "creating Octree with primitive count: " << primitives.size() << std::endl;
 	static std::string level = "";
+	std::cout << level << "up: " << upperEnd << ", low: " << lowerEnd << std::endl;
 	this->parent = parent;
 	this->upperEnd = upperEnd;
 	this->lowerEnd = lowerEnd;
@@ -25,7 +25,7 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd,
 	toCheck = primitives;
 	if (primitives.size() > 1) {
 		//we should calculate children
-		if (upperEnd.x - lowerEnd.x > 0.25f) { //if we can split more
+		if (upperEnd.x - lowerEnd.x > 1.0f) { //if we can split more
 			//calculate the sides
 			//we need 8 up, 8 low, we have up down center^^^2, so we need 4 more
 			/**
@@ -119,6 +119,14 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd,
 	//std::set<int> fooSet( fooVec.begin(), fooVec.end() );
 	this->primitives = std::set<Primitive*>(toCheck.begin(), toCheck.end());
 	//this->primitives = toCheck; //this leaf only has the elements that its children does not
+    std::string primitiveIds;
+    std::stringstream sstm;
+    for(std::set<Primitive*>::iterator it=this->primitives.begin(); it !=this->primitives.end();++it){
+        sstm << (*it)->id << " ";
+    }
+    primitiveIds = sstm.str();
+	std::cout << level << "resulted primitives (" << this->primitives.size() << ")" << primitiveIds
+			<< std::endl;
 	//std::cout << level << "up: " << upperEnd << ", low: " << lowerEnd
 	//		<< ", primitives: " << toCheck.size() << ", center: " << center
 	//		<< std::endl;
