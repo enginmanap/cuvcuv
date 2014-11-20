@@ -9,11 +9,14 @@
 #include <iostream>
 #include <string>
 
-Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd,
-		std::vector<Primitive*> primitives) {
-	//std::cout << "creating Octree with primitive count: " << primitives.size() << std::endl;
+
+/**
+ * Creating a node automatically creates subtrees,
+ * put primitives in respective
+ */
+Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primitive*> primitives) {
+	//this variable is used for logging. With it we can intent based on the depth.
 	static std::string level = "";
-	//std::cout << level << "up: " << upperEnd << ", low: " << lowerEnd << std::endl;
 	this->parent = parent;
 	this->upperEnd = upperEnd;
 	this->lowerEnd = lowerEnd;
@@ -21,8 +24,7 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd,
 	this->center = ((float) 1 / 2) * temp;
 	memset(children, 0, sizeof(Octree*) * 8);
 
-	std::vector<Primitive*> contained[8], notContained, partiallyContained,
-			toCheck; //TODO this should be done by addPrimitive method.
+	std::vector<Primitive*> contained[8], notContained, partiallyContained, toCheck; //TODO this should be done by addPrimitive method.
 	toCheck = primitives;
 	if (primitives.size() > 1 && (upperEnd.x - lowerEnd.x > 0.1f)) {
 		//we should calculate children if we can split more
@@ -78,62 +80,48 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd,
 		down[7].x = lowerEnd.x;
 		down[7].z = lowerEnd.z;
 		down[7].y = lowerEnd.y;
-		//std::cout << "low1: " << down[1]<< std::endl;
 
 		unsigned char notContainedCounter = 0;
-		for (std::vector<Primitive*>::iterator primIter = primitives.begin();
-				primIter != primitives.end(); ++primIter) {
+		for (std::vector<Primitive*>::iterator primIter = primitives.begin(); primIter != primitives.end(); ++primIter) {
 			notContainedCounter = 0;
 			for (unsigned int subtree = 0; subtree < 8; ++subtree) {
+				/*
+				 * case 2 is completely in, case 1 is partially in, and
+				 * case 0 is no contact.
+				 * FIXME Partial is not used anymore, this should be simplified.
+				 */
 				switch ((*primIter)->isInBoundingBox(up[subtree], down[subtree])) {
 				case 2:
-					//std::cout<< "putting to subtree node " << subtree << std::endl;
 					contained[subtree].push_back(*primIter);
 					break;
 				case 1:
-					//std::cout<< "partially contained " << subtree << std::endl;
 					contained[subtree].push_back(*primIter);
 					break;
 				case 0:
-					//std::cout<< "no contact with " << subtree << std::endl;
 					++notContainedCounter;
 					break;
 				default:
 					break;
 				}
 			}
-			if(notContainedCounter == 8){
+			if (notContainedCounter == 8) {
 				notContained.push_back(*primIter);
 			}
 		}
 		std::string oldLevel = level;
 		level = level + "  ";
 		for (unsigned int subtree = 0; subtree < 8; ++subtree) {
-			children[subtree] = new Octree(this, up[subtree], down[subtree],
-					contained[subtree]);
+			children[subtree] = new Octree(this, up[subtree], down[subtree], contained[subtree]);
 			level = oldLevel;
 
 		}
-		this->primitives = std::set<Primitive*>(notContained.begin(),
-				notContained.end());
-	} else { //no children
-		this->primitives = std::set<Primitive*>(primitives.begin(),
-				primitives.end());
+		//FIXME should newer happen, but it does
+		this->primitives = std::set<Primitive*>(notContained.begin(), notContained.end());
+	} else {
+		//no children creation
+		this->primitives = std::set<Primitive*>(primitives.begin(), primitives.end());
 	}
 
-	//std::copy( fooVec.begin(), fooVec.end(), std::inserter( fooSet, fooSet.end() ) );
-
-	//std::set<int> fooSet( fooVec.begin(), fooVec.end() );
-
-	//this->primitives = toCheck; //this leaf only has the elements that its children does not
-//    std::string primitiveIds;
-//    std::stringstream sstm;
-//    for(std::set<Primitive*>::iterator it=this->primitives.begin(); it !=this->primitives.end();++it){
-//        sstm << (*it)->id << " ";
-//    }
-//    primitiveIds = sstm.str();
-//	std::cout << level << "resulted primitives (" << this->primitives.size() << "): " << primitiveIds
-//			<< std::endl;
 }
 
 Octree::~Octree() {
@@ -149,12 +137,8 @@ Octree::~Octree() {
  * http://www.siggraph.org/education/materials/HyperGraph/raytrace/rtinter3.htm
  */
 bool Octree::isRayIntersects(const Ray& ray) const {
-	//FIXME inverse calculation is heavy, it should be moved to a
-	//place where it would be done once
 	Vec4f directionInverse = ray.getInverseDirection();
 
-	//std::cout << "inverse 2 " << directionInverse << std::endl;
-	//std::cout << "ray " << ray.getPosition() << ", " << ray.getDirection()<< std::endl;
 	Vec4f rayPos = ray.getPosition();
 	float lowerXIntersection = (lowerEnd.x - rayPos.x) * directionInverse.x;
 	float upperXIntersection = (upperEnd.x - rayPos.x) * directionInverse.x;
@@ -179,43 +163,32 @@ bool Octree::isRayIntersects(const Ray& ray) const {
 
 /**
  * this function returns primitives that are
- * possibly intersecting with the ray, in the
- * intersection order. Normally we expect returning 1 primitive
- * but if multiple primitives are in smallest box, it is possible.
+ * possibly intersecting with the ray.
  */
 std::set<Primitive*> Octree::getIntersectingPrimitives(const Ray& ray) const {
-	//std::cout << "checkFor up: " << upperEnd << ", low: " << lowerEnd << ", primitives: " << primitives.size() << std::endl;
 	std::set<Primitive*> primitives;
 	//the camera might be in the box, in that case, the box itself is considered intersecting
 	Vec3f rayPos = ray.getPosition();
 	bool isCameraIn = false;
-	if (rayPos.x >= lowerEnd.x && rayPos.x <= upperEnd.x
-			&& rayPos.y >= lowerEnd.y && rayPos.y <= upperEnd.y
-			&& rayPos.z >= lowerEnd.z && rayPos.z <= upperEnd.z) {
+	if (rayPos.x >= lowerEnd.x && rayPos.x <= upperEnd.x && rayPos.y >= lowerEnd.y && rayPos.y <= upperEnd.y && rayPos.z >= lowerEnd.z
+			&& rayPos.z <= upperEnd.z) {
 		//the equals are needed, because event though calculating exact 0 is hard, giving it is easy
 		isCameraIn = true;
 	}
 
 	if (isCameraIn || this->isRayIntersects(ray)) { //take advantage of short circuit
-	//std::cout << "found intersection" << std::endl;
-	//the primitives in this element should be put in the vector
-	//FIXME the order is not correct yet
+	//TODO ordering child traverse might improve performance
 		if (children[0] != NULL) { //we know if there is 1 child, there are 8
 			for (int i = 0; i < 8; ++i) {
 				//if (children[i]->primitives.size() > 0) { //this check assumes no children means no children in branch, but there would not be any branch
-				std::set<Primitive*> temp =
-						children[i]->getIntersectingPrimitives(ray);
+				std::set<Primitive*> temp = children[i]->getIntersectingPrimitives(ray);
 				primitives.insert(temp.begin(), temp.end());
-
 			}
-
-			//}
 		}
+		//insert primitives of this node to the list.
+		//FIXME this object should not be created/deleted for each call, this is recursive.
 		primitives.insert(this->primitives.begin(), this->primitives.end());
 	}
-
-	//if(primitives.size() > 0)
-	//std::cout << "found primitive" << std::endl;
 	return primitives;
 }
 
