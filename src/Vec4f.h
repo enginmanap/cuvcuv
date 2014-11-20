@@ -26,13 +26,29 @@ public:
 	Vec4f normalize() const;
 	float length();
 
-	float getElement(const int) const;
 	Vec4f operator-(const Vec4f&)const;
 	Vec4f operator+(const Vec4f&);
 	Vec4f operator*(const Vec4f&) const;
-	operator Vec3f();
+	operator Vec3f(){return Vec3f(x,y,z);};
 
-	float& operator[](int);
+	//these elements are here, so gcc can inline/optimise them. it can be forced, but I won't.
+	float getElement(const int index) const {switch (index) {
+	case 0:	return x; break;
+	case 1:	return y; break;
+	case 2:	return z; break;
+	case 3:	return w; break;
+	default: std::cerr << "Vecf4[] index out of range" << std::endl;
+	assert(0);
+	}};
+
+	float& operator[](int index) {switch (index) {
+	case 0:	return x; break;
+	case 1:	return y; break;
+	case 2:	return z; break;
+	case 3:	return w; break;
+	default: std::cerr << "Vecf4[] index out of range" << std::endl;
+	assert(0);
+	}};
 };
 
 std::ostream& operator<<(std::ostream &strm, const Vec4f &vector);

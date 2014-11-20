@@ -91,48 +91,6 @@ Vec4f Vec4f::operator*(const Vec4f& vector2) const {
 	return temp;
 }
 
-float Vec4f::getElement(const int index) const {
-	switch (index) {
-	case 0:
-		return x;
-		break;
-	case 1:
-		return y;
-		break;
-	case 2:
-		return z;
-		break;
-	case 3:
-		return w;
-		break;
-	default:
-		std::cerr << "Vecf3[] index out of range" << std::endl;
-		assert(0);
-		break;
-	}
-}
-
-float& Vec4f::operator[](int index) {
-	switch (index) {
-	case 0:
-		return x;
-		break;
-	case 1:
-		return y;
-		break;
-	case 2:
-		return z;
-		break;
-	case 3:
-		return w;
-		break;
-	default:
-		std::cerr << "Vecf4[] index out of range" << std::endl;
-		assert(0);
-		break;
-	}
-}
-
 Vec4f operator*(float i, const Vec4f& vector) {
 
 	return Vec4f(i * vector.x, i * vector.y, i * vector.z, i * vector.w);
@@ -142,8 +100,4 @@ Vec4f operator*(float i, const Vec4f& vector) {
 std::ostream& operator<<(std::ostream &strm, const Vec4f &vector) {
 	return strm << "(" << vector.x << ", " << vector.y << ", " << vector.z
 			<< ", " << vector.w << ")";
-}
-
-Vec4f::operator Vec3f(){
-	return Vec3f(x,y,z);
 }
