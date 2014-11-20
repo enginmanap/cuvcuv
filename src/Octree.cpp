@@ -165,8 +165,7 @@ bool Octree::isRayIntersects(const Ray& ray) const {
  * this function returns primitives that are
  * possibly intersecting with the ray.
  */
-std::set<Primitive*> Octree::getIntersectingPrimitives(const Ray& ray) const {
-	std::set<Primitive*> primitives;
+void Octree::getIntersectingPrimitives(const Ray& ray,std::set<Primitive*>& primitiveSet) const {
 	//the camera might be in the box, in that case, the box itself is considered intersecting
 	Vec3f rayPos = ray.getPosition();
 	bool isCameraIn = false;
@@ -181,14 +180,12 @@ std::set<Primitive*> Octree::getIntersectingPrimitives(const Ray& ray) const {
 		if (children[0] != NULL) { //we know if there is 1 child, there are 8
 			for (int i = 0; i < 8; ++i) {
 				//if (children[i]->primitives.size() > 0) { //this check assumes no children means no children in branch, but there would not be any branch
-				std::set<Primitive*> temp = children[i]->getIntersectingPrimitives(ray);
-				primitives.insert(temp.begin(), temp.end());
+				children[i]->getIntersectingPrimitives(ray, primitiveSet);
 			}
 		}
 		//insert primitives of this node to the list.
 		//FIXME this object should not be created/deleted for each call, this is recursive.
-		primitives.insert(this->primitives.begin(), this->primitives.end());
+		primitiveSet.insert(this->primitives.begin(), this->primitives.end());
 	}
-	return primitives;
 }
 

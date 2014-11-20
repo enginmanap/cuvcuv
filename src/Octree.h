@@ -24,11 +24,12 @@ class Octree {
 	Octree* parent;
 	Octree* children[8];
 	Vec3f upperEnd, lowerEnd, center;
+	unsigned char isSplittingRedudant;
 public:
 	Octree(Octree*, Vec3f, Vec3f, std::vector<Primitive*>);
 	virtual ~Octree();
 	bool isRayIntersects(const Ray&) const;
-	std::set<Primitive*> getIntersectingPrimitives(const Ray&) const;
+	void getIntersectingPrimitives(const Ray&, std::set<Primitive*>&) const;
 };
 
 #endif /* SRC_OCTREE_H_ */

@@ -15,50 +15,59 @@ RayTracer::~RayTracer() {
 
 }
 
+/**
+ * returns true if the ray can reach light with out hitting
+ * any objects. false if there are any obstacles.
+ *
+ */
 bool RayTracer::traceToLight(const Ray ray, const Octree& octree,
 		const Light light) const {
 	Vec4f route = light.getPosition() - ray.getPosition();
-	float distance = route.length();
-	//std::cout << "distance to light " << distance << std::endl;
+	float distanceToLight = route.length();
 	float intersectionDistance;
-	Primitive* intersectingPrimitive = NULL;
 
-	std::set<Primitive*> primitives = octree.getIntersectingPrimitives(ray);
+	std::set<Primitive*> primitives;
+	octree.getIntersectingPrimitives(ray,primitives);
 	for (std::set<Primitive*>::const_iterator it = primitives.begin();
 			it != primitives.end(); it++) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
-			//found intersection
-			if (distance > intersectionDistance) {
-				//std::cout << "hit primitive within" << intersectionDistance << std::endl;
-				distance = intersectionDistance;
-				intersectingPrimitive = *it;
+			//found intersection, check if it is before the closest one
+			if (distanceToLight > intersectionDistance) {
+				return false; //if we have one blocking object, it is enough
 			}
 
 		}
 	}
-
-	if (intersectingPrimitive != NULL) {
-		return false;
-	} else {
-		return true;
-	}
-
+	return true;
 }
 
+/**
+ * traces ray and returns the color for it.
+ *
+ * @params:
+ * ray: Ray to trace
+ * Octree: tree that contains Objects.
+ * lights: Vector of lights.
+ * depth: How many reflections we should trace.
+ *
+ * @returns:
+ * color in Vec3f
+ */
 Vec3f RayTracer::trace(const Ray ray, const Octree& octree,
 		const std::vector<Light> &lights, const unsigned int depth) const {
-	static unsigned int totalTests = 0, mostTests = 0;
+	//static unsigned int totalTests = 0, mostTests = 0;
 	float distance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
 	float intersectionDistance;
 	Primitive* intersectingPrimitive = NULL;
 
-	std::set<Primitive*> primitives = octree.getIntersectingPrimitives(ray);
+	std::set<Primitive*> primitives;
+	octree.getIntersectingPrimitives(ray,primitives);
 	if (primitives.size() > 0) {
-		totalTests += primitives.size();
-		if (primitives.size() > mostTests) {
-			std::cout << "maximum tests " << primitives.size() << std::endl;
-			mostTests = primitives.size();
-		}
+		//totalTests += primitives.size();
+		//if (primitives.size() > mostTests) {
+		//	std::cout << "maximum tests " << primitives.size() << std::endl;
+		//	mostTests = primitives.size();
+		//}
 		for (std::set<Primitive*>::const_iterator it = primitives.begin();
 				it != primitives.end(); it++) {
 			if ((*it)->intersectiontest(ray, intersectionDistance)) {
@@ -71,7 +80,7 @@ Vec3f RayTracer::trace(const Ray ray, const Octree& octree,
 			}
 		}
 	}
-	std::cout << "total tests " << totalTests<< std::endl;
+	//std::cout << "total tests " << totalTests<< std::endl;
 	if (intersectingPrimitive != NULL) {
 		return intersectingPrimitive->getColorForRay(ray, distance, octree,
 				lights, depth - 1);
