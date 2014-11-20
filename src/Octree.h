@@ -28,6 +28,7 @@ class Octree {
 public:
 	Octree(Octree*, Vec3f, Vec3f, std::vector<Primitive*>);
 	virtual ~Octree();
+	unsigned char getIsSplittingRedudant(){ return isSplittingRedudant;}
 	bool isRayIntersects(const Ray&) const;
 	void getIntersectingPrimitives(const Ray&, std::set<Primitive*>&) const;
 };

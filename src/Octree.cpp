@@ -9,7 +9,6 @@
 #include <iostream>
 #include <string>
 
-
 /**
  * Creating a node automatically creates subtrees,
  * put primitives in respective
@@ -22,7 +21,12 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primi
 	this->lowerEnd = lowerEnd;
 	Vec3f temp = this->upperEnd + this->lowerEnd;
 	this->center = ((float) 1 / 2) * temp;
-	memset(children, 0, sizeof(Octree*) * 8);
+	memset(children, 0, sizeof(Octree*) * 8); //set children to NULL
+	if (this->parent == NULL) {
+		this->isSplittingRedudant = 0; //if root node
+	} else {
+		this->isSplittingRedudant = std::max(this->parent->isSplittingRedudant - 1, 0); //if parent was somewhat redudant, child is too
+	}
 
 	std::vector<Primitive*> contained[8], notContained, partiallyContained, toCheck; //TODO this should be done by addPrimitive method.
 	toCheck = primitives;
@@ -108,17 +112,28 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primi
 				notContained.push_back(*primIter);
 			}
 		}
-		std::string oldLevel = level;
-		level = level + "  ";
+		//check if any node has exactly same primitives
 		for (unsigned int subtree = 0; subtree < 8; ++subtree) {
-			children[subtree] = new Octree(this, up[subtree], down[subtree], contained[subtree]);
-			level = oldLevel;
-
+			if (primitives.size() == contained[subtree].size())
+				isSplittingRedudant++; //maybe we should not split?
 		}
-		//FIXME should newer happen, but it does
-		this->primitives = std::set<Primitive*>(notContained.begin(), notContained.end());
+		if (isSplittingRedudant < 8) {
+			//if splitting is not too redudant
+			std::string oldLevel = level;
+			level = level + "  ";
+			for (unsigned int subtree = 0; subtree < 8; ++subtree) {
+				children[subtree] = new Octree(this, up[subtree], down[subtree], contained[subtree]);
+			}
+			level = oldLevel;
+			//FIXME should newer happen, but it does
+			this->primitives = std::set<Primitive*>(notContained.begin(), notContained.end());
+		} else {
+			//if splitting was redudant, then skip splitting
+			this->primitives = std::set<Primitive*>(primitives.begin(), primitives.end());
+		}
+
 	} else {
-		//no children creation
+		//we hit some limit, and not going to create children
 		this->primitives = std::set<Primitive*>(primitives.begin(), primitives.end());
 	}
 
@@ -165,7 +180,7 @@ bool Octree::isRayIntersects(const Ray& ray) const {
  * this function returns primitives that are
  * possibly intersecting with the ray.
  */
-void Octree::getIntersectingPrimitives(const Ray& ray,std::set<Primitive*>& primitiveSet) const {
+void Octree::getIntersectingPrimitives(const Ray& ray, std::set<Primitive*>& primitiveSet) const {
 	//the camera might be in the box, in that case, the box itself is considered intersecting
 	Vec3f rayPos = ray.getPosition();
 	bool isCameraIn = false;
