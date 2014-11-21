@@ -102,6 +102,8 @@ Scene::~Scene() {
 		delete (*it);
 	}
 	delete[] pixels;
+
+	delete spatialTree;
 }
 
 bool Scene::getSamplingSize(int& height, int& width) {
@@ -207,12 +209,12 @@ bool Scene::renderScene() {
 	if(isRenderDone){
 		return true;
 	}
-
+	unsigned int width = sampler->getWidht();
 	unsigned int x = 0, y = 0;
 	Vec3f color;
 	bool morePixels;
 	Ray ray;
-	int totalPixels = 0;
+	unsigned int totalPixels = 0;
 #pragma omp parallel private(color,x,y,ray) shared (morePixels,totalPixels)
 	{
 #pragma omp critical
@@ -229,9 +231,8 @@ bool Scene::renderScene() {
 			pixels[index + 1] = (unsigned char)color.y;
 			pixels[index + 2] = (unsigned char)color.z;
 			pixels[index + 3] = 255;
-#pragma omp critical
 			totalPixels++;
-			if (totalPixels > 100) {
+			if (totalPixels >= width) {
 				break;
 			} else {
 #pragma omp critical
