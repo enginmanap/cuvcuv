@@ -71,11 +71,11 @@ bool Triangle::intersectiontest(Ray ray, float& distance) const {
 	float invDet = 1 / det;
 	Vec3f tvec = rayPosition - a;
 	float u = vec3fNS::dot(tvec, pvec) * invDet;
-	if (u < 0 || u > 1)
+	if (u < -EPSILON || u > 1)
 		return false;
 	Vec3f qvec = vec3fNS::cross(tvec, edge1);
 	float v = vec3fNS::dot(rayDirection, qvec) * invDet;
-	if (v < 0 || u + v > 1)
+	if (v < -EPSILON || u + v > 1)
 		return false;
 
 	distance = vec3fNS::dot(edge2, qvec) * invDet;
