@@ -117,7 +117,7 @@ Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primi
 			if (primitives.size() == contained[subtree].size())
 				isSplittingRedudant++; //maybe we should not split?
 		}
-		if (isSplittingRedudant < 8) {
+		if (isSplittingRedudant <= 15) { //since root box is optimised, we can try to be better
 			//if splitting is not too redudant
 			std::string oldLevel = level;
 			level = level + "  ";

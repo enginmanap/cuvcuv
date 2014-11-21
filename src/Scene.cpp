@@ -198,15 +198,54 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 	return true;
 }
 
-void Scene::buildOctree(){
-	std::cout << "generating spatial tree.." <<std::endl;
-	this->spatialTree = new Octree(NULL, Vec3f(64.0f,64.0f,64.0f),Vec3f(-64.0f,-64.0f,-64.0f),primitives);//FIXME this values should be determined by the objects.
-	std::cout << "spatial tree generated."<< std::endl;
+void Scene::buildOctree() {
+	std::cout << "generating spatial tree.." << std::endl;
+	//calculate the size we need.
+	Vec3f maxbb, minbb;
+	Vec3f currentBBUpper, currentBBLower;
+	for (std::vector<Primitive*>::iterator primitiveP = primitives.begin();
+			primitiveP != primitives.end(); ++primitiveP) {
+		currentBBUpper = (*primitiveP)->getBBUpper();
+		currentBBLower = (*primitiveP)->getBBLower();
+		if (currentBBUpper.x > maxbb.x)
+			maxbb.x = currentBBUpper.x;
+		if (currentBBUpper.y > maxbb.y)
+			maxbb.z = currentBBUpper.y;
+		if (currentBBUpper.z > maxbb.z)
+			maxbb.y = currentBBUpper.z;
+
+		if (currentBBLower.x < minbb.x)
+			minbb.x = currentBBLower.x;
+		if (currentBBLower.y < minbb.y)
+			minbb.y = currentBBLower.y;
+		if (currentBBLower.z < minbb.z)
+			minbb.z = currentBBLower.z;
+	}
+	/*
+	 * now we have the min and max values, we should buid a Octree to
+	 * contain all of them. I want the size to be a power of 2, and
+	 * it should be a cube
+	 */
+	Vec3f lengths = maxbb - minbb;
+	float sceneSize = std::max(lengths.x, std::max(lengths.y, lengths.z));
+	int treeRootSize = pow(2,std::ceil(log(sceneSize)/log(2)));//this generates smallest power of 2 that is big equal to size
+
+
+	//now we have the size and min will be floored, so we can calculate max
+	float treeRootMaxX = treeRootSize + std::floor(minbb.x);
+	float treeRootMaxY = treeRootSize + std::floor(minbb.y);
+	float treeRootMaxZ = treeRootSize + std::floor(minbb.z);
+	Vec3f treeMax(treeRootMaxX, treeRootMaxY, treeRootMaxZ);
+	Vec3f treeMin(std::floor(minbb.x), std::floor(minbb.y),
+			std::floor(minbb.z));
+	//now request a octree with this dimentions.
+	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives); //FIXME this values should be determined by the objects.
+	std::cout << "spatial tree generated with dimentions: " << treeMax <<"," << treeMin << std::endl;
 }
 
 bool Scene::renderScene() {
 	static bool isRenderDone = false;
-	if(isRenderDone){
+	if (isRenderDone) {
 		return true;
 	}
 	unsigned int width = sampler->getWidht();
@@ -227,9 +266,9 @@ bool Scene::renderScene() {
 			color = rayTracer.trace(ray, *spatialTree, lights, this->maxDepth);
 			color = colorRange * color;
 			unsigned int index = 4 * (this->sampler->getWidht() * y + x);
-			pixels[index + 0] = (unsigned char)color.x;
-			pixels[index + 1] = (unsigned char)color.y;
-			pixels[index + 2] = (unsigned char)color.z;
+			pixels[index + 0] = (unsigned char) color.x;
+			pixels[index + 1] = (unsigned char) color.y;
+			pixels[index + 2] = (unsigned char) color.z;
 			pixels[index + 3] = 255;
 			totalPixels++;
 			if (totalPixels >= width) {

@@ -38,6 +38,8 @@ protected:
 	virtual Vec3f calculateNormal(const Vec4f&) const = 0;
 	virtual void generateBoundingBox() = 0;
 public:
+	Vec3f getBBUpper(){ return bbUpper;}
+	Vec3f getBBLower(){ return bbLower;}
 	unsigned int id;
 	Primitive();
 	virtual ~Primitive();
