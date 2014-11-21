@@ -1,2 +1,4 @@
 /bin
 *.bak
+*.test
+*.png
