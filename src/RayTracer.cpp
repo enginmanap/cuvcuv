@@ -22,7 +22,7 @@ RayTracer::~RayTracer() {
  */
 bool RayTracer::traceToLight(const Ray ray, const Octree& octree,
 		const Light light) const {
-	Vec4f route = light.getPosition() - ray.getPosition();
+	Vec3f route = light.getPosition() - ray.getPosition();
 	float distanceToLight = route.length();
 	float intersectionDistance;
 

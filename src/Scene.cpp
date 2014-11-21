@@ -187,14 +187,13 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
-	std::cout << "add sphere with the values (" << x << ", " << y << ", " << z
-			<< ") and radius: " << radius << std::endl;
 	Sphere* sphere = new Sphere(x, y, z, radius);
 	sphere->setLightValues(currentAmbientLight, currentEmissionLight,
 			currentDiffuse, currentSpecular, currentShininess);
 	primitives.push_back(sphere);
 	sphere->setTransformation(transformStack.top());
 	SphereCount++;
+	std::cout << "add sphere "<< sphere->id <<" with the values (" << x << ", " << y << ", " << z << ") and radius: " << radius << std::endl;
 	return true;
 }
 
@@ -241,6 +240,7 @@ void Scene::buildOctree() {
 	//now request a octree with this dimentions.
 	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives); //FIXME this values should be determined by the objects.
 	std::cout << "spatial tree generated with dimentions: " << treeMax <<"," << treeMin << std::endl;
+	//this->spatialTree->print();
 }
 
 bool Scene::renderScene() {

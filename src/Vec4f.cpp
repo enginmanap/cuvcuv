@@ -17,8 +17,8 @@ Vec4f Vec4f::normalize() const {
 
 float Vec4f::length(){
 	return sqrt(
-			(x * x) + (y * y)
-					+ (z * z));
+			((x * x) + (y * y)
+					+ (z * z)) / (w * w) );
 }
 
 Vec4f Vec4fNS::normalize(const Vec4f& vector) {
