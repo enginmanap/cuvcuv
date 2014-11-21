@@ -88,12 +88,10 @@ Vec3f Primitive::getColorForRay(const Ray ray, float distance,
 		Vec4f direction4 = Vec4f(direction, 0.0f);
 		Ray rayToLight(intersectionPoint + EPSILON * 10.0f * direction4,
 				direction, 0, 100);
-		//if(rayToLight.getPosition().getElement(0) * rayToLight.getPosition().getElement(0) +rayToLight.getPosition().getElement(1) * rayToLight.getPosition().getElement(1) + rayToLight.getPosition().getElement(2) * rayToLight.getPosition().getElement(2) < 1)
-		//std::cout << "ray origin (" << rayToLight.getPosition() << ") direction (" << rayToLight.getDirection()<< ")" <<std::endl;
 
 		if (tracer.traceToLight(rayToLight, octree, *(&it))) {
 			float lightDistance =
-					(it.getPosition() - rayToLight.getPosition()).length();
+					((Vec3f)(it.getPosition() - rayToLight.getPosition())).length();//casting to vec3 because w is 0
 			Vec3f halfVec = vec3fNS::normalize(direction + eyeDirn);
 
 			color = color
