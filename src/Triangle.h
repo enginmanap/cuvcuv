@@ -24,7 +24,7 @@ private:
 	void generateBoundingBox();
 public:
 	bool setTransformation(Mat4f&);
-	Triangle(Vec3f, Vec3f, Vec3f);
+	Triangle(Vec3f, Vec3f, Vec3f, Mat4f&);
 	virtual ~Triangle();
 
 	bool intersectiontest(Ray, float&) const;

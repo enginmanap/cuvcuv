@@ -41,13 +41,12 @@ void Sphere::generateBoundingBox(){
 	this->bbwidths = Vec3f(xRadius,yRadius,zRadius);
 }
 
-Sphere::Sphere(float x, float y, float z, float rad) {
+Sphere::Sphere(float x, float y, float z, float rad, Mat4f& transformMat) {
 	this->position.x = x;
 	this->position.y = y;
 	this->position.z = z;
 	this->radius = rad;
-	generateBoundingBox();
-	this->inverseMatrixTranspose = this->inverseTransformMat.transpose();
+	this->setTransformation(transformMat); //this generates bounding box, and inverseTransformTranspose
 }
 
 bool Sphere::setTransformation(Mat4f& transformMatrix){

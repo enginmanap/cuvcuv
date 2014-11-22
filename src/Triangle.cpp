@@ -7,15 +7,11 @@
 
 #include "Triangle.h"
 
-Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3) {
+Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3, Mat4f& transformMat) {
 	a = vertice1;
 	b = vertice2;
 	c = vertice3;
-
-	generateBoundingBox();
-	Vec3f normal = vec3fNS::cross((b - a), (c - a));
-	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
-	triangleNormal = vec3fNS::normalize(normal);
+	this->setTransformation(transformMat); //this generates normal and bounding box.
 
 }
 

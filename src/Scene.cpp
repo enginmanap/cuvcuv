@@ -173,10 +173,10 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 			&& vertice1 < currentVertex && vertice2 < currentVertex
 			&& vertice3 < currentVertex) {
 		Triangle* triangle = new Triangle(this->vertexArray[vertice1],
-				this->vertexArray[vertice2], this->vertexArray[vertice3]);
+				this->vertexArray[vertice2], this->vertexArray[vertice3],transformStack.top());
 		triangle->setLightValues(currentAmbientLight, currentEmissionLight,
 				currentDiffuse, currentSpecular, currentShininess);
-		triangle->setTransformation(transformStack.top());
+		//triangle->setTransformation(transformStack.top());
 		primitives.push_back(triangle);
 		triangleCount++;
 		return true;
@@ -187,11 +187,11 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
-	Sphere* sphere = new Sphere(x, y, z, radius);
+	Sphere* sphere = new Sphere(x, y, z, radius,transformStack.top());
 	sphere->setLightValues(currentAmbientLight, currentEmissionLight,
 			currentDiffuse, currentSpecular, currentShininess);
 	primitives.push_back(sphere);
-	sphere->setTransformation(transformStack.top());
+	//sphere->setTransformation(transformStack.top());
 	SphereCount++;
 	std::cout << "add sphere " << sphere->id << " with the values (" << x
 			<< ", " << y << ", " << z << ") and radius: " << radius
