@@ -127,15 +127,11 @@ bool Sphere::intersectiontest(Ray ray, float& distance) const {
 			else
 				distance = distance1;
 		}
-		//std::cout << "for transformedRay " << transformedRay.getPosition() << transformedRay.getDirection() << std::endl;
-		//std::cout << "discriminant: " << discriminant<< ", a: "<< a << ", b: " << b << ", c: " << c << std::endl;
-		//std::cout << "distances: "<< distance1 << " , " <<distance2 << std::endl;
 		if (distance < EPSILON) { //this means intersection within, we should pass
 			return false;
 		}
 		return true;
 	} else { //at that point, discriminant is not near zero, and not positive, so it is negative aka no real solution.
-		//std::cout << "negative disc" << std::endl;
 		return false;
 	}
 	return false;
