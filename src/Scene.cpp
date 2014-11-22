@@ -193,7 +193,9 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 	primitives.push_back(sphere);
 	sphere->setTransformation(transformStack.top());
 	SphereCount++;
-	std::cout << "add sphere "<< sphere->id <<" with the values (" << x << ", " << y << ", " << z << ") and radius: " << radius << std::endl;
+	std::cout << "add sphere " << sphere->id << " with the values (" << x
+			<< ", " << y << ", " << z << ") and radius: " << radius
+			<< std::endl;
 	return true;
 }
 
@@ -227,8 +229,7 @@ void Scene::buildOctree() {
 	 */
 	Vec3f lengths = maxbb - minbb;
 	float sceneSize = std::max(lengths.x, std::max(lengths.y, lengths.z));
-	int treeRootSize = pow(2,std::ceil(log(sceneSize)/log(2)));//this generates smallest power of 2 that is big equal to size
-
+	int treeRootSize = pow(2, std::ceil(log(sceneSize) / log(2))); //this generates smallest power of 2 that is big equal to size
 
 	//now we have the size and min will be floored, so we can calculate max
 	float treeRootMaxX = treeRootSize + std::floor(minbb.x);
@@ -239,22 +240,18 @@ void Scene::buildOctree() {
 			std::floor(minbb.z));
 	//now request a octree with this dimentions.
 	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives); //FIXME this values should be determined by the objects.
-	std::cout << "spatial tree generated with dimentions: " << treeMax <<"," << treeMin << std::endl;
+	std::cout << "spatial tree generated with dimentions: " << treeMax << ","
+			<< treeMin << std::endl;
 	//this->spatialTree->print();
 }
 
 bool Scene::renderScene() {
-	static bool isRenderDone = false;
-	if (isRenderDone) {
-		return true;
-	}
-	unsigned int width = sampler->getWidht();
 	unsigned int x = 0, y = 0;
 	Vec3f color;
 	bool morePixels;
 	Ray ray;
-	unsigned int totalPixels = 0;
-#pragma omp parallel private(color,x,y,ray) shared (morePixels,totalPixels)
+
+#pragma omp parallel private(color,x,y,ray) shared (morePixels)
 	{
 #pragma omp critical
 		morePixels = this->sampler->getPoint(x, y);
@@ -270,17 +267,11 @@ bool Scene::renderScene() {
 			pixels[index + 1] = (unsigned char) color.y;
 			pixels[index + 2] = (unsigned char) color.z;
 			pixels[index + 3] = 255;
-			totalPixels++;
-			if (totalPixels >= width) {
-				break;
-			} else {
 #pragma omp critical
-				morePixels = this->sampler->getPoint(x, y);
-				isRenderDone = !morePixels;
-			}
+			morePixels = this->sampler->getPoint(x, y);
 		}
 	}
-	return isRenderDone;
+	return true;
 }
 
 unsigned char* Scene::getPixels(int& height, int& width) {
