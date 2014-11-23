@@ -204,3 +204,21 @@ void Octree::getIntersectingPrimitives(const Ray& ray, std::set<Primitive*>& pri
 	}
 }
 
+void Octree::print(){
+	static std::string depth = "";
+	std::string oldDepth = depth;
+	std::ostringstream sstream;
+	for(std::set<Primitive*>::iterator primIter=this->primitives.begin();primIter != this->primitives.end();++primIter){
+		sstream << (*primIter)->id << " ";
+	}
+	std::cout << depth << "node " << this->upperEnd <<","<<this->lowerEnd << " has " << this->primitives.size() << " objects: " << sstream.str()<<std::endl;
+	if(this->children[0]!=NULL){
+		depth += "  ";
+		for (int i = 0; i < 8; ++i) {
+			this->children[i]->print();
+
+		}
+		depth = oldDepth;
+	}
+
+}
