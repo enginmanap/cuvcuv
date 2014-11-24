@@ -7,7 +7,7 @@
 
 #include "Triangle.h"
 
-Triangle::Triangle(Vec3f vertice1, Vec3f vertice2, Vec3f vertice3, Mat4f& transformMat) {
+Triangle::Triangle(Vec3f& vertice1, Vec3f& vertice2, Vec3f& vertice3, Mat4f& transformMat) {
 	a = vertice1;
 	b = vertice2;
 	c = vertice3;

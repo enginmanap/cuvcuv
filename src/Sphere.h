@@ -26,6 +26,5 @@ public:
 	Sphere(float, float, float, float, Mat4f&);
 	virtual ~Sphere();
 	bool intersectiontest(Ray, float&) const;
-	Vec3f getColorForRay(const Ray,  float, const std::vector<Primitive*>&, const std::vector<Light>&, const unsigned int) const;
 };
 #endif /* SRC_SPHERE_H_ */

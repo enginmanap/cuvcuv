@@ -24,11 +24,10 @@ private:
 	void generateBoundingBox();
 public:
 	bool setTransformation(Mat4f&);
-	Triangle(Vec3f, Vec3f, Vec3f, Mat4f&);
+	Triangle(Vec3f&, Vec3f&, Vec3f&, Mat4f&);
 	virtual ~Triangle();
 
 	bool intersectiontest(Ray, float&) const;
-	Vec3f getColorForRay(const Ray,  float, const std::vector<Primitive*>&, const std::vector<Light>&, const unsigned int) const;
 };
 
 #endif /* SRC_TRIANGLE_H_ */

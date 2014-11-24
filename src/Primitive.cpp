@@ -14,9 +14,9 @@ Primitive::Primitive(){
 	this->id = ++lastID;
 }
 
-Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
-		const Vec3f color, const Vec3f normal, const Vec3f halfVec,
-		const Vec3f diffuse, const Vec3f specular,
+Vec3f Primitive::calculateColorPerLight(const Vec3f& direction,
+		const Vec3f& color, const Vec3f& normal, const Vec3f& halfVec,
+		const Vec3f& diffuse, const Vec3f& specular,
 		const float shininess) const {
 
 	Vec3f lambert, phong;
@@ -34,7 +34,7 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 
 }
 
-Ray Primitive::generateTransformedRay(const Ray ray) const {
+Ray Primitive::generateTransformedRay(const Ray& ray) const {
 	//since direction has 0 as last element, translate became 0 too
 	Vec4f newPos = ray.getPosition() * inverseTransformMat;
 	Vec4f newDir = ray.getDirection() * inverseTransformMat;
@@ -48,8 +48,8 @@ bool Primitive::setTransformation(Mat4f& matrix) {
 	return true;
 }
 
-bool Primitive::setLightValues(Vec3f ambientLight, Vec3f emissionLight,
-		Vec3f diffuse, Vec3f specular, float shininess) {
+bool Primitive::setLightValues(Vec3f& ambientLight, Vec3f& emissionLight,
+		Vec3f& diffuse, Vec3f& specular, float shininess) {
 	this->ambientLight = ambientLight;
 	this->emissionLight = emissionLight;
 	this->diffuse = diffuse;
@@ -58,7 +58,7 @@ bool Primitive::setLightValues(Vec3f ambientLight, Vec3f emissionLight,
 	return true;
 }
 
-Vec3f Primitive::getColorForRay(const Ray ray, float distance,
+Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 		const Octree& octree,
 		const std::vector<Light>& lights, const unsigned int depth) const {
 	Vec3f color;
