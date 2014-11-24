@@ -13,7 +13,7 @@
  * Creating a node automatically creates subtrees,
  * put primitives in respective
  */
-Octree::Octree(Octree* parent, Vec3f upperEnd, Vec3f lowerEnd, std::vector<Primitive*>& primitives) {
+Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Primitive*>& primitives) {
 	//this variable is used for logging. With it we can intent based on the depth.
 	static std::string level = "";
 	this->parent = parent;
