@@ -43,7 +43,7 @@ public:
 	unsigned int id;
 	Primitive();
 	virtual ~Primitive();
-	virtual bool setTransformation(Mat4f&);
+	virtual bool setTransformation(const Mat4f&);
 	virtual bool intersectiontest(Ray, float&) const= 0;
 	Vec3f getColorForRay(const Ray&, float,
 			const Octree&, const std::vector<Light>&,

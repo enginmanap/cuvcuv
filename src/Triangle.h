@@ -23,8 +23,10 @@ private:
 	Vec3f calculateNormal(const Vec4f&) const;
 	void generateBoundingBox();
 public:
-	bool setTransformation(Mat4f&);
-	Triangle(Vec3f&, Vec3f&, Vec3f&, Mat4f&);
+	bool setTransformation(const Mat4f&);
+	Triangle(const Vec3f& vertice1, const Vec3f& vertice2, const Vec3f& vertice3, const Mat4f& transformMat):a(vertice1), b(vertice2), c(vertice3){
+		this->setTransformation(transformMat); //this generates normal and bounding box.
+	};
 	virtual ~Triangle();
 
 	bool intersectiontest(Ray, float&) const;

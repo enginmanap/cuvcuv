@@ -7,19 +7,13 @@
 
 #include "Triangle.h"
 
-Triangle::Triangle(Vec3f& vertice1, Vec3f& vertice2, Vec3f& vertice3, Mat4f& transformMat) {
-	a = vertice1;
-	b = vertice2;
-	c = vertice3;
-	this->setTransformation(transformMat); //this generates normal and bounding box.
 
-}
 
 Triangle::~Triangle() {
 
 }
 
-bool Triangle::setTransformation(Mat4f& transformMatrix){
+bool Triangle::setTransformation(const Mat4f& transformMatrix){
 	Primitive::setTransformation(transformMatrix);//call to super, so inverse will be calculated
 	Vec3f normal = vec3fNS::cross((b - a), (c - a));
 	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();

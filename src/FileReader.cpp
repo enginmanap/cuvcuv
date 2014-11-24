@@ -7,8 +7,7 @@
 
 #include "FileReader.h"
 
-FileReader::FileReader(std::string fileName) {
-	this->fileName = fileName;
+FileReader::FileReader(std::string fileName): fileName(fileName) {
 	this->scene = NULL;
 
 	fileReadStream.open(fileName.c_str());

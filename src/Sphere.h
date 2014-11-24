@@ -22,7 +22,7 @@ class Sphere: public Primitive {
 	void generateBoundingBox();
 	Mat4f inverseMatrixTranspose;
 public:
-	bool setTransformation(Mat4f&);
+	bool setTransformation(const Mat4f&);
 	Sphere(float, float, float, float, Mat4f&);
 	virtual ~Sphere();
 	bool intersectiontest(Ray, float&) const;

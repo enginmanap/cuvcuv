@@ -98,7 +98,7 @@ Scene::~Scene() {
 		delete[] this->vertexArray;
 	}
 	for (std::vector<Primitive*>::iterator it = primitives.begin();
-			it != primitives.end(); it++) {
+			it != primitives.end(); ++it) {
 		delete (*it);
 	}
 	delete[] pixels;

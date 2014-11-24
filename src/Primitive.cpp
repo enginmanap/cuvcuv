@@ -12,6 +12,7 @@ unsigned int Primitive::lastID = 0;
 
 Primitive::Primitive(){
 	this->id = ++lastID;
+	this->shininess = 0.0f;
 }
 
 Vec3f Primitive::calculateColorPerLight(const Vec3f& direction,
@@ -41,7 +42,7 @@ Ray Primitive::generateTransformedRay(const Ray& ray) const {
 	return Ray(newPos,newDir, 0, 100);
 }
 
-bool Primitive::setTransformation(Mat4f& matrix) {
+bool Primitive::setTransformation(const Mat4f& matrix) {
 	this->transformMatrix = matrix;
 	this->inverseTransformMat = Mat4f::inverse(matrix);
 	this->generateBoundingBox();//since transformations would change it.

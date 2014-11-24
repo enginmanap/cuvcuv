@@ -49,7 +49,7 @@ Sphere::Sphere(float x, float y, float z, float rad, Mat4f& transformMat) {
 	this->setTransformation(transformMat); //this generates bounding box, and inverseTransformTranspose
 }
 
-bool Sphere::setTransformation(Mat4f& transformMatrix){
+bool Sphere::setTransformation(const Mat4f& transformMatrix){
 	Primitive::setTransformation(transformMatrix);//call to super, so inverse will be calculated
 	this->inverseMatrixTranspose = this->inverseTransformMat.transpose();
 	return true;

@@ -29,7 +29,7 @@ bool RayTracer::traceToLight(const Ray& ray, const Octree& octree,
 	std::set<Primitive*> primitives;
 	octree.getIntersectingPrimitives(ray,primitives);
 	for (std::set<Primitive*>::const_iterator it = primitives.begin();
-			it != primitives.end(); it++) {
+			it != primitives.end(); ++it) {
 		if ((*it)->intersectiontest(ray, intersectionDistance)) {
 			//found intersection, check if it is before the closest one
 			if (distanceToLight > intersectionDistance) {
@@ -62,14 +62,14 @@ Vec3f RayTracer::trace(const Ray& ray, const Octree& octree,
 
 	std::set<Primitive*> primitives;
 	octree.getIntersectingPrimitives(ray,primitives);
-	if (primitives.size() > 0) {
+	if (!primitives.empty()) {
 		//totalTests += primitives.size();
 		//if (primitives.size() > mostTests) {
 		//	std::cout << "maximum tests " << primitives.size() << std::endl;
 		//	mostTests = primitives.size();
 		//}
 		for (std::set<Primitive*>::const_iterator it = primitives.begin();
-				it != primitives.end(); it++) {
+				it != primitives.end(); ++it) {
 			if ((*it)->intersectiontest(ray, intersectionDistance)) {
 				//found intersection
 				if (distance > intersectionDistance) {

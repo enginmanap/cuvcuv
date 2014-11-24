@@ -13,12 +13,9 @@
  * Creating a node automatically creates subtrees,
  * put primitives in respective
  */
-Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Primitive*>& primitives) {
+Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Primitive*>& primitives): parent(parent), upperEnd(upperEnd),lowerEnd(lowerEnd) {
 	//this variable is used for logging. With it we can intent based on the depth.
 	static std::string level = "";
-	this->parent = parent;
-	this->upperEnd = upperEnd;
-	this->lowerEnd = lowerEnd;
 	Vec3f temp = this->upperEnd + this->lowerEnd;
 	this->center = ((float) 1 / 2) * temp;
 	memset(children, 0, sizeof(Octree*) * 8); //set children to NULL
@@ -28,8 +25,8 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 		this->isSplittingRedudant = std::max(this->parent->isSplittingRedudant - 1, 0); //if parent was somewhat redudant, child is too
 	}
 
-	std::vector<Primitive*> contained[8], notContained, partiallyContained, toCheck; //TODO this should be done by addPrimitive method.
-	toCheck = primitives;
+	std::vector<Primitive*> contained[8], notContained; //TODO this should be done by addPrimitive method.
+
 	if (primitives.size() > 1 && (upperEnd.x - lowerEnd.x > 0.1f)) {
 		//we should calculate children if we can split more
 

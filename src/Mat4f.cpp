@@ -224,7 +224,7 @@ Vec4f operator*(const Vec4f& vector, const Mat4f& matrix) {
 /**
  * assumes the forth element is 1;
  */
-Vec3f operator*(const Vec3f vector,const Mat4f& matrix)  {
+Vec3f operator*(const Vec3f& vector,const Mat4f& matrix)  {
 	Vec3f result;
 	for (int i = 0; i < 3; ++i) {
 			for (int k = 0; k < 3; ++k) {
