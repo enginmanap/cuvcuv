@@ -23,8 +23,8 @@ private:
 
 public:
 	Light();
-	Light(Vec4f,Vec3f);
-
+	Light(Vec4f& position,Vec3f& color): position(position),color(color) {
+	this->attenuation = Vec3f(1.0f,0.0f,0.0f);}
 	bool setAttenuation(Vec3f&);
 	float getAttenuationFactor(float);
 
