@@ -20,8 +20,8 @@ RayTracer::~RayTracer() {
  * any objects. false if there are any obstacles.
  *
  */
-bool RayTracer::traceToLight(const Ray ray, const Octree& octree,
-		const Light light) const {
+bool RayTracer::traceToLight(const Ray& ray, const Octree& octree,
+		const Light& light) const {
 	Vec3f route = light.getPosition() - ray.getPosition();
 	float distanceToLight = route.length();
 	float intersectionDistance;
@@ -53,7 +53,7 @@ bool RayTracer::traceToLight(const Ray ray, const Octree& octree,
  * @returns:
  * color in Vec3f
  */
-Vec3f RayTracer::trace(const Ray ray, const Octree& octree,
+Vec3f RayTracer::trace(const Ray& ray, const Octree& octree,
 		const std::vector<Light> &lights, const unsigned int depth) const {
 	//static unsigned int totalTests = 0, mostTests = 0;
 	float distance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
