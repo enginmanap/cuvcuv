@@ -72,6 +72,10 @@ Vec3f Primitive::getColorForRay(const Ray ray, float distance,
 	Vec3f eyeDirn = vec3fNS::normalize(
 			((Vec3f) ray.getPosition()) - intersectionPoint);
 
+	//check if light is blocked or not
+	Vec3f intersectionPos = intersectionPoint + EPSILON * 10.0f *Vec4f(normal4, 0.0f);//FIXME this should be normal, is it not?
+	//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
+
 	for (unsigned int i = 0; i < lights.size(); i++) {
 		Light it = lights[i];
 		Vec3f lightPos;
@@ -86,9 +90,7 @@ Vec3f Primitive::getColorForRay(const Ray ray, float distance,
 			direction = vec3fNS::normalize(lightPos - intersectionPoint);
 		}
 
-		//check if light is blocked or not
-		Vec3f intersectionPos = intersectionPoint + EPSILON * 10.0f *Vec4f(direction, 0.0f);//FIXME this should be normal, is it not?
-		//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
+
 
 
 		Ray rayToLight(intersectionPos,
@@ -113,11 +115,8 @@ Vec3f Primitive::getColorForRay(const Ray ray, float distance,
 		//the object is not reflective, so stop here
 	} else {
 		if (depth > 0) {
-
-			Ray reflectionRay(intersectionPoint + EPSILON * 10.0f * normal4,
-					ray.getDirection()
-							- 2 * Vec4fNS::dot(ray.getDirection(), normal4)
-									* normal4, 0, 100);
+			Vec3f reflectionDir = ray.getDirection()- 2 * Vec4fNS::dot(ray.getDirection(), normal4) * normal4;
+			Ray reflectionRay(intersectionPos,reflectionDir	, 0, 100);
 			Vec3f reflectedColor = tracer.trace(reflectionRay, octree,
 					lights, depth);
 			reflectedColor = vec3fNS::clamp(reflectedColor, 0, 1);
