@@ -36,8 +36,9 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f direction,
 
 Ray Primitive::generateTransformedRay(const Ray ray) const {
 	//since direction has 0 as last element, translate became 0 too
-	return Ray(ray.getPosition() * inverseTransformMat,
-			ray.getDirection() * inverseTransformMat, 0, 100);
+	Vec4f newPos = ray.getPosition() * inverseTransformMat;
+	Vec4f newDir = ray.getDirection() * inverseTransformMat;
+	return Ray(newPos,newDir, 0, 100);
 }
 
 bool Primitive::setTransformation(Mat4f& matrix) {
@@ -84,9 +85,13 @@ Vec3f Primitive::getColorForRay(const Ray ray, float distance,
 			lightPos = (1 / it.getPosition().w) * lightPos;
 			direction = vec3fNS::normalize(lightPos - intersectionPoint);
 		}
+
 		//check if light is blocked or not
-		Vec4f direction4 = Vec4f(direction, 0.0f);
-		Ray rayToLight(intersectionPoint + EPSILON * 10.0f * direction4,
+		Vec3f intersectionPos = intersectionPoint + EPSILON * 10.0f *Vec4f(direction, 0.0f);//FIXME this should be normal, is it not?
+		//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
+
+
+		Ray rayToLight(intersectionPos,
 				direction, 0, 100);
 
 		if (tracer.traceToLight(rayToLight, octree, *(&it))) {
@@ -108,6 +113,7 @@ Vec3f Primitive::getColorForRay(const Ray ray, float distance,
 		//the object is not reflective, so stop here
 	} else {
 		if (depth > 0) {
+
 			Ray reflectionRay(intersectionPoint + EPSILON * 10.0f * normal4,
 					ray.getDirection()
 							- 2 * Vec4fNS::dot(ray.getDirection(), normal4)

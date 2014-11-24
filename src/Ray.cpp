@@ -8,7 +8,7 @@
 #include "Ray.h"
 
 
-Ray::Ray(Vec3f position, Vec3f direction, float min,float max) {
+Ray::Ray(Vec3f& position, Vec3f& direction, float min,float max) {
 	this->position = Vec4f(position,1.0f);
 	this->direction = Vec4f(direction,0.0f);
 
