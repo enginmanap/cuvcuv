@@ -263,10 +263,17 @@ bool Scene::renderScene() {
 			color = rayTracer.trace(ray, *spatialTree, lights, this->maxDepth);
 			color = colorRange * color;
 			unsigned int index = 4 * (this->sampler->getWidht() * y + x);
+#ifdef USE_FREEIMAGE_PNG
+			pixels[index + 0] = (unsigned char) color.z;
+			pixels[index + 1] = (unsigned char) color.y;
+			pixels[index + 2] = (unsigned char) color.x;
+			pixels[index + 3] = 255;
+#else
 			pixels[index + 0] = (unsigned char) color.x;
 			pixels[index + 1] = (unsigned char) color.y;
 			pixels[index + 2] = (unsigned char) color.z;
 			pixels[index + 3] = 255;
+#endif /*USE_FREEIMAGE_PNG*/
 #pragma omp critical
 			morePixels = this->sampler->getPoint(x, y);
 		}
