@@ -15,11 +15,12 @@ private:
 	Vec4f position, direction, inverseDirection;
 	float minDistance, maxDistance;
 public:
-	Ray(): position(Vec4f()),direction(Vec4f()), inverseDirection(Vec4f()), minDistance(0), maxDistance(0) {};
+	Ray(): position(Vec4f()),direction(Vec4f()), inverseDirection(Vec4f()), minDistance(0), maxDistance(100) {};
 	Vec4f getPosition() const {return position;};
 	Vec4f getDirection() const {return direction;};
 	Vec4f getInverseDirection() const {return inverseDirection;};
-	Ray(Vec4f, Vec4f, float, float);
+	Ray(Vec4f position, Vec4f direction, float min,float max) : position(position),direction(direction), minDistance(0), maxDistance(1) {
+		this->inverseDirection = Vec4f(1.0f/this->direction.x, 1.0f/this->direction.y, 1.0f/this->direction.z, 0.0f);}
 	Ray(Vec3f, Vec3f, float,float);
 };
 

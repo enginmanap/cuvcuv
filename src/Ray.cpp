@@ -7,9 +7,6 @@
 
 #include "Ray.h"
 
-Ray::Ray(Vec4f position, Vec4f direction, float min,float max) : position(position),direction(direction), minDistance(0), maxDistance(1) {
-	this->inverseDirection = Vec4f(1.0f/this->direction.x, 1.0f/this->direction.y, 1.0f/this->direction.z, 0.0f);
-}
 
 Ray::Ray(Vec3f position, Vec3f direction, float min,float max) {
 	this->position = Vec4f(position,1.0f);
