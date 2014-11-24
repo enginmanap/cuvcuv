@@ -31,6 +31,7 @@ public:
 	unsigned char getIsSplittingRedudant(){ return isSplittingRedudant;}
 	bool isRayIntersects(const Ray&) const;
 	void getIntersectingPrimitives(const Ray&, std::set<Primitive*>&) const;
+	void print();
 };
 
 #endif /* SRC_OCTREE_H_ */
