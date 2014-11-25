@@ -57,7 +57,7 @@ Ray Camera::getRay(int x, int y) {
 			* ((float) x + 0.5f - halfWidth);
 
 	float verticalChange = yChangeFactor
-			* (halfHeight - (float)y + 0.5f);
+			* (halfHeight - ((float)y + 0.5f));
 	//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
 	Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 	//Vec3f direction = (verticalChange * u) + (horizontalChange* v) - w;
