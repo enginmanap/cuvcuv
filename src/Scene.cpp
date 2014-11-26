@@ -239,7 +239,7 @@ void Scene::buildOctree() {
 	Vec3f treeMin(std::floor(minbb.x), std::floor(minbb.y),
 			std::floor(minbb.z));
 	//now request a octree with this dimentions.
-	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives); //FIXME this values should be determined by the objects.
+	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives);
 	std::cout << "spatial tree generated with dimentions: " << treeMax << ","
 			<< treeMin << std::endl;
 	//this->spatialTree->print();
