@@ -18,7 +18,7 @@ SOURCE_PATH=src/
 
 all: $(BINARY_PATH)$(EXE)
 
-$(BINARY_PATH)$(EXE): $(BINARY_PATH)Octree.o $(BINARY_PATH)Light.o $(BINARY_PATH)Transform.o $(BINARY_PATH)Mat4f.o $(BINARY_PATH)Primitive.o $(BINARY_PATH)Vec4f.o $(BINARY_PATH)Triangle.o $(BINARY_PATH)Ray.o $(BINARY_PATH)RayTracer.o $(BINARY_PATH)Sphere.o $(BINARY_PATH)Vec3f.o $(BINARY_PATH)Sampler.o $(BINARY_PATH)Camera.o $(BINARY_PATH)Scene.o $(BINARY_PATH)FileReader.o $(BINARY_PATH)main.o 
+$(BINARY_PATH)$(EXE): $(BINARY_PATH)Octree.o $(BINARY_PATH)Light.o $(BINARY_PATH)Transform.o $(BINARY_PATH)Mat4f.o $(BINARY_PATH)Primitive.o $(BINARY_PATH)Vec4f.o $(BINARY_PATH)Triangle.o $(BINARY_PATH)Ray.o $(BINARY_PATH)RayTracer.o $(BINARY_PATH)Sphere.o $(BINARY_PATH)Vec3f.o $(BINARY_PATH)Camera.o $(BINARY_PATH)Scene.o $(BINARY_PATH)FileReader.o $(BINARY_PATH)main.o 
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINARY_PATH)main.o: $(SOURCE_PATH)main.cpp 
@@ -34,10 +34,6 @@ $(BINARY_PATH)Scene.o: $(SOURCE_PATH)Scene.cpp $(SOURCE_PATH)Scene.h
 	$(CXX) $(CXXFLAGS) $< -o $@
 	
 $(BINARY_PATH)Camera.o: $(SOURCE_PATH)Camera.cpp $(SOURCE_PATH)Camera.h
-	mkdir -p $(BINARY_PATH)
-	$(CXX) $(CXXFLAGS) $< -o $@
-	
-$(BINARY_PATH)Sampler.o: $(SOURCE_PATH)Sampler.cpp $(SOURCE_PATH)Sampler.h
 	mkdir -p $(BINARY_PATH)
 	$(CXX) $(CXXFLAGS) $< -o $@
 

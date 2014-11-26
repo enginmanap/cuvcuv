@@ -7,10 +7,12 @@
 
 #include "Camera.h"
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>       /* time */
 
 Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 		float lookaty, float lookatz, float upx, float upy, float upz,
-		float fovy, int height, int width) {
+		float fovy, unsigned int height, unsigned int width) {
 	position.x = lookfromx;
 	position.y = lookfromy;
 	position.z = lookfromz;
@@ -31,8 +33,10 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	this->fovx = (float) (2 * atan((width * 0.5) / d));
 	//this->fovx = this->fovy * ((float) width / (float) height);
 	std::cout << "fovy " << this->fovy << " fovx " << this->fovx << std::endl;
+
 	this->height = height;
 	this->width = width;
+	this->currentPoint = 0;
 
 	//calculate the u,v,w
 
@@ -49,25 +53,44 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	yChangeFactor = tan(this->fovy / 2) / halfHeight;
 }
 
-Ray Camera::getRay(int x, int y) {
+bool Camera::getPoint(unsigned int& x, unsigned int& y) {
+	if (currentPoint < height * width) {
+		x = currentPoint % width;
+		y = currentPoint / width;
+		currentPoint++;
+		if(currentPoint % ((height * width)/100) == 0){
+			std::cout << "rendering: %" << currentPoint / ((height * width)/100) << std::endl;
+		}
+		return true;
+	} else {
+		std::cout << "no more pixel to render. " << std::endl;
+		return false;
+	}
+}
+
+
+bool Camera::getRay(unsigned int& x, unsigned int& y, Ray& ray) {
 	//Calculate the direction
 	//since grader wants pixel centers, we will add 0.5 to pixels.
 
-	float horizontalChange = xChangeFactor
-			* ((float) x + 0.5f - halfWidth);
 
-	float verticalChange = yChangeFactor
-			* (halfHeight - ((float)y + 0.5f));
-	//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
-	Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
-	//Vec3f direction = (verticalChange * u) + (horizontalChange* v) - w;
-	//Vec3f directionPart = verticalChange * v;
+	if(this->getPoint(x,y)){
+		float horizontalChange = xChangeFactor
+				* ((float) x + 0.5f - halfWidth);
 
-	direction = vec3fNS::normalize(direction);
+		float verticalChange = yChangeFactor
+				* (halfHeight - ((float)y + 0.5f));
+		//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
+		Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 
-	//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
+		direction = vec3fNS::normalize(direction);
 
-	Ray temp(position, direction, 0, 100);
-	return temp;
+		//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
+		ray.setPosition(Vec4f(position ,1.0f));
+		ray.setDirection(Vec4f(direction,0.0f));
+		return true;
+	} else {
+		return false;
+	}
 
 }

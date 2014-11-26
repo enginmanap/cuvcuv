@@ -22,6 +22,15 @@ public:
 	Ray(Vec4f& position, Vec4f& direction, float minDistance,float maxDistance) : position(position),direction(direction), minDistance(minDistance), maxDistance(maxDistance) {
 		this->inverseDirection = Vec4f(1.0f/this->direction.x, 1.0f/this->direction.y, 1.0f/this->direction.z, 0.0f);}
 	Ray(Vec3f&, Vec3f&, float,float);
+
+	void setDirection(const Vec4f& direction) {
+		this->direction = direction;
+		this->inverseDirection = Vec4f(1.0f/this->direction.x, 1.0f/this->direction.y, 1.0f/this->direction.z, 0.0f);
+	}
+
+	void setPosition(const Vec4f& position) {
+		this->position = position;
+	}
 };
 
 std::ostream& operator<<(std::ostream &, const Ray &);

@@ -9,10 +9,9 @@
 
 /**
  * A scene starts definition starts with the sample size,
- * so we are setting the sampler in constructor;
+ * so we are setting height width, they will be passed to camera;
  */
-Scene::Scene(int height, int width) {
-	this->sampler = new Sampler(height, width);
+Scene::Scene(unsigned int height, unsigned int width): height(height), width(width) {
 	this->camera = NULL;
 	this->vertexArray = NULL;
 	this->maxVertexCount = 0;
@@ -73,8 +72,8 @@ bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,
 		delete camera;
 	}
 	camera = new Camera(lookfromx, lookfromy, lookfromz, lookatx, lookaty,
-			lookatz, upx, upy, upz, fovy, sampler->getHeight(),
-			sampler->getWidht());
+			lookatz, upx, upy, upz, fovy, this->height,
+			this->width);
 	return true;
 }
 
@@ -91,7 +90,6 @@ bool Scene::createVertexSpace(int maxVertexCount) {
 }
 
 Scene::~Scene() {
-	delete this->sampler;
 	if (camera != NULL)
 		delete camera;
 	if (this->vertexArray != NULL) {
@@ -106,9 +104,9 @@ Scene::~Scene() {
 	delete spatialTree;
 }
 
-bool Scene::getSamplingSize(int& height, int& width) {
-	height = sampler->getHeight();
-	width = sampler->getWidht();
+bool Scene::getSamplingSize(unsigned int& height, unsigned int& width) {
+	height = this->height;
+	width = this->width;
 	return true;
 }
 
@@ -246,23 +244,23 @@ void Scene::buildOctree() {
 }
 
 bool Scene::renderScene() {
+
+	if (this->camera == NULL) {
+		std::cerr << "Can't render without a camera set." << std::endl;
+	}
+
 	unsigned int x = 0, y = 0;
 	Vec3f color;
 	bool morePixels;
 	Ray ray;
 
-#pragma omp parallel private(color,x,y,ray) shared (morePixels)
+#pragma omp parallel private(color,x,y,ray,morePixels)
 	{
-#pragma omp critical
-		morePixels = this->sampler->getPoint(x, y);
+		morePixels = this->camera->getRay(x,y,ray);
 		while (morePixels) {
-			if (this->camera == NULL) {
-				std::cerr << "Can't render without a camera set." << std::endl;
-			}
-			ray = this->camera->getRay(x, y);
 			color = rayTracer.trace(ray, *spatialTree, lights, this->maxDepth);
 			color = colorRange * vec3fNS::clamp(color, 0, 1); //Opengl auto clamps, we do manually.
-			unsigned int index = 4 * (this->sampler->getWidht() * y + x);
+			unsigned int index = 4 * (this->width * y + x);
 #ifdef USE_FREEIMAGE_PNG
 			pixels[index + 0] = (unsigned char) color.z;
 			pixels[index + 1] = (unsigned char) color.y;
@@ -275,15 +273,15 @@ bool Scene::renderScene() {
 			pixels[index + 3] = 255;
 #endif /*USE_FREEIMAGE_PNG*/
 #pragma omp critical
-			morePixels = this->sampler->getPoint(x, y);
+			morePixels = this->camera->getRay(x,y,ray);
 		}
 	}
 	return true;
 }
 
-unsigned char* Scene::getPixels(int& height, int& width) {
-	height = sampler->getHeight();
-	width = sampler->getWidht();
+unsigned char* Scene::getPixels(unsigned int& height, unsigned int& width) {
+	height = this->height;
+	width = this->width;
 	return this->pixels;
 }
 

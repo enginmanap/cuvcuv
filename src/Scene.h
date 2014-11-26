@@ -15,7 +15,6 @@
 #include "Sphere.h"
 #include "Triangle.h"
 #include "Camera.h"
-#include "Sampler.h"
 #include "Ray.h"
 #include "RayTracer.h"
 #include "Light.h"
@@ -37,7 +36,6 @@ class Scene {
 	std::string saveFilename;
 
 	Camera *camera;
-	Sampler *sampler;
 
 	float colorRange;
 	unsigned char* pixels;
@@ -55,15 +53,16 @@ class Scene {
 	unsigned int maxDepth;
 	RayTracer rayTracer;
 	Octree *spatialTree;
+	unsigned int height, width;
 
 public:
 
-	Scene(int, int);
+	Scene(unsigned int, unsigned int);
 	bool setCamera(float, float, float, float, float, float, float, float,
 			float, float);
 
 	virtual ~Scene();
-	bool getSamplingSize(int&, int&);
+	bool getSamplingSize(unsigned int&, unsigned int&);
 	bool setCurrentAmbient(float, float, float);
 	bool setCurrentEmission(float, float, float);
 	bool setCurrentDiffuse(float, float, float);
@@ -75,7 +74,7 @@ public:
 	std::string getSaveFilename();
 	bool setMaxDepth(unsigned int);
 
-	unsigned char* getPixels(int&, int&);
+	unsigned char* getPixels(unsigned int&, unsigned int&);
 
 	bool createVertexSpace(int);
 	bool addVertex(float, float, float);

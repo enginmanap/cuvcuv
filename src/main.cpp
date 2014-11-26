@@ -33,7 +33,7 @@ void saveToFile(unsigned char pixels[], int height, int width, std::string filen
 int main(int argc, char *argv[]) {
 
 
-	int height = HEIGHT, width = WIDTH;
+	unsigned int height = HEIGHT, width = WIDTH;
 
 	FileReader* reader;
 	Scene* scene = NULL;
