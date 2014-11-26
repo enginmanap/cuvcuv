@@ -261,7 +261,7 @@ bool Scene::renderScene() {
 			}
 			ray = this->camera->getRay(x, y);
 			color = rayTracer.trace(ray, *spatialTree, lights, this->maxDepth);
-			color = colorRange * color;
+			color = colorRange * vec3fNS::clamp(color, 0, 1); //Opengl auto clamps, we do manually.
 			unsigned int index = 4 * (this->sampler->getWidht() * y + x);
 #ifdef USE_FREEIMAGE_PNG
 			pixels[index + 0] = (unsigned char) color.z;
