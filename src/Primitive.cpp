@@ -138,15 +138,12 @@ Primitive::~Primitive() {
 
 unsigned char Primitive::isInBoundingBox(const Vec3f& upperEnd, const Vec3f& lowerEnd) const {
 
-	//if the bounding box is completely in the octree box
-	if(upperEnd.x > this->bbUpper.x && upperEnd.y > this->bbUpper.y && upperEnd.z > this->bbUpper.z) {
-		if(lowerEnd.x < this->bbLower.x && lowerEnd.y < this->bbLower.y && lowerEnd.z < this->bbLower.z) {
-			//bounding box is fully in
-			return 2;
-		}
-	}
-
-	//this checks if octree up is lower then bounding box low, or vice versa.
+	//if the bounding box is completely in the octree box or in contact
+	/**
+	 * this check is the most probably fastest possible check
+	 * If no contact, given upper must be lower than this lower,
+	 * or given lower must be bigger than this upper.
+	 */
 	if(upperEnd.x > this->bbLower.x &&
 		lowerEnd.x < this->bbUpper.x &&
 		upperEnd.y > this->bbLower.y &&

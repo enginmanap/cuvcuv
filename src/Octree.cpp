@@ -87,22 +87,12 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 			notContainedCounter = 0;
 			for (unsigned int subtree = 0; subtree < 8; ++subtree) {
 				/*
-				 * case 2 is completely in, case 1 is partially in, and
-				 * case 0 is no contact.
-				 * FIXME Partial is not used anymore, this should be simplified.
+				 * 1 is contact or completely in, and 0 is no contact.
 				 */
-				switch ((*primIter)->isInBoundingBox(up[subtree], down[subtree])) {
-				case 2:
+				if((*primIter)->isInBoundingBox(up[subtree], down[subtree]) == 1) {
 					contained[subtree].push_back(*primIter);
-					break;
-				case 1:
-					contained[subtree].push_back(*primIter);
-					break;
-				case 0:
+				} else {
 					++notContainedCounter;
-					break;
-				default:
-					break;
 				}
 			}
 			if (notContainedCounter == 8) {
@@ -170,7 +160,7 @@ bool Octree::isRayIntersects(const Ray& ray) const {
 	tmin = std::max(tmin, std::min(loverZIntersection, upperZIntersection));
 	tmax = std::min(tmax, std::max(loverZIntersection, upperZIntersection));
 
-	return tmax >= std::max(0.0f, tmin); //TODO does this have to be maxed?
+	return tmax >= std::max(0.0f, tmin);
 }
 
 /**
@@ -196,7 +186,6 @@ void Octree::getIntersectingPrimitives(const Ray& ray, std::set<Primitive*>& pri
 			}
 		}
 		//insert primitives of this node to the list.
-		//FIXME this object should not be created/deleted for each call, this is recursive.
 		primitiveSet.insert(this->primitives.begin(), this->primitives.end());
 	}
 }
