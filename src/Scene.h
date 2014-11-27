@@ -19,6 +19,7 @@
 #include "RayTracer.h"
 #include "Light.h"
 #include "Octree.h"
+#include "Film.h"
 #include <string>
 
 #ifndef COLOR_DEPTH
@@ -26,6 +27,9 @@
 #endif
 
 class Scene {
+	unsigned int height, width;
+
+	Film film;
 
 	Vec3f currentAmbientLight;
 	Vec3f currentEmissionLight;
@@ -36,10 +40,6 @@ class Scene {
 	std::string saveFilename;
 
 	Camera *camera;
-
-	float colorRange;
-	unsigned char* pixels;
-
 	short lightCount;
 	std::vector<Light> lights;
 	int maxVertexCount, currentVertex;
@@ -53,7 +53,7 @@ class Scene {
 	unsigned int maxDepth;
 	RayTracer rayTracer;
 	Octree *spatialTree;
-	unsigned int height, width;
+
 
 public:
 
@@ -74,14 +74,16 @@ public:
 	std::string getSaveFilename();
 	bool setMaxDepth(unsigned int);
 
-	unsigned char* getPixels(unsigned int&, unsigned int&);
-
 	bool createVertexSpace(int);
+	void printVertexes();
+
+	unsigned char* getPixels(unsigned int height, unsigned int width) {return this->film.getPixels(height,width);}
+
 	bool addVertex(float, float, float);
 	bool addTriangle(int, int, int);
 	bool addSphere(float, float, float, float);
 	bool addLight(float, float, float, float, float, float, float);
-	void printVertexes();
+
 
 	bool pushTransform();
 	Mat4f popTransform();

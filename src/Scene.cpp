@@ -11,7 +11,7 @@
  * A scene starts definition starts with the sample size,
  * so we are setting height width, they will be passed to camera;
  */
-Scene::Scene(unsigned int height, unsigned int width): height(height), width(width) {
+Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), film(height,width,COLOR_DEPTH,1) {//FIXME 1 sample is hardcoded
 	this->camera = NULL;
 	this->vertexArray = NULL;
 	this->maxVertexCount = 0;
@@ -19,9 +19,7 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 	this->SphereCount = 0;
 	this->triangleCount = 0;
 	this->lightCount = 0;
-	this->colorRange = pow(2, COLOR_DEPTH) - 1; //for 8 bits, this means 255
-	this->pixels = new unsigned char[height * width * COLOR_DEPTH];
-	memset(this->pixels, 255, height * width * COLOR_DEPTH); //standart says char is 1 byte
+
 
 	this->currentShininess = 0.0f;
 	this->currentAttenuation = Vec3f(1, 0, 0);
@@ -99,7 +97,6 @@ Scene::~Scene() {
 			it != primitives.end(); ++it) {
 		delete (*it);
 	}
-	delete[] pixels;
 
 	delete spatialTree;
 }
@@ -259,30 +256,12 @@ bool Scene::renderScene() {
 		morePixels = this->camera->getRay(x,y,ray);
 		while (morePixels) {
 			color = rayTracer.trace(ray, *spatialTree, lights, this->maxDepth);
-			color = colorRange * vec3fNS::clamp(color, 0, 1); //Opengl auto clamps, we do manually.
-			unsigned int index = 4 * (this->width * y + x);
-#ifdef USE_FREEIMAGE_PNG
-			pixels[index + 0] = (unsigned char) color.z;
-			pixels[index + 1] = (unsigned char) color.y;
-			pixels[index + 2] = (unsigned char) color.x;
-			pixels[index + 3] = 255;
-#else
-			pixels[index + 0] = (unsigned char) color.x;
-			pixels[index + 1] = (unsigned char) color.y;
-			pixels[index + 2] = (unsigned char) color.z;
-			pixels[index + 3] = 255;
-#endif /*USE_FREEIMAGE_PNG*/
+			this->film.setPixel(x,y,color);
 #pragma omp critical
 			morePixels = this->camera->getRay(x,y,ray);
 		}
 	}
 	return true;
-}
-
-unsigned char* Scene::getPixels(unsigned int& height, unsigned int& width) {
-	height = this->height;
-	width = this->width;
-	return this->pixels;
 }
 
 bool Scene::addLight(float p1, float p2, float p3, float p4, float c1, float c2,
