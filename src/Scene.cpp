@@ -242,6 +242,9 @@ void Scene::buildOctree() {
 
 bool Scene::renderScene() {
 
+	//TODO add reading from file
+	unsigned char sampleRate = 1;
+
 	if (this->camera == NULL) {
 		std::cerr << "Can't render without a camera set." << std::endl;
 	}
@@ -249,15 +252,14 @@ bool Scene::renderScene() {
 	unsigned int x = 0, y = 0;
 	Vec3f color;
 	bool morePixels;
-	Ray* ray;
+	Ray ray[sampleRate];
 
 #pragma omp parallel private(color,x,y,ray,morePixels)
 	{
-		ray = new Ray();
 		morePixels = true;
 		while (morePixels) {
 #pragma omp critical
-			morePixels = this->camera->getRays(x,y, 1, ray);
+			morePixels = this->camera->getRays(x,y, sampleRate, ray);
 			color = rayTracer.trace(*ray, *spatialTree, lights, this->maxDepth);
 			this->film.setPixel(x,y,color);
 		}
