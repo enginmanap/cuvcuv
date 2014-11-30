@@ -22,6 +22,7 @@ Film::Film(unsigned int height, unsigned int width, unsigned char colorDepth, un
 
 Film::~Film() {
 	delete[] this->pixels;
+	delete[] this->sampleCounts;
 }
 
 unsigned char* Film::getPixels(unsigned int& height, unsigned int& width) {
@@ -32,15 +33,14 @@ unsigned char* Film::getPixels(unsigned int& height, unsigned int& width) {
 
 bool Film::setPixel(unsigned int& x, unsigned int& y, Vec3f& color) {
 	unsigned int index = (this->width * y + x); //FIXME why we are not handling as matrix
-	int currentSampleCount = this->sampleCounts[index];
+	int currentSampleCount = this->sampleCounts[index]++;
 	if (currentSampleCount >= samplingRate) {
-		std::cerr << "sample rate limit passed, image is not altered." << std::endl;
+		std::cerr << "sample rate limit" << x << "," << y << "passed, image is not altered." << std::endl;
 		return false;
 	} else {
-		this->sampleCounts[index]++;
 		//at this point, each element is 4 bytes, so index should have 4 bytes
 		index *=4;
-		unsigned char oldx, oldy, oldz, oldw;
+		unsigned int oldx, oldy, oldz, oldw;
 		oldx = this->pixels[index + 0] * currentSampleCount;
 		oldy = this->pixels[index + 1] * currentSampleCount;
 		oldz = this->pixels[index + 2] * currentSampleCount;
@@ -62,10 +62,10 @@ bool Film::setPixel(unsigned int& x, unsigned int& y, Vec3f& color) {
 		//now we have another sample in oldx/y/z/w
 		currentSampleCount++;
 
-		this->pixels[index + 0] = oldx / currentSampleCount;
-		this->pixels[index + 1] = oldy / currentSampleCount;
-		this->pixels[index + 2] = oldz / currentSampleCount;
-		this->pixels[index + 3] = oldw / currentSampleCount;
+		this->pixels[index + 0] = (unsigned char)(oldx / currentSampleCount);
+		this->pixels[index + 1] = (unsigned char)(oldy / currentSampleCount);
+		this->pixels[index + 2] = (unsigned char)(oldz / currentSampleCount);
+		this->pixels[index + 3] = (unsigned char)(oldw / currentSampleCount);
 		return true;
 	}
 }

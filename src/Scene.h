@@ -29,7 +29,8 @@
 class Scene {
 	unsigned int height, width;
 
-	Film film;
+	Film* film;
+	unsigned char sampleRate;
 
 	Vec3f currentAmbientLight;
 	Vec3f currentEmissionLight;
@@ -37,9 +38,12 @@ class Scene {
 	Vec3f currentSpecular;
 	float currentShininess;
 	Vec3f currentAttenuation;
+
 	std::string saveFilename;
 
 	Camera *camera;
+
+
 	short lightCount;
 	std::vector<Light> lights;
 	int maxVertexCount, currentVertex;
@@ -77,7 +81,7 @@ public:
 	bool createVertexSpace(int);
 	void printVertexes();
 
-	unsigned char* getPixels(unsigned int height, unsigned int width) {return this->film.getPixels(height,width);}
+	unsigned char* getPixels(unsigned int height, unsigned int width) {return this->film->getPixels(height,width);}
 
 	bool addVertex(float, float, float);
 	bool addTriangle(int, int, int);

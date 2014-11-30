@@ -51,6 +51,7 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	halfHeight = (float) height / 2;
 	xChangeFactor = tan(this->fovx / 2) / halfWidth;
 	yChangeFactor = tan(this->fovy / 2) / halfHeight;
+
 }
 
 bool Camera::getPoint(unsigned int& x, unsigned int& y) {
@@ -80,7 +81,13 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, Ra
 	if(this->getPoint(x,y)){
 		getRay(x,y,*ray);
 		if(rayCount != 1) { // we should not alter for 1 ray;
-			//add random change
+			for(unsigned int i=1;i<rayCount;++i){
+				//we need a random float between -0.5 and 0.5 for aliasing
+				float xOffset = ((rand() % 100) / 100.0f) - 0.5f;
+				float yOffset = ((rand() % 100) / 100.0f) - 0.5f;
+
+				getRay(x,y,ray[i],xOffset,yOffset);
+			}
 		}
 		return true;
 	} else {
@@ -90,15 +97,16 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, Ra
 }
 
 /**
- * This method generates a ray to the center of given point
+ * this method generates a ray to center of the pixel,
+ * with the offset values x and y
  */
-void Camera::getRay(unsigned int x, unsigned int y, Ray& ray) {
-	//since grader wants pixel centers, we will add 0.5 to pixels.
+void Camera::getRay(unsigned int x, unsigned int y, Ray& ray, float xOffset, float yOffset) {
 		float horizontalChange = xChangeFactor
-				* ((float) x + 0.5f - halfWidth);
+				* ((float) x + (0.5f + xOffset) - halfWidth);
+
 
 		float verticalChange = yChangeFactor
-				* (halfHeight - ((float)y + 0.5f));
+				* (halfHeight - ((float)y + (0.5f + yOffset)));
 		//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
 		Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 
@@ -107,4 +115,11 @@ void Camera::getRay(unsigned int x, unsigned int y, Ray& ray) {
 		//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
 		ray.setPosition(Vec4f(position ,1.0f));
 		ray.setDirection(Vec4f(direction,0.0f));
+}
+
+/**
+ * This method generates a ray to the center of given point
+ */
+void Camera::getRay(unsigned int x, unsigned int y, Ray& ray) {
+	getRay(x,y,ray,0,0);
 }

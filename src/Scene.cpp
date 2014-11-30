@@ -11,7 +11,7 @@
  * A scene starts definition starts with the sample size,
  * so we are setting height width, they will be passed to camera;
  */
-Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), film(height,width,COLOR_DEPTH,1) {//FIXME 1 sample is hardcoded
+Scene::Scene(unsigned int height, unsigned int width): height(height), width(width) {//FIXME 1 sample is hardcoded
 	this->camera = NULL;
 	this->vertexArray = NULL;
 	this->maxVertexCount = 0;
@@ -31,6 +31,10 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 	this->maxDepth = 5;
 
 	this->spatialTree = NULL;
+
+	//TODO add reading sample rate from file
+	this->sampleRate = 20;
+	film = new Film(height,width,COLOR_DEPTH,sampleRate);
 
 }
 
@@ -99,6 +103,7 @@ Scene::~Scene() {
 	}
 
 	delete spatialTree;
+	delete film;
 }
 
 bool Scene::getSamplingSize(unsigned int& height, unsigned int& width) {
@@ -242,8 +247,7 @@ void Scene::buildOctree() {
 
 bool Scene::renderScene() {
 
-	//TODO add reading from file
-	unsigned char sampleRate = 1;
+
 
 	if (this->camera == NULL) {
 		std::cerr << "Can't render without a camera set." << std::endl;
@@ -260,12 +264,14 @@ bool Scene::renderScene() {
 		while (morePixels) {
 #pragma omp critical
 			morePixels = this->camera->getRays(x,y, sampleRate, ray);
-			color = rayTracer.trace(*ray, *spatialTree, lights, this->maxDepth);
-			this->film.setPixel(x,y,color);
+			for(unsigned int i=0; i< sampleRate; ++i){
+				color = rayTracer.trace(ray[i], *spatialTree, lights, this->maxDepth);
+#pragma omp critical
+				this->film->setPixel(x,y,color);
+			}
 		}
 	}
 
-	delete ray;
 	return true;
 }
 

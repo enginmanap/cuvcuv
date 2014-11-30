@@ -23,6 +23,7 @@ private:
 
 	float xChangeFactor,yChangeFactor,halfWidth,halfHeight;
 	void getRay(unsigned int x, unsigned int y, Ray& ray);
+	void getRay(unsigned int, unsigned int, Ray&, float,float);
 public:
 	Camera(float, float, float, float, float, float, float, float, float,
 			float, unsigned int, unsigned int);
