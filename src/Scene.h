@@ -66,7 +66,10 @@ public:
 			float, float);
 
 	virtual ~Scene();
+
 	bool getSamplingSize(unsigned int&, unsigned int&);
+	void setSampleRate(unsigned char samplingRate);
+
 	bool setCurrentAmbient(float, float, float);
 	bool setCurrentEmission(float, float, float);
 	bool setCurrentDiffuse(float, float, float);

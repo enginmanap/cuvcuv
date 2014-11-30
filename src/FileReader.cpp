@@ -174,6 +174,10 @@ Scene* FileReader::readFile() {
 			if (readParams(stringStream, parameters, 1)) {
 				scene->setMaxDepth((unsigned int) parameters[0]);
 			}
+		} else if (command == "sampleRate") {
+			if (readParams(stringStream, parameters, 1)) {
+				scene->setSampleRate((unsigned char) parameters[0]);
+			}
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
 

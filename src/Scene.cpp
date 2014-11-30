@@ -32,10 +32,18 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 
 	this->spatialTree = NULL;
 
-	//TODO add reading sample rate from file
-	this->sampleRate = 20;
+
+	this->sampleRate = 1;
 	film = new Film(height,width,COLOR_DEPTH,sampleRate);
 
+}
+
+void Scene::setSampleRate(unsigned char samplingRate){
+	 this->sampleRate = samplingRate;
+	 if(film != NULL)
+		 delete film;
+
+	 film = new Film(height,width,COLOR_DEPTH,sampleRate);
 }
 
 bool Scene::setSaveFilename(std::string filename) {
@@ -260,15 +268,15 @@ bool Scene::renderScene() {
 
 #pragma omp parallel private(color,x,y,ray,morePixels)
 	{
-		morePixels = true;
+		morePixels = this->camera->getRays(x,y, sampleRate, ray);
 		while (morePixels) {
-#pragma omp critical
-			morePixels = this->camera->getRays(x,y, sampleRate, ray);
 			for(unsigned int i=0; i< sampleRate; ++i){
 				color = rayTracer.trace(ray[i], *spatialTree, lights, this->maxDepth);
 #pragma omp critical
 				this->film->setPixel(x,y,color);
 			}
+#pragma omp critical
+			morePixels = this->camera->getRays(x,y, sampleRate, ray);
 		}
 	}
 
