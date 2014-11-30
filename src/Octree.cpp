@@ -160,6 +160,7 @@ bool Octree::isRayIntersects(const Ray& ray) const {
 	tmin = std::max(tmin, std::min(loverZIntersection, upperZIntersection));
 	tmax = std::min(tmax, std::max(loverZIntersection, upperZIntersection));
 
+    //tmin is intersection distance, if it is smaller than tmax
 	return tmax >= std::max(0.0f, tmin);
 }
 

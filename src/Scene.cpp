@@ -11,7 +11,7 @@
  * A scene starts definition starts with the sample size,
  * so we are setting height width, they will be passed to camera;
  */
-Scene::Scene(unsigned int height, unsigned int width): height(height), width(width) {//FIXME 1 sample is hardcoded
+Scene::Scene(unsigned int height, unsigned int width): height(height), width(width) {
 	this->camera = NULL;
 	this->vertexArray = NULL;
 	this->maxVertexCount = 0;
@@ -272,14 +272,12 @@ bool Scene::renderScene() {
 		while (morePixels) {
 			for(unsigned int i=0; i< sampleRate; ++i){
 				color = rayTracer.trace(ray[i], *spatialTree, lights, this->maxDepth);
-#pragma omp critical
 				this->film->setPixel(x,y,color);
 			}
 #pragma omp critical
 			morePixels = this->camera->getRays(x,y, sampleRate, ray);
 		}
 	}
-
 	return true;
 }
 

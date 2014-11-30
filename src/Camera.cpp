@@ -111,10 +111,9 @@ void Camera::getRay(unsigned int x, unsigned int y, Ray& ray, float xOffset, flo
 		Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 
 		direction = vec3fNS::normalize(direction);
-
 		//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
 		ray.setPosition(Vec4f(position ,1.0f));
-		ray.setDirection(Vec4f(direction,0.0f));
+		ray.setDirection(Vec4f(direction, 0.0f));
 }
 
 /**
