@@ -11,6 +11,7 @@
 #include "Vec3f.h"
 #include "Ray.h"
 #include <math.h>
+#include <cassert>
 
 class Camera {
 private:
@@ -21,11 +22,12 @@ private:
 	Vec3f w,u,v;
 
 	float xChangeFactor,yChangeFactor,halfWidth,halfHeight;
+	void getRay(unsigned int x, unsigned int y, Ray& ray);
 public:
 	Camera(float, float, float, float, float, float, float, float, float,
 			float, unsigned int, unsigned int);
 	bool getPoint(unsigned int& x, unsigned int& y);
-	bool getRay( unsigned int&, unsigned int&,Ray&);
+	bool getRays(unsigned int&, unsigned int&,unsigned int,Ray*);
 
 };
 

@@ -68,13 +68,32 @@ bool Camera::getPoint(unsigned int& x, unsigned int& y) {
 	}
 }
 
-
-bool Camera::getRay(unsigned int& x, unsigned int& y, Ray& ray) {
-	//Calculate the direction
-	//since grader wants pixel centers, we will add 0.5 to pixels.
-
+/**
+ * This method generates a ray
+ */
+bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, Ray* ray) {
+	if(rayCount < 1){
+		std::cerr << "requested ray count less than 1" << std::endl;
+		assert(0);
+	}
 
 	if(this->getPoint(x,y)){
+		getRay(x,y,*ray);
+		if(rayCount != 1) { // we should not alter for 1 ray;
+			//add random change
+		}
+		return true;
+	} else {
+		return false;
+	}
+
+}
+
+/**
+ * This method generates a ray to the center of given point
+ */
+void Camera::getRay(unsigned int x, unsigned int y, Ray& ray) {
+	//since grader wants pixel centers, we will add 0.5 to pixels.
 		float horizontalChange = xChangeFactor
 				* ((float) x + 0.5f - halfWidth);
 
@@ -88,9 +107,4 @@ bool Camera::getRay(unsigned int& x, unsigned int& y, Ray& ray) {
 		//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
 		ray.setPosition(Vec4f(position ,1.0f));
 		ray.setDirection(Vec4f(direction,0.0f));
-		return true;
-	} else {
-		return false;
-	}
-
 }

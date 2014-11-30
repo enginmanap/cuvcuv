@@ -249,18 +249,21 @@ bool Scene::renderScene() {
 	unsigned int x = 0, y = 0;
 	Vec3f color;
 	bool morePixels;
-	Ray ray;
+	Ray* ray;
 
 #pragma omp parallel private(color,x,y,ray,morePixels)
 	{
-		morePixels = this->camera->getRay(x,y,ray);
+		ray = new Ray();
+		morePixels = true;
 		while (morePixels) {
-			color = rayTracer.trace(ray, *spatialTree, lights, this->maxDepth);
-			this->film.setPixel(x,y,color);
 #pragma omp critical
-			morePixels = this->camera->getRay(x,y,ray);
+			morePixels = this->camera->getRays(x,y, 1, ray);
+			color = rayTracer.trace(*ray, *spatialTree, lights, this->maxDepth);
+			this->film.setPixel(x,y,color);
 		}
 	}
+
+	delete ray;
 	return true;
 }
 
