@@ -31,7 +31,15 @@ void saveToFile(unsigned char pixels[], int height, int width, std::string filen
 
 
 int main(int argc, char *argv[]) {
+    if ( argc != 2 ) /* argc should be 2 for correct execution */
+    {
 
+    	std::cout << "file name is not specified," << std::endl;
+        std::cout << "usage: "<< argv[0] << " filename" << std::endl;
+        exit(1);
+    }
+
+    std::string fileToread = argv[1];
 
 	unsigned int height = HEIGHT, width = WIDTH;
 
@@ -39,7 +47,7 @@ int main(int argc, char *argv[]) {
 	Scene* scene = NULL;
 	//read the file
 	try {
-		reader = new FileReader("scene1.test");
+		reader = new FileReader(fileToread);
 
 		scene = reader->readFile();
 		scene->getSamplingSize(height, width);
