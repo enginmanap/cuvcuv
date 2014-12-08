@@ -189,7 +189,15 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 		triangleCount++;
 		return true;
 	} else {
-		std::cerr << "one of the vertices used is not defined";
+		std::cerr << "one of the vertices used is not defined ";
+		if(vertice1 < 0 ) std::cerr << "vertex 1 "<< vertice1;
+		if(vertice2 < 0 ) std::cerr << "vertex 2 "<< vertice2;
+		if(vertice3 < 0 ) std::cerr << "vertex 3 "<< vertice3;
+		if(vertice1 >= currentVertex) std::cerr << " vertex 1 bigger " << vertice1;
+		if(vertice2 >= currentVertex) std::cerr << " vertex 2 bigger " << vertice2;
+		if(vertice3 >= currentVertex) std::cerr << " vertex 3 bigger " << vertice3;
+
+		std::cerr << std::endl;
 		return false;
 	}
 }
