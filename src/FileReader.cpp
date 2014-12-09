@@ -139,11 +139,11 @@ Scene* FileReader::readFile() {
 			if (readParams(stringStream, parameters, 1)) {
 				scene->createVertexSpace(parameters[0]);
 			}
-		} else if (command == "vertex") {
+		} else if (command == "v") {
 			if (readParams(stringStream, parameters, 3)) {
 				scene->addVertex(parameters[0], parameters[1], parameters[2]);
 			}
-		} else if (command == "tri") {
+		} else if (command == "f") {
 			if (readParams(stringStream, parameters, 3)) {
 				scene->addTriangle((int) parameters[0], (int) parameters[1],
 						(int) parameters[2]);
