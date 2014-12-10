@@ -12,7 +12,6 @@ unsigned int Primitive::lastID = 0;
 
 Primitive::Primitive(){
 	this->id = ++lastID;
-	this->shininess = 0.0f;
 }
 
 Vec3f Primitive::calculateColorPerLight(const Vec3f& direction,
@@ -49,13 +48,8 @@ bool Primitive::setTransformation(const Mat4f& matrix) {
 	return true;
 }
 
-bool Primitive::setLightValues(Vec3f& ambientLight, Vec3f& emissionLight,
-		Vec3f& diffuse, Vec3f& specular, float shininess) {
-	this->ambientLight = ambientLight;
-	this->emissionLight = emissionLight;
-	this->diffuse = diffuse;
-	this->specular = specular;
-	this->shininess = shininess;
+bool Primitive::setMaterial(Material* mat) {
+	this->material = mat;
 	return true;
 }
 
@@ -105,14 +99,14 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			color = color
 					+ it.getAttenuationFactor(lightDistance)
 							* calculateColorPerLight(direction, it.getColor(),
-									normal, halfVec, diffuse, specular,
-									shininess);
+									normal, halfVec, material->getDiffuse(),  material->getSpecular(),
+									 material->getShininess());
 		}
 
 	}
 	//now we have the color for this object itself, calculate reflections.
-	if (fabs(this->specular.x) < EPSILON && fabs(this->specular.y) < EPSILON
-			&& fabs(this->specular.z) < EPSILON) {
+	if (fabs( material->getSpecular().x) < EPSILON && fabs( material->getSpecular().y) < EPSILON
+			&& fabs( material->getSpecular().z) < EPSILON) {
 		//the object is not reflective, so stop here
 	} else {
 		if (depth > 0) {
@@ -122,11 +116,11 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 					lights, depth);
 			reflectedColor = vec3fNS::clamp(reflectedColor, 0, 1);
 			//std::cout << "reflection " << reflectedColor << std::endl;
-			color = color + specular * reflectedColor;
+			color = color + material->getSpecular() * reflectedColor;
 
 		}
 	}
-	color = color + ambientLight + emissionLight;
+	color = color + material->getAmbient() + material->getAmbient();
 	return color;
 }
 

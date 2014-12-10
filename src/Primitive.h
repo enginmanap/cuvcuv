@@ -16,6 +16,7 @@
 #include "Vec4f.h"
 #include "Ray.h"
 #include "Mat4f.h"
+#include "Material.h"
 
 #ifndef EPSILON
 #define EPSILON 0.001F
@@ -26,8 +27,7 @@ class Octree;
 class Primitive {
 
 protected:
-	Vec3f ambientLight, emissionLight, specular, diffuse;
-	float shininess;
+	Material* material;
 	Mat4f inverseTransformMat, transformMatrix;
 	Ray transformedRay;
 	Vec3f bbUpper, bbLower, bbCenter, bbwidths;
@@ -48,7 +48,7 @@ public:
 	Vec3f getColorForRay(const Ray&, float,
 			const Octree&, const std::vector<Light>&,
 			const unsigned int) const;
-	bool setLightValues(Vec3f&, Vec3f&, Vec3f&, Vec3f&, float);
+	bool setMaterial(Material*);
 
 	Ray generateTransformedRay(const Ray&) const;
 	/**

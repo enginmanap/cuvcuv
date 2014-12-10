@@ -9,8 +9,10 @@
 #define SCENE_H_
 
 #include <vector>
+#include <map>
 #include <stack>
 #include <iostream>
+#include <string>
 #include "Vec3f.h"
 #include "Sphere.h"
 #include "Triangle.h"
@@ -20,7 +22,8 @@
 #include "Light.h"
 #include "Octree.h"
 #include "Film.h"
-#include <string>
+#include "Material.h"
+
 
 #ifndef COLOR_DEPTH
 #define COLOR_DEPTH 8
@@ -32,12 +35,8 @@ class Scene {
 	Film* film;
 	unsigned char sampleRate;
 
-	Vec3f currentAmbientLight;
-	Vec3f currentEmissionLight;
-	Vec3f currentDiffuse;
-	Vec3f currentSpecular;
-	float currentShininess;
-	Vec3f currentAttenuation;
+	std::map<std::string,Material*> materialMap;
+	Material* currentMaterial;
 
 	std::string saveFilename;
 
@@ -46,6 +45,8 @@ class Scene {
 
 	short lightCount;
 	std::vector<Light> lights;
+	Vec3f currentAttenuation;
+
 	int maxVertexCount, currentVertex;
 	Vec3f* vertexArray;
 
@@ -57,6 +58,8 @@ class Scene {
 	unsigned int maxDepth;
 	RayTracer rayTracer;
 	Octree *spatialTree;
+
+	Vec3f temproryVector; //this is used in order not to create/destroy all elements
 
 
 public:

@@ -11,7 +11,7 @@
  * A scene starts definition starts with the sample size,
  * so we are setting height width, they will be passed to camera;
  */
-Scene::Scene(unsigned int height, unsigned int width): height(height), width(width) {
+Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), currentAttenuation(Vec3f(1,0,0)){
 	this->camera = NULL;
 	this->vertexArray = NULL;
 	this->maxVertexCount = 0;
@@ -20,11 +20,12 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 	this->triangleCount = 0;
 	this->lightCount = 0;
 
+	currentMaterial = new Material("_default");
+	//mat->setShininess = 0.0f;
+	//mat->setAttenuation = Vec3f(1, 0, 0); these are default
+	materialMap["_default"] = currentMaterial;
 
-	this->currentShininess = 0.0f;
-	this->currentAttenuation = Vec3f(1, 0, 0);
-
-	this->saveFilename = "output.png";
+	this->saveFilename = "output.png";//TODO: this should be same as input
 
 	transformStack.push(Mat4f()); //since default constructor generates identity matrix.
 
@@ -37,6 +38,30 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 	film = new Film(height,width,COLOR_DEPTH,sampleRate);
 
 }
+
+Scene::~Scene() {
+	if (camera != NULL)
+		delete camera;
+	if (this->vertexArray != NULL) {
+		delete[] this->vertexArray;
+	}
+	for (std::vector<Primitive*>::iterator it = primitives.begin();
+			it != primitives.end(); ++it) {
+		delete (*it);
+	}
+
+	std::map<std::string, Material*>::iterator itr = materialMap.begin();
+	while (itr != materialMap.end()) {
+		   std::map<std::string, Material*>::iterator toErase = itr;
+		   ++itr;
+		   delete toErase->second;
+		   materialMap.erase(toErase);
+	}
+
+	delete spatialTree;
+	delete film;
+}
+
 
 void Scene::setSampleRate(unsigned char samplingRate){
 	 this->sampleRate = samplingRate;
@@ -99,20 +124,6 @@ bool Scene::createVertexSpace(int maxVertexCount) {
 	return true;
 }
 
-Scene::~Scene() {
-	if (camera != NULL)
-		delete camera;
-	if (this->vertexArray != NULL) {
-		delete[] this->vertexArray;
-	}
-	for (std::vector<Primitive*>::iterator it = primitives.begin();
-			it != primitives.end(); ++it) {
-		delete (*it);
-	}
-
-	delete spatialTree;
-	delete film;
-}
 
 bool Scene::getSamplingSize(unsigned int& height, unsigned int& width) {
 	height = this->height;
@@ -121,35 +132,40 @@ bool Scene::getSamplingSize(unsigned int& height, unsigned int& width) {
 }
 
 bool Scene::setCurrentEmission(float x, float y, float z) {
-	currentEmissionLight.x = x;
-	currentEmissionLight.y = y;
-	currentEmissionLight.z = z;
+	temproryVector.x = x;
+	temproryVector.y = y;
+	temproryVector.z = z;
+	currentMaterial->setEmission(temproryVector);
 	return true;
 }
 
 bool Scene::setCurrentAmbient(float x, float y, float z) {
-	currentAmbientLight.x = x;
-	currentAmbientLight.y = y;
-	currentAmbientLight.z = z;
+	temproryVector.x = x;
+	temproryVector.y = y;
+	temproryVector.z = z;
+	currentMaterial->setAmbient(temproryVector);
+
 	return true;
 }
 
 bool Scene::setCurrentDiffuse(float x, float y, float z) {
-	this->currentDiffuse.x = x;
-	this->currentDiffuse.y = y;
-	this->currentDiffuse.z = z;
+	this->temproryVector.x = x;
+	this->temproryVector.y = y;
+	this->temproryVector.z = z;
+	currentMaterial->setDiffuse(temproryVector);
 	return true;
 }
 
 bool Scene::setCurrentSpecular(float x, float y, float z) {
-	this->currentSpecular.x = x;
-	this->currentSpecular.y = y;
-	this->currentSpecular.z = z;
+	this->temproryVector.x = x;
+	this->temproryVector.y = y;
+	this->temproryVector.z = z;
+	currentMaterial->setSpecular(temproryVector);
 	return true;
 }
 
 bool Scene::setCurrentShininess(float shininess) {
-	this->currentShininess = shininess;
+	currentMaterial->setShininess(shininess);
 	return true;
 }
 
@@ -182,8 +198,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 			&& vertice3 < currentVertex) {
 		Triangle* triangle = new Triangle(this->vertexArray[vertice1],
 				this->vertexArray[vertice2], this->vertexArray[vertice3],transformStack.top());
-		triangle->setLightValues(currentAmbientLight, currentEmissionLight,
-				currentDiffuse, currentSpecular, currentShininess);
+		triangle->setMaterial(currentMaterial);
 		//triangle->setTransformation(transformStack.top());
 		primitives.push_back(triangle);
 		triangleCount++;
@@ -204,8 +219,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
 	Sphere* sphere = new Sphere(x, y, z, radius,transformStack.top());
-	sphere->setLightValues(currentAmbientLight, currentEmissionLight,
-			currentDiffuse, currentSpecular, currentShininess);
+	sphere->setMaterial(currentMaterial);
 	primitives.push_back(sphere);
 	//sphere->setTransformation(transformStack.top());
 	SphereCount++;
@@ -262,18 +276,13 @@ void Scene::buildOctree() {
 }
 
 bool Scene::renderScene() {
-
-
-
 	if (this->camera == NULL) {
 		std::cerr << "Can't render without a camera set." << std::endl;
 	}
-
 	unsigned int x = 0, y = 0;
 	Vec3f color;
 	bool morePixels;
 	Ray ray[sampleRate];
-
 #pragma omp parallel private(color,x,y,ray,morePixels)
 	{
 		morePixels = this->camera->getRays(x,y, sampleRate, ray);
