@@ -33,6 +33,17 @@ bool FileReader::readLine(std::string &buffer) {
 	return false;
 }
 
+/**
+ * Reads given count of parameters and puts to float array,
+ * if the line contains less parameters, prints error and returns false.
+ *
+ * @stringStream: line to parse, with out the command
+ * @parameters:array of float that parameters will be put
+ * @parameterCount: number of parameters to read
+ *
+ * Returns: true if parameters assigment finished,
+ * false if line finished before given count of parameters
+ */
 bool FileReader::readParams(std::stringstream &stringStream, float *parameters,
 		int parameterCount) {
 	for (int param = 0; param < parameterCount; ++param) {
@@ -45,146 +56,6 @@ bool FileReader::readParams(std::stringstream &stringStream, float *parameters,
 	return true;
 }
 
-Scene* FileReader::readFile() {
-	std::string command;
-	float parameters[MAX_PARAMS];
-	std::string firstLine;
-	if (!readLine(firstLine)) {
-		std::cerr << "the file has no element to read" << std::endl;
-		exit(1);
-	} else {
-		std::stringstream stringStream(firstLine);
-		stringStream >> command;
-		if (command != "size") {
-			std::cerr << "First command has to be \"size\"" << std::endl;
-			exit(1);
-		} else {
-			if (readParams(stringStream, parameters, 2)) {
-				scene = new Scene(parameters[1], parameters[0]);
-			} else {
-				std::cerr << "size command parameters could not be read"
-						<< std::endl;
-				exit(1);
-			}
-
-		}
-
-	}
-	//Now we have the scene, we can load camera, light etc. out of order;
-	std::string line;
-
-	Mat4f temproryMatrix;
-
-	while (readLine(line)) {
-		std::stringstream stringStream(line);
-		stringStream >> command;
-		if (command == "camera") {
-			if (readParams(stringStream, parameters, 10)) {
-				scene->setCamera(parameters[0], parameters[1], parameters[2],
-						parameters[3], parameters[4], parameters[5],
-						parameters[6], parameters[7], parameters[8],
-						parameters[9]);
-			}
-		} else if (command == "output") {
-			std::string outputFile;
-			stringStream >> outputFile;
-			scene->setSaveFilename(outputFile);
-		} else if (command == "ambient") {
-			if (readParams(stringStream, parameters, 3)) {
-				scene->setCurrentAmbient(parameters[0], parameters[1],
-						parameters[2]);
-			}
-		} else if (command == "emission") {
-			if (readParams(stringStream, parameters, 3)) {
-				scene->setCurrentEmission(parameters[0], parameters[1],
-						parameters[2]);
-			}
-		} else if (command == "diffuse") {
-			if (readParams(stringStream, parameters, 3)) {
-				scene->setCurrentDiffuse(parameters[0], parameters[1],
-						parameters[2]);
-			}
-		} else if (command == "specular") {
-			if (readParams(stringStream, parameters, 3)) {
-				scene->setCurrentSpecular(parameters[0], parameters[1],
-						parameters[2]);
-			}
-		} else if (command == "shininess") {
-			if (readParams(stringStream, parameters, 1)) {
-				scene->setCurrentShininess(parameters[0]);
-			}
-		} else if (command == "point") {
-			if (readParams(stringStream, parameters, 6)) {
-				//notice the 1 as 4th param
-				scene->addLight(parameters[0], parameters[1], parameters[2], 1,
-						parameters[3], parameters[4], parameters[5]);
-			}
-		} else if (command == "directional") {
-			if (readParams(stringStream, parameters, 6)) {
-				//notice the 0 as 4th param, it means light has no position only direction
-				scene->addLight(parameters[0], parameters[1], parameters[2], 0,
-						parameters[3], parameters[4], parameters[5]);
-			}
-		} else if (command == "attenuation") {
-			if (readParams(stringStream, parameters, 3)) {
-				scene->setCurrentAttenuation(parameters[0], parameters[1],
-						parameters[2]);
-			}
-		} else if (command == "sphere") {
-			if (readParams(stringStream, parameters, 4)) {
-				scene->addSphere(parameters[0], parameters[1], parameters[2],
-						parameters[3]);
-			}
-		} else if (command == "maxverts") {
-			if (readParams(stringStream, parameters, 1)) {
-				scene->createVertexSpace(parameters[0]);
-			}
-		} else if (command == "v") {
-			if (readParams(stringStream, parameters, 3)) {
-				scene->addVertex(parameters[0], parameters[1], parameters[2]);
-			}
-		} else if (command == "f") {
-			if (readParams(stringStream, parameters, 3)) {
-				scene->addTriangle((int) parameters[0], (int) parameters[1],
-						(int) parameters[2]);
-			}
-		} else if (command == "translate") {
-			if (readParams(stringStream, parameters, 3)) {
-				temproryMatrix = Transform::translate(parameters[0],
-						parameters[1], parameters[2]);
-				scene->addTransform(temproryMatrix);
-			}
-		} else if (command == "scale") {
-			if (readParams(stringStream, parameters, 3)) {
-				temproryMatrix = Transform::scale(parameters[0], parameters[1],
-						parameters[2]);
-				scene->addTransform(temproryMatrix);
-			}
-		} else if (command == "rotate") {
-			if (readParams(stringStream, parameters, 4)) {
-				temproryMatrix = Transform::rotate(parameters[0], parameters[1],
-						parameters[2], parameters[3]);
-				scene->addTransform(temproryMatrix);
-			}
-		} else if (command == "pushTransform") {
-			scene->pushTransform();
-		} else if (command == "popTransform") {
-			scene->popTransform();
-		} else if (command == "maxdepth") {
-			if (readParams(stringStream, parameters, 1)) {
-				scene->setMaxDepth((unsigned int) parameters[0]);
-			}
-		} else if (command == "sampleRate") {
-			if (readParams(stringStream, parameters, 1)) {
-				scene->setSampleRate((unsigned char) parameters[0]);
-			}
-		} else
-			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
-
-	}
-
-	return scene;
-}
 
 FileReader::~FileReader() {
 //since scene is created by file reader, it should clean it up;
