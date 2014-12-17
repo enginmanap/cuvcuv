@@ -7,6 +7,8 @@
 
 #include "Scene.h"
 
+int Scene::materialCount = 0;
+
 /**
  * A scene starts definition starts with the sample size,
  * so we are setting height width, they will be passed to camera;
@@ -20,10 +22,13 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 	this->triangleCount = 0;
 	this->lightCount = 0;
 
-	currentMaterial = new Material("_default");
+	currentMaterial = new Material(DEFAULT_MATERIAL_NAME);
+	materialMap[currentMaterial->getName()] = currentMaterial;
+	//materialNames.push(currentMaterial->getName());
+
+
 	//mat->setShininess = 0.0f;
 	//mat->setAttenuation = Vec3f(1, 0, 0); these are default
-	materialMap["_default"] = currentMaterial;
 
 	this->saveFilename = "output.png";//TODO: this should be same as input
 
@@ -82,6 +87,17 @@ std::string Scene::getSaveFilename() {
 
 bool Scene::pushTransform() {
 	transformStack.push(transformStack.top());
+
+	materialNames.push(currentMaterial->getName());
+
+	std::ostringstream outputStringStream;
+	outputStringStream << DEFAULT_MATERIAL_NAME << "_"<< ++materialCount;
+	currentMaterial = new Material(outputStringStream.str(),currentMaterial->getAmbient(), currentMaterial->getDiffuse(), currentMaterial->getSpecular(), currentMaterial->getEmission(), currentMaterial->getShininess());
+	materialMap[currentMaterial->getName()] = currentMaterial;
+
+	std::cout << "adding material with name" << currentMaterial->getName()<<std::endl;
+
+
 	return true;
 }
 
@@ -92,6 +108,11 @@ Mat4f Scene::popTransform() {
 	}
 	Mat4f temp = transformStack.top();
 	transformStack.pop();
+
+	std::cout << "deleting material with name" << currentMaterial->getName() << std::endl;
+	currentMaterial = materialMap[materialNames.top()];
+	materialNames.pop();
+
 	return temp;
 }
 
@@ -149,17 +170,17 @@ bool Scene::setCurrentAmbient(float x, float y, float z) {
 }
 
 bool Scene::setCurrentDiffuse(float x, float y, float z) {
-	this->temproryVector.x = x;
-	this->temproryVector.y = y;
-	this->temproryVector.z = z;
+	temproryVector.x = x;
+	temproryVector.y = y;
+	temproryVector.z = z;
 	currentMaterial->setDiffuse(temproryVector);
 	return true;
 }
 
 bool Scene::setCurrentSpecular(float x, float y, float z) {
-	this->temproryVector.x = x;
-	this->temproryVector.y = y;
-	this->temproryVector.z = z;
+	temproryVector.x = x;
+	temproryVector.y = y;
+	temproryVector.z = z;
 	currentMaterial->setSpecular(temproryVector);
 	return true;
 }
@@ -199,6 +220,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 		Triangle* triangle = new Triangle(this->vertexArray[vertice1],
 				this->vertexArray[vertice2], this->vertexArray[vertice3],transformStack.top());
 		triangle->setMaterial(currentMaterial);
+		std::cout << "new triangle with material: " << currentMaterial->getName() << std::endl;
 		//triangle->setTransformation(transformStack.top());
 		primitives.push_back(triangle);
 		triangleCount++;

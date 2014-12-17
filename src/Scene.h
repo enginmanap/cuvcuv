@@ -36,7 +36,9 @@ class Scene {
 	unsigned char sampleRate;
 
 	std::map<std::string,Material*> materialMap;
-	Material* currentMaterial;
+	std::stack<std::string> materialNames;//this is necessery because no name materials are possible;
+	static int materialCount;
+	Material* currentMaterial;//this will change with push/pop of materialNames
 
 	std::string saveFilename;
 

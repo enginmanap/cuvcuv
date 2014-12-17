@@ -10,10 +10,6 @@
 
 unsigned int Primitive::lastID = 0;
 
-Primitive::Primitive(){
-	this->id = ++lastID;
-}
-
 Vec3f Primitive::calculateColorPerLight(const Vec3f& direction,
 		const Vec3f& color, const Vec3f& normal, const Vec3f& halfVec,
 		const Vec3f& diffuse, const Vec3f& specular,
@@ -120,7 +116,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 
 		}
 	}
-	color = color + material->getAmbient() + material->getAmbient();
+	color = color + material->getAmbient() + material->getEmission();
 	return color;
 }
 

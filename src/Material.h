@@ -11,14 +11,21 @@
 #include "Vec3f.h"
 #include "string"
 
+#ifndef DEFAULT_MATERIAL_NAME
+#define DEFAULT_MATERIAL_NAME "_default_material"
+#endif
+
 class Material {
 	std::string name;
-	Vec3f ambient, diffuse, specular,emission;
+	Vec3f ambient, diffuse, specular, emission;
 	float shininess;
 	//transparency or dissolve is not used yet.
 public:
 	Material(std::string name) :
 			name(name), shininess(0.0f){
+	}
+	Material(std::string name, Vec3f ambient, Vec3f diffuse, Vec3f specular, Vec3f emission, float shininess) :
+			name(name), ambient(ambient),diffuse(diffuse), specular(specular), emission(emission),shininess(shininess){
 	}
 	const Vec3f& getAmbient() const {
 		return ambient;

@@ -25,14 +25,17 @@
 class Octree;
 
 class Primitive {
-
+public:
+	unsigned int id;
 protected:
+	static unsigned int lastID;
 	Material* material;
 	Mat4f inverseTransformMat, transformMatrix;
 	Ray transformedRay;
 	Vec3f bbUpper, bbLower, bbCenter, bbwidths;
 
-	static unsigned int lastID;
+
+
 	Vec3f calculateColorPerLight(const Vec3f&, const Vec3f&, const Vec3f&,
 			const Vec3f&, const Vec3f&, const Vec3f&, const float) const;
 	virtual Vec3f calculateNormal(const Vec4f&) const = 0;
@@ -40,8 +43,8 @@ protected:
 public:
 	Vec3f getBBUpper(){ return bbUpper;}
 	Vec3f getBBLower(){ return bbLower;}
-	unsigned int id;
-	Primitive();
+
+	Primitive():id(++lastID), material(0) {};
 	virtual ~Primitive();
 	virtual bool setTransformation(const Mat4f&);
 	virtual bool intersectiontest(Ray, float&) const= 0;
