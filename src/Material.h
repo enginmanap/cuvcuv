@@ -47,10 +47,6 @@ public:
 		return name;
 	}
 
-	void setName(const std::string& name) {
-		this->name = name;
-	}
-
 	float getShininess() const {
 		return shininess;
 	}
