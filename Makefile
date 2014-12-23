@@ -18,7 +18,7 @@ SOURCE_PATH=src/
 
 all: $(BINARY_PATH)$(EXE)
 
-$(BINARY_PATH)$(EXE): $(BINARY_PATH)Film.o $(BINARY_PATH)Octree.o $(BINARY_PATH)Light.o $(BINARY_PATH)Transform.o $(BINARY_PATH)Mat4f.o $(BINARY_PATH)Primitive.o $(BINARY_PATH)Vec4f.o $(BINARY_PATH)Triangle.o $(BINARY_PATH)Ray.o $(BINARY_PATH)RayTracer.o $(BINARY_PATH)Sphere.o $(BINARY_PATH)Vec3f.o $(BINARY_PATH)Camera.o $(BINARY_PATH)Scene.o $(BINARY_PATH)SimpleFileReader.o $(BINARY_PATH)FileReader.o $(BINARY_PATH)main.o 
+$(BINARY_PATH)$(EXE): $(BINARY_PATH)MaterialReader.o  $(BINARY_PATH)Film.o $(BINARY_PATH)Octree.o $(BINARY_PATH)Light.o $(BINARY_PATH)Transform.o $(BINARY_PATH)Mat4f.o $(BINARY_PATH)Primitive.o $(BINARY_PATH)Vec4f.o $(BINARY_PATH)Triangle.o $(BINARY_PATH)Ray.o $(BINARY_PATH)RayTracer.o $(BINARY_PATH)Sphere.o $(BINARY_PATH)Vec3f.o $(BINARY_PATH)Camera.o $(BINARY_PATH)Scene.o $(BINARY_PATH)SimpleFileReader.o $(BINARY_PATH)FileReader.o $(BINARY_PATH)main.o 
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINARY_PATH)main.o: $(SOURCE_PATH)main.cpp 
@@ -86,6 +86,10 @@ $(BINARY_PATH)Octree.o: $(SOURCE_PATH)Octree.cpp $(SOURCE_PATH)Octree.h
 	$(CXX) $(CXXFLAGS) $< -o $@
 
 $(BINARY_PATH)Film.o: $(SOURCE_PATH)Film.cpp $(SOURCE_PATH)Film.h
+	mkdir -p $(BINARY_PATH)
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+$(BINARY_PATH)MaterialReader.o: $(SOURCE_PATH)MaterialReader.cpp $(SOURCE_PATH)MaterialReader.h
 	mkdir -p $(BINARY_PATH)
 	$(CXX) $(CXXFLAGS) $< -o $@
 
