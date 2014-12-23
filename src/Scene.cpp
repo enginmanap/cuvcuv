@@ -15,7 +15,7 @@ int Scene::materialCount = 0;
  */
 Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), currentAttenuation(Vec3f(1,0,0)){
 	this->camera = NULL;
-	this->vertexArray = NULL;
+	this->vertexVector.reserve(2000);
 	this->maxVertexCount = 0;
 	this->currentVertex = 0;
 	this->SphereCount = 0;
@@ -47,9 +47,7 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 Scene::~Scene() {
 	if (camera != NULL)
 		delete camera;
-	if (this->vertexArray != NULL) {
-		delete[] this->vertexArray;
-	}
+
 	for (std::vector<Primitive*>::iterator it = primitives.begin();
 			it != primitives.end(); ++it) {
 		delete (*it);
@@ -134,12 +132,9 @@ bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,
 }
 
 bool Scene::createVertexSpace(int maxVertexCount) {
-	if (this->vertexArray != NULL) {
-		delete vertexArray;
-	}
+	vertexVector.clear();
 	this->maxVertexCount = maxVertexCount;
-	vertexArray = new Vec3f[this->maxVertexCount];
-	//memset(this->vertexArray, 0, this->maxVertexCount * sizeof(Vec3f)); //this does not work, because somehow Vec3f is 16 bytes, instead of 12.
+	vertexVector.reserve(this->maxVertexCount);
 
 	currentVertex = 0;
 	return true;
@@ -201,14 +196,14 @@ bool Scene::setCurrentAttenuation(float constant, float lineer,
 bool Scene::addVertex(float x, float y, float z) {
 	if (currentVertex == maxVertexCount)
 		return false;
-	this->vertexArray[currentVertex] = Vec3f(x, y, z);
+	this->vertexVector[currentVertex] = Vec3f(x, y, z);
 	currentVertex++;
 	return true;
 }
 
 void Scene::printVertexes() {
 	for (int i = 0; i < this->maxVertexCount; ++i) {
-		std::cout << "vertex[" << i << "]=" << this->vertexArray[i]
+		std::cout << "vertex[" << i << "]=" << this->vertexVector[i]
 				<< std::endl;
 	}
 }
@@ -217,8 +212,8 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 	if (vertice1 >= 0 && vertice2 >= 0 && vertice3 >= 0
 			&& vertice1 < currentVertex && vertice2 < currentVertex
 			&& vertice3 < currentVertex) {
-		Triangle* triangle = new Triangle(this->vertexArray[vertice1],
-				this->vertexArray[vertice2], this->vertexArray[vertice3],transformStack.top());
+		Triangle* triangle = new Triangle(this->vertexVector[vertice1],
+				this->vertexVector[vertice2], this->vertexVector[vertice3],transformStack.top());
 		triangle->setMaterial(currentMaterial);
 		std::cout << "new triangle with material: " << currentMaterial->getName() << std::endl;
 		//triangle->setTransformation(transformStack.top());

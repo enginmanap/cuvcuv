@@ -50,7 +50,7 @@ class Scene {
 	Vec3f currentAttenuation;
 
 	int maxVertexCount, currentVertex;
-	Vec3f* vertexArray;
+	std::vector<Vec3f> vertexVector;
 
 	int SphereCount;
 	int triangleCount;
