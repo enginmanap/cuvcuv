@@ -44,7 +44,7 @@ bool FileReader::readLine(std::string &buffer) {
  * Returns: true if parameters assigment finished,
  * false if line finished before given count of parameters
  */
-bool FileReader::readParams(std::stringstream &stringStream, float *parameters,
+bool FileReader::readFloatParams(std::stringstream &stringStream, float *parameters,
 		int parameterCount) {
 	for (int param = 0; param < parameterCount; ++param) {
 		stringStream >> parameters[param];
@@ -55,6 +55,29 @@ bool FileReader::readParams(std::stringstream &stringStream, float *parameters,
 	}
 	return true;
 }
+
+/**
+ * Reads given count of parameters and puts to string array,
+ * if the line contains less parameters, prints error and returns false.
+ *
+ * @stringStream: line to parse, with out the command
+ * @parameters:array of string that parameters will be put
+ * @parameterCount: number of parameters to read
+ *
+ * Returns: true if parameters assigment finished,
+ * false if line finished before given count of parameters
+ */
+bool FileReader::readStringParams(std::stringstream &stringStream, std::string *parameters, int parameterCount){
+	for (int param = 0; param < parameterCount; ++param) {
+		stringStream >> parameters[param];
+		if (stringStream.fail()) {
+			std::cerr << "reading string failed for " << param << std::endl;
+			return false;
+		}
+	}
+	return true;
+}
+
 
 
 FileReader::~FileReader() {

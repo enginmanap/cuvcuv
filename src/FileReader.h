@@ -18,7 +18,10 @@
 #include "Mat4f.h"
 #include "Transform.h"
 
+#ifndef MAX_PARAMS
 #define MAX_PARAMS 10
+#endif //MAX_PARAMS
+
 
 class FileReader {
 protected:
@@ -26,7 +29,8 @@ protected:
 	std::ifstream fileReadStream;
 	Scene* scene;
 	bool readLine(std::string&);
-	virtual bool readParams(std::stringstream&, float *, int);
+	virtual bool readFloatParams(std::stringstream&, float *, int);
+	virtual bool readStringParams(std::stringstream&, std::string *, int);
 public:
 	FileReader(std::string filename);
 	virtual ~FileReader();

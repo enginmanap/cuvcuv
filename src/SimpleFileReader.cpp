@@ -21,7 +21,7 @@ Scene* SimpleFileReader::readFile() {
 			std::cerr << "First command has to be \"size\"" << std::endl;
 			exit(1);
 		} else {
-			if (readParams(stringStream, parameters, 2)) {
+			if (readFloatParams(stringStream, parameters, 2)) {
 				scene = new Scene(parameters[1], parameters[0]);
 			} else {
 				std::cerr << "size command parameters could not be read"
@@ -41,7 +41,7 @@ Scene* SimpleFileReader::readFile() {
 		std::stringstream stringStream(line);
 		stringStream >> command;
 		if (command == "camera") {
-			if (readParams(stringStream, parameters, 10)) {
+			if (readFloatParams(stringStream, parameters, 10)) {
 				scene->setCamera(parameters[0], parameters[1], parameters[2],
 						parameters[3], parameters[4], parameters[5],
 						parameters[6], parameters[7], parameters[8],
@@ -52,78 +52,78 @@ Scene* SimpleFileReader::readFile() {
 			stringStream >> outputFile;
 			scene->setSaveFilename(outputFile);
 		} else if (command == "ambient") {
-			if (readParams(stringStream, parameters, 3)) {
+			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentAmbient(parameters[0], parameters[1],
 						parameters[2]);
 			}
 		} else if (command == "emission") {
-			if (readParams(stringStream, parameters, 3)) {
+			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentEmission(parameters[0], parameters[1],
 						parameters[2]);
 			}
 		} else if (command == "diffuse") {
-			if (readParams(stringStream, parameters, 3)) {
+			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentDiffuse(parameters[0], parameters[1],
 						parameters[2]);
 			}
 		} else if (command == "specular") {
-			if (readParams(stringStream, parameters, 3)) {
+			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentSpecular(parameters[0], parameters[1],
 						parameters[2]);
 			}
 		} else if (command == "shininess") {
-			if (readParams(stringStream, parameters, 1)) {
+			if (readFloatParams(stringStream, parameters, 1)) {
 				scene->setCurrentShininess(parameters[0]);
 			}
 		} else if (command == "point") {
-			if (readParams(stringStream, parameters, 6)) {
+			if (readFloatParams(stringStream, parameters, 6)) {
 				//notice the 1 as 4th param
 				scene->addLight(parameters[0], parameters[1], parameters[2], 1,
 						parameters[3], parameters[4], parameters[5]);
 			}
 		} else if (command == "directional") {
-			if (readParams(stringStream, parameters, 6)) {
+			if (readFloatParams(stringStream, parameters, 6)) {
 				//notice the 0 as 4th param, it means light has no position only direction
 				scene->addLight(parameters[0], parameters[1], parameters[2], 0,
 						parameters[3], parameters[4], parameters[5]);
 			}
 		} else if (command == "attenuation") {
-			if (readParams(stringStream, parameters, 3)) {
+			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentAttenuation(parameters[0], parameters[1],
 						parameters[2]);
 			}
 		} else if (command == "sphere") {
-			if (readParams(stringStream, parameters, 4)) {
+			if (readFloatParams(stringStream, parameters, 4)) {
 				scene->addSphere(parameters[0], parameters[1], parameters[2],
 						parameters[3]);
 			}
 		} else if (command == "maxverts") {
-			if (readParams(stringStream, parameters, 1)) {
+			if (readFloatParams(stringStream, parameters, 1)) {
 				scene->createVertexSpace(parameters[0]);
 			}
 		} else if (command == "vertex") {
-			if (readParams(stringStream, parameters, 3)) {
+			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->addVertex(parameters[0], parameters[1], parameters[2]);
 			}
 		} else if (command == "tri") {
-			if (readParams(stringStream, parameters, 3)) {
+			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->addTriangle((int) parameters[0], (int) parameters[1],
 						(int) parameters[2]);
 			}
 		} else if (command == "translate") {
-			if (readParams(stringStream, parameters, 3)) {
+			if (readFloatParams(stringStream, parameters, 3)) {
 				temproryMatrix = Transform::translate(parameters[0],
 						parameters[1], parameters[2]);
 				scene->addTransform(temproryMatrix);
 			}
 		} else if (command == "scale") {
-			if (readParams(stringStream, parameters, 3)) {
+			if (readFloatParams(stringStream, parameters, 3)) {
 				temproryMatrix = Transform::scale(parameters[0], parameters[1],
 						parameters[2]);
 				scene->addTransform(temproryMatrix);
 			}
 		} else if (command == "rotate") {
-			if (readParams(stringStream, parameters, 4)) {
+			if (readFloatParams(stringStream, parameters, 4)) {
 				temproryMatrix = Transform::rotate(parameters[0], parameters[1],
 						parameters[2], parameters[3]);
 				scene->addTransform(temproryMatrix);
@@ -133,11 +133,11 @@ Scene* SimpleFileReader::readFile() {
 		} else if (command == "popTransform") {
 			scene->popTransform();
 		} else if (command == "maxdepth") {
-			if (readParams(stringStream, parameters, 1)) {
+			if (readFloatParams(stringStream, parameters, 1)) {
 				scene->setMaxDepth((unsigned int) parameters[0]);
 			}
 		} else if (command == "sampleRate") {
-			if (readParams(stringStream, parameters, 1)) {
+			if (readFloatParams(stringStream, parameters, 1)) {
 				scene->setSampleRate((unsigned char) parameters[0]);
 			}
 		} else
