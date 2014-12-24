@@ -83,7 +83,7 @@ bool Scene::pushTransform() {
 	currentMaterial = new Material(outputStringStream.str(),currentMaterial->getAmbient(), currentMaterial->getDiffuse(), currentMaterial->getSpecular(), currentMaterial->getEmission(), currentMaterial->getShininess());
 	materialMap[currentMaterial->getName()] = currentMaterial;
 
-	std::cout << "adding material with name" << currentMaterial->getName()<<std::endl;
+	//std::cout << "adding material with name" << currentMaterial->getName()<<std::endl;
 
 
 	return true;
@@ -97,7 +97,7 @@ Mat4f Scene::popTransform() {
 	Mat4f temp = transformStack.top();
 	transformStack.pop();
 
-	std::cout << "deleting material with name" << currentMaterial->getName() << std::endl;
+	//std::cout << "deleting material with name" << currentMaterial->getName() << std::endl;
 	currentMaterial = materialMap[materialNames.top()];
 	materialNames.pop();
 
@@ -178,6 +178,7 @@ bool Scene::setCurrentShininess(float shininess) {
 bool Scene::addMaterial(Material* material){
 	materialMap[material->getName()] = material;
 	currentMaterial = material;
+	std::cout << "new material " << material->getName() << " added." << std::endl;
 	return true;
 }
 
@@ -212,7 +213,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 		Triangle* triangle = new Triangle(this->vertexVector[vertice1],
 				this->vertexVector[vertice2], this->vertexVector[vertice3],transformStack.top());
 		triangle->setMaterial(currentMaterial);
-		std::cout << "new triangle with material: " << currentMaterial->getName() << std::endl;
+		//std::cout << "new triangle with material: " << currentMaterial->getName() << std::endl;
 		//triangle->setTransformation(transformStack.top());
 		primitives.push_back(triangle);
 		triangleCount++;
@@ -237,9 +238,9 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 	primitives.push_back(sphere);
 	//sphere->setTransformation(transformStack.top());
 	SphereCount++;
-	std::cout << "add sphere " << sphere->id << " with the values (" << x
-			<< ", " << y << ", " << z << ") and radius: " << radius
-			<< std::endl;
+	//std::cout << "add sphere " << sphere->id << " with the values (" << x
+	//		<< ", " << y << ", " << z << ") and radius: " << radius
+	//		<< std::endl;
 	return true;
 }
 
