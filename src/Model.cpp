@@ -27,8 +27,11 @@ bool Model::createVertexSpace(int maxVertexCount) {
 }
 
 bool Model::addVertex(float x, float y, float z) {
-	if (currentVertex == maxVertexCount)
-		return false;
+    if (currentVertex == maxVertexCount){
+        std::cerr << "vertex vector resizing, using VertexCount command in model definition can prevent this" << std::endl;
+        maxVertexCount = maxVertexCount * maxVertexCount;
+        vertexVector.resize(maxVertexCount);
+    }
 	this->vertexVector[currentVertex] = Vec3f(x, y, z);
 	currentVertex++;
 	return true;

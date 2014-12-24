@@ -192,8 +192,11 @@ bool Scene::setCurrentAttenuation(float constant, float lineer,
 }
 
 bool Scene::addVertex(float x, float y, float z) {
-	if (currentVertex == maxVertexCount)
-		return false;
+	if (currentVertex == maxVertexCount){
+		std::cerr << "vertex vector resizing, using VertexCount command in scene definition can prevent this" << std::endl;
+		maxVertexCount = maxVertexCount * maxVertexCount;
+		vertexVector.resize(maxVertexCount);
+	}
 	this->vertexVector[currentVertex] = Vec3f(x, y, z);
 	currentVertex++;
 	return true;
@@ -219,7 +222,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 		triangleCount++;
 		return true;
 	} else {
-		std::cerr << "one of the vertices used is not defined ";
+		std::cerr << "one of the vertices used is not defined ("<< currentVertex << ") ";
 		if(vertice1 < 0 ) std::cerr << "vertex 1 "<< vertice1;
 		if(vertice2 < 0 ) std::cerr << "vertex 2 "<< vertice2;
 		if(vertice3 < 0 ) std::cerr << "vertex 3 "<< vertice3;
