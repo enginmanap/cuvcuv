@@ -90,7 +90,7 @@ void Model::buildOctree() {
 	Vec3f treeMin(std::floor(bbLower.x), std::floor(bbLower.y),
 			std::floor(bbLower.z));
 	//now request a octree with this dimentions.
-	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives);
+	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives,32);//ToDo 32 is hardcoded max depth
 	std::cout << "spatial tree for model generated with dimentions: " << treeMax << ","
 			<< treeMin << std::endl;
 	//this->spatialTree->print();

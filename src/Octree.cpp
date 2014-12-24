@@ -13,7 +13,7 @@
  * Creating a node automatically creates subtrees,
  * put primitives in respective
  */
-Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Primitive*>& primitives): parent(parent), upperEnd(upperEnd),lowerEnd(lowerEnd) {
+Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Primitive*>& primitives, unsigned char maxDepth): parent(parent), upperEnd(upperEnd),lowerEnd(lowerEnd) {
 	//this variable is used for logging. With it we can intent based on the depth.
 	static std::string level = "";
 	Vec3f temp = this->upperEnd + this->lowerEnd;
@@ -24,10 +24,22 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 	} else {
 		this->isSplittingRedudant = std::max(this->parent->isSplittingRedudant - 1, 0); //if parent was somewhat redudant, child is too
 	}
+	/**
+	 * trying to split until each node has 1 element can easily break memory limits,
+	 * and it is not a good idea. some pretty regular cases like 2 triangles forming
+	 * a rectangle can never be split. We should never try to split more than
+	 * k * primitives.size(). Scientific way to determine k would be measuring
+	 * time it takes to test node intersection and primitive intersection and getting
+	 * the number, but I am going to make it simply by saying can not delve more than
+	 * half the depth.
+	 */
+	if(maxDepth > (primitives.size()/2+1)){//+1 is for 2 primitive cases
+		maxDepth = primitives.size()/2;
+	}
 
 	std::vector<Primitive*> contained[8], notContained; //TODO this should be done by addPrimitive method.
 
-	if (primitives.size() > 1 && (upperEnd.x - lowerEnd.x > 0.1f)) {
+	if (maxDepth > 1 && primitives.size() > 1 && (upperEnd.x - lowerEnd.x > 0.1f)) {
 		//we should calculate children if we can split more
 
 		//calculate the sides
@@ -109,7 +121,7 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 			std::string oldLevel = level;
 			level = level + "  ";
 			for (unsigned int subtree = 0; subtree < 8; ++subtree) {
-				children[subtree] = new Octree(this, up[subtree], down[subtree], contained[subtree]);
+				children[subtree] = new Octree(this, up[subtree], down[subtree], contained[subtree], (maxDepth-1));
 			}
 			level = oldLevel;
 			//FIXME should newer happen, but it does
