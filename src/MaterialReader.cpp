@@ -23,7 +23,7 @@ Material* MaterialReader::readMaterialFile() {
 			std::cerr << "First command of material file has to be \"newmtl\"" << std::endl;
 			exit(1);
 		} else {
-			if (readStringParams(stringStream, stringParameters, 2)) {
+			if (readStringParams(stringStream, stringParameters, 1)) {
 				material = new Material(stringParameters[0]);
 			} else {
 				std::cerr << "newmtl command parameters could not be read"
