@@ -30,7 +30,6 @@ public:
 	MaterialReader(std::string filename): FileReader(filename){this->material=NULL;};
 	virtual ~MaterialReader();
 
-	Scene* readFile() {return NULL;};
 	Material* readMaterialFile();
 };
 

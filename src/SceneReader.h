@@ -22,9 +22,9 @@
 #define MAX_PARAMS 10
 
 class SceneReader: public FileReader {
-
+	Scene* scene;
 public:
-	SceneReader(std::string filename): FileReader(filename){};
+	SceneReader(std::string filename): FileReader(filename){this->scene = NULL;};
 	/**
 	 * A file can contain these:
 	 * size width height
@@ -59,6 +59,8 @@ public:
 	 * emission r g b
 	 */
 	Scene* readFile();
+
+	~SceneReader();
 };
 
 #endif /* SRC_SIMPLEFILEREADER_H_ */

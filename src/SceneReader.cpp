@@ -148,3 +148,8 @@ Scene* SceneReader::readFile() {
 	return scene;
 }
 
+SceneReader::~SceneReader(){
+if (scene != NULL)
+	delete scene;
+}
+

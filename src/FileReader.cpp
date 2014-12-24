@@ -8,7 +8,7 @@
 #include "FileReader.h"
 
 FileReader::FileReader(std::string fileName): fileName(fileName) {
-	this->scene = NULL;
+
 
 	fileReadStream.open(fileName.c_str());
 	if (!fileReadStream.is_open()) {
@@ -82,9 +82,6 @@ bool FileReader::readStringParams(std::stringstream &stringStream, std::string *
 
 FileReader::~FileReader() {
 //since scene is created by file reader, it should clean it up;
-	if (scene != NULL)
-		delete scene;
-
 	fileReadStream.close();
 }
 

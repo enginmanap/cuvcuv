@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
 	unsigned int height = HEIGHT, width = WIDTH;
 
-	FileReader* reader;
+	SceneReader* reader;
 	Scene* scene = NULL;
 	//read the file
 	try {
