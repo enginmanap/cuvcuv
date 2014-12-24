@@ -55,27 +55,27 @@ Scene* SceneReader::readFile() {
 			stringStream >> outputFile;
 			scene->setSaveFilename(outputFile);
 			isNameSet=true;
-		} else if (command == "ambient") {
+		} else if (command == "Ka") {
 			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentAmbient(parameters[0], parameters[1],
 						parameters[2]);
 			}
-		} else if (command == "emission") {
+		} else if (command == "Ke") {
 			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentEmission(parameters[0], parameters[1],
 						parameters[2]);
 			}
-		} else if (command == "diffuse") {
+		} else if (command == "Kd") {
 			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentDiffuse(parameters[0], parameters[1],
 						parameters[2]);
 			}
-		} else if (command == "specular") {
+		} else if (command == "Ks") {
 			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentSpecular(parameters[0], parameters[1],
 						parameters[2]);
 			}
-		} else if (command == "shininess") {
+		} else if (command == "Ns") {
 			if (readFloatParams(stringStream, parameters, 1)) {
 				scene->setCurrentShininess(parameters[0]);
 			}
@@ -101,15 +101,15 @@ Scene* SceneReader::readFile() {
 				scene->addSphere(parameters[0], parameters[1], parameters[2],
 						parameters[3]);
 			}
-		} else if (command == "maxverts") {
+		} else if (command == "VertexCount") {
 			if (readFloatParams(stringStream, parameters, 1)) {
 				scene->createVertexSpace(parameters[0]);
 			}
-		} else if (command == "vertex") {
+		} else if (command == "v") {
 			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->addVertex(parameters[0], parameters[1], parameters[2]);
 			}
-		} else if (command == "tri") {
+		} else if (command == "f") {
 			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->addTriangle((int) parameters[0], (int) parameters[1],
 						(int) parameters[2]);
