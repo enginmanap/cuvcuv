@@ -13,13 +13,12 @@ int Scene::materialCount = 0;
  * A scene starts definition starts with the sample size,
  * so we are setting height width, they will be passed to camera;
  */
-Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), currentAttenuation(Vec3f(1,0,0)), maxVertexCount(2000), currentVertex(0), SphereCount(0), triangleCount(0), lightCount(0) {
+Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), sampleRate(1), lightCount(0), currentAttenuation(Vec3f(1,0,0)), maxVertexCount(2000), currentVertex(0), SphereCount(0), triangleCount(0),maxDepth(5) {
 	this->camera = NULL;
 	this->vertexVector.reserve(maxVertexCount);
 
 	currentMaterial = new Material(DEFAULT_MATERIAL_NAME);
 	materialMap[currentMaterial->getName()] = currentMaterial;
-	//materialNames.push(currentMaterial->getName());
 
 
 	//mat->setShininess = 0.0f;
@@ -29,12 +28,8 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 
 	transformStack.push(Mat4f()); //since default constructor generates identity matrix.
 
-	this->maxDepth = 5;
-
 	this->spatialTree = NULL;
 
-
-	this->sampleRate = 1;
 	film = new Film(height,width,COLOR_DEPTH,sampleRate);
 
 }
