@@ -12,6 +12,7 @@ Scene* SceneReader::readFile() {
 	bool isNameSet=false;
 	std::string command;
 	float parameters[MAX_PARAMS];
+	std::string stringParams[MAX_PARAMS];
 	std::string firstLine;
 	if (!readLine(firstLine)) {
 		std::cerr << "the file has no element to read" << std::endl;
@@ -142,6 +143,13 @@ Scene* SceneReader::readFile() {
 		} else if (command == "sampleRate") {
 			if (readFloatParams(stringStream, parameters, 1)) {
 				scene->setSampleRate((unsigned char) parameters[0]);
+			}
+		} else if (command == "mtllib") {
+			if (readStringParams(stringStream, stringParams, 1)) {
+				//create a material reader and read material lib
+				MaterialReader materialReader(stringParams[0]);
+				Material* mat = materialReader.readMaterialFile();
+				scene->addMaterial(mat);//clearing the material is going to be done by scene
 			}
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;

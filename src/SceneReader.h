@@ -18,6 +18,7 @@
 #include "Mat4f.h"
 #include "Transform.h"
 #include "FileReader.h"
+#include "MaterialReader.h"
 
 #define MAX_PARAMS 10
 
