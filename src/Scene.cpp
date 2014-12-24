@@ -13,14 +13,9 @@ int Scene::materialCount = 0;
  * A scene starts definition starts with the sample size,
  * so we are setting height width, they will be passed to camera;
  */
-Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), currentAttenuation(Vec3f(1,0,0)){
+Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), currentAttenuation(Vec3f(1,0,0)), maxVertexCount(2000), currentVertex(0), SphereCount(0), triangleCount(0), lightCount(0) {
 	this->camera = NULL;
-	this->vertexVector.reserve(2000);
-	this->maxVertexCount = 0;
-	this->currentVertex = 0;
-	this->SphereCount = 0;
-	this->triangleCount = 0;
-	this->lightCount = 0;
+	this->vertexVector.reserve(maxVertexCount);
 
 	currentMaterial = new Material(DEFAULT_MATERIAL_NAME);
 	materialMap[currentMaterial->getName()] = currentMaterial;
@@ -201,6 +196,7 @@ bool Scene::addVertex(float x, float y, float z) {
 	return true;
 }
 
+//FIXME maxVertexCount does not mean we have that much vertex
 void Scene::printVertexes() {
 	for (int i = 0; i < this->maxVertexCount; ++i) {
 		std::cout << "vertex[" << i << "]=" << this->vertexVector[i]
