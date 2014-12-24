@@ -175,6 +175,13 @@ bool Scene::setCurrentShininess(float shininess) {
 	return true;
 }
 
+bool Scene::addMaterial(Material* material){
+	materialMap[material->getName()] = material;
+	currentMaterial = material;
+	return true;
+}
+
+
 bool Scene::setCurrentAttenuation(float constant, float lineer,
 		float quadratic) {
 	this->currentAttenuation.x = constant;

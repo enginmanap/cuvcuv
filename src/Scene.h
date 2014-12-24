@@ -80,6 +80,8 @@ public:
 	bool setCurrentDiffuse(float, float, float);
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
+	bool addMaterial(Material*);
+
 	bool setCurrentAttenuation(float, float, float);
 
 	bool setSaveFilename(std::string);
