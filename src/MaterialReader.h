@@ -15,11 +15,6 @@
 #include "Vec3f.h"
 #include "FileReader.h"
 
-#ifndef MAX_PARAMS
-#define MAX_PARAMS 10
-#endif //MAX_PARAMS
-
-
 class MaterialReader : public FileReader {
 	Material* material;
 
