@@ -1,5 +1,5 @@
 /*
- * FileReader.h
+ * SceneReader.cpp
  *
  *  Created on: 29 Eki 2014
  *      Author: engin
@@ -21,10 +21,10 @@
 
 #define MAX_PARAMS 10
 
-class SimpleFileReader: public FileReader {
+class SceneReader: public FileReader {
 
 public:
-	SimpleFileReader(std::string filename): FileReader(filename){};
+	SceneReader(std::string filename): FileReader(filename){};
 	/**
 	 * A file can contain these:
 	 * size width height

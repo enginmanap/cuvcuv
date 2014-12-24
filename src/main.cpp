@@ -1,7 +1,7 @@
 
 #include <iostream>
 #include <string>
-#include "SimpleFileReader.h"
+#include "SceneReader.h"
 #ifdef USE_FREEIMAGE_PNG
 #include "FreeImage.h"
 #else
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
 	Scene* scene = NULL;
 	//read the file
 	try {
-		reader = new SimpleFileReader(fileToread);
+		reader = new SceneReader(fileToread);
 
 		scene = reader->readFile();
 		scene->getSamplingSize(height, width);

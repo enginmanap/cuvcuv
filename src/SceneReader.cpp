@@ -1,13 +1,13 @@
 /*
- * SimpleFileReader.cpp
+ * SceneReader.cpp
  *
  *  Created on: 12 Ara 2014
  *      Author: Engin Manap
  */
 
-#include "SimpleFileReader.h"
+#include "SceneReader.h"
 
-Scene* SimpleFileReader::readFile() {
+Scene* SceneReader::readFile() {
 	std::string command;
 	float parameters[MAX_PARAMS];
 	std::string firstLine;
