@@ -8,6 +8,8 @@
 #include "SceneReader.h"
 
 Scene* SceneReader::readFile() {
+
+	bool isNameSet=false;
 	std::string command;
 	float parameters[MAX_PARAMS];
 	std::string firstLine;
@@ -51,6 +53,7 @@ Scene* SceneReader::readFile() {
 			std::string outputFile;
 			stringStream >> outputFile;
 			scene->setSaveFilename(outputFile);
+			isNameSet=true;
 		} else if (command == "ambient") {
 			if (readFloatParams(stringStream, parameters, 3)) {
 				scene->setCurrentAmbient(parameters[0], parameters[1],
@@ -145,6 +148,11 @@ Scene* SceneReader::readFile() {
 
 	}
 
+	//If no name was set during parsing, name the scene same as input.
+	if(!isNameSet){
+		std::string outputName = this->fileName + ".png";
+		scene->setSaveFilename(outputName);
+	}
 	return scene;
 }
 

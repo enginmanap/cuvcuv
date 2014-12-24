@@ -25,7 +25,7 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 	//mat->setShininess = 0.0f;
 	//mat->setAttenuation = Vec3f(1, 0, 0); these are default
 
-	this->saveFilename = "output.png";//TODO: this should be same as input
+	this->saveFilename = "output.png";
 
 	transformStack.push(Mat4f()); //since default constructor generates identity matrix.
 
