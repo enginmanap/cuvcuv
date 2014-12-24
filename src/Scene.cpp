@@ -196,9 +196,8 @@ bool Scene::addVertex(float x, float y, float z) {
 	return true;
 }
 
-//FIXME maxVertexCount does not mean we have that much vertex
 void Scene::printVertexes() {
-	for (int i = 0; i < this->maxVertexCount; ++i) {
+	for (int i = 0; i < this->currentVertex; ++i) {
 		std::cout << "vertex[" << i << "]=" << this->vertexVector[i]
 				<< std::endl;
 	}
