@@ -7,9 +7,9 @@
 
 #include "Model.h"
 
-Model::Model(const Mat4f& transformMatrix) : maxVertexCount(1000), currentVertex(0), triangleCount(0){
+Model::Model(const Mat4f& transformMatrix) : triangleCount(0){
 			this->setTransformation(transformMatrix);
-			this->vertexVector.reserve(maxVertexCount);
+			this->vertexVector.reserve(INITIAL_VERTEX_COUNT);
 			this->spatialTree=NULL;
 }
 
@@ -19,51 +19,50 @@ Model::~Model() {
 
 bool Model::createVertexSpace(int maxVertexCount) {
 	vertexVector.clear();
-	this->maxVertexCount = maxVertexCount;
-	vertexVector.reserve(this->maxVertexCount);
+	vertexVector.reserve(maxVertexCount);
 
-	currentVertex = 0;
 	return true;
 }
 
 bool Model::addVertex(float x, float y, float z) {
-    if (currentVertex == maxVertexCount){
-        std::cerr << "vertex vector resizing, using VertexCount command in model definition can prevent this" << std::endl;
-        maxVertexCount = maxVertexCount * maxVertexCount;
-        vertexVector.resize(maxVertexCount);
-    }
-	this->vertexVector[currentVertex] = Vec3f(x, y, z);
-	currentVertex++;
+	this->vertexVector.push_back(Vec3f(x, y, z));
 	return true;
 }
 
 void Model::printVertexes() {
-	for (int i = 0; i < this->maxVertexCount; ++i) {
+	for (unsigned int i = 0; i < vertexVector.size(); ++i) {
 		std::cout << "vertex[" << i << "]=" << this->vertexVector[i]
 				<< std::endl;
 	}
 }
 
 bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
+	int currentVertexMax = vertexVector.size();
 	if (vertice1 >= 0 && vertice2 >= 0 && vertice3 >= 0
-			&& vertice1 < currentVertex && vertice2 < currentVertex
-			&& vertice3 < currentVertex) {
+			&& vertice1 < currentVertexMax && vertice2 < currentVertexMax
+			&& vertice3 < currentVertexMax) {
+		if(vertice1 == 1 and vertice2==5 && vertice3==9){
+			std::cout << "vec1" << this->vertexVector[vertice1] << std::endl;
+			std::cout << "vec2" << this->vertexVector[vertice2] << std::endl;
+			std::cout << "vec3" << this->vertexVector[vertice3] << std::endl;
+		}
 		Triangle* triangle = new Triangle(this->vertexVector[vertice1],
 				this->vertexVector[vertice2], this->vertexVector[vertice3],this->transformMatrix);
 		triangle->setMaterial(this->material);
-		std::cout << "new triangle with material: " << this->material->getName() << std::endl;
+
+		//std::cout << "new triangle with material: " << this->material->getName() << std::endl;
 		//triangle->setTransformation(transformStack.top());
 		primitives.push_back(triangle);
 		triangleCount++;
 		return true;
 	} else {
-		std::cerr << "one of the vertices used is not defined ";
+		std::cerr << "one of the vertices used is not defined ("<< currentVertexMax << ") ";
 		if(vertice1 < 0 ) std::cerr << "vertex 1 "<< vertice1;
 		if(vertice2 < 0 ) std::cerr << "vertex 2 "<< vertice2;
 		if(vertice3 < 0 ) std::cerr << "vertex 3 "<< vertice3;
-		if(vertice1 >= currentVertex) std::cerr << " vertex 1 bigger " << vertice1;
-		if(vertice2 >= currentVertex) std::cerr << " vertex 2 bigger " << vertice2;
-		if(vertice3 >= currentVertex) std::cerr << " vertex 3 bigger " << vertice3;
+		if(vertice1 >= currentVertexMax) std::cerr << " vertex 1 bigger " << vertice1;
+		if(vertice2 >= currentVertexMax) std::cerr << " vertex 2 bigger " << vertice2;
+		if(vertice3 >= currentVertexMax) std::cerr << " vertex 3 bigger " << vertice3;
 
 		std::cerr << std::endl;
 		return false;
@@ -71,8 +70,8 @@ bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
 }
 
 void Model::buildOctree() {
-	std::cout << "generating spatial tree.." << std::endl;
-
+	std::cout << "generating spatial tree for model" << std::endl;
+	generateBoundingBox();
 	/*
 	 * since we have the bbUpper and bbLower values, we should buid a Octree to
 	 * contain all of them. I want the size to be a power of 2, and
@@ -99,8 +98,12 @@ void Model::buildOctree() {
 void Model::generateBoundingBox(){
 
 	Vec3f currentBBUpper, currentBBLower;
+	std::cout << "for " << primitives.size() << " primitive, generating AABB" << std::endl;
 	for (std::vector<Primitive*>::iterator primitiveP = primitives.begin();
 			primitiveP != primitives.end(); ++primitiveP) {
+		if((*primitiveP)==primitives[2596]){
+			std::cout << "found" << std::endl;
+		}
 		currentBBUpper = (*primitiveP)->getBBUpper();
 		currentBBLower = (*primitiveP)->getBBLower();
 		if (currentBBUpper.x > bbUpper.x)
@@ -120,6 +123,8 @@ void Model::generateBoundingBox(){
 	bbCenter.x = (bbUpper.x + bbLower.x)/2;
 	bbCenter.y = (bbUpper.y + bbLower.y)/2;
 	bbCenter.z = (bbUpper.z + bbLower.z)/2;
+	std::cout << "bounding box for model: " << bbUpper << ","
+			<< bbLower << std::endl;
 }
 
 bool Model::intersectiontest(Ray ray, float& distance) const{

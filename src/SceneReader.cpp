@@ -151,6 +151,12 @@ Scene* SceneReader::readFile() {
 				Material* mat = materialReader.readMaterialFile();
 				scene->addMaterial(mat);//clearing the material is going to be done by scene
 			}
+		} else if (command == "loadModel") {
+			if (readStringParams(stringStream, stringParams, 1)) {
+				//create a ModelReader and load any Materials and load 1 model
+				ModelReader modelReader(stringParams[0]);
+				modelReader.readModelFile(*scene);
+			}
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
 

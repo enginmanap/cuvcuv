@@ -78,13 +78,3 @@ Material* MaterialReader::readMaterialFile() {
 	}
 	return material;
 }
-
-
-MaterialReader::~MaterialReader() {
-	//since material is used in scene, it should clear material;
-	//if (material != NULL)
-	//	delete material;
-
-	fileReadStream.close();
-}
-

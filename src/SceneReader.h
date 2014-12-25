@@ -19,6 +19,7 @@
 #include "Transform.h"
 #include "FileReader.h"
 #include "MaterialReader.h"
+#include "ModelReader.h"
 
 #define MAX_PARAMS 10
 

@@ -19,6 +19,7 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 
 	currentMaterial = new Material(DEFAULT_MATERIAL_NAME);
 	materialMap[currentMaterial->getName()] = currentMaterial;
+	materialNames.push(currentMaterial->getName());
 
 
 	//mat->setShininess = 0.0f;
@@ -194,7 +195,7 @@ bool Scene::setCurrentAttenuation(float constant, float lineer,
 bool Scene::addVertex(float x, float y, float z) {
 	if (currentVertex == maxVertexCount){
 		std::cerr << "vertex vector resizing, using VertexCount command in scene definition can prevent this" << std::endl;
-		maxVertexCount = maxVertexCount * maxVertexCount;
+		maxVertexCount = maxVertexCount * 2;
 		vertexVector.resize(maxVertexCount);
 	}
 	this->vertexVector[currentVertex] = Vec3f(x, y, z);
@@ -247,6 +248,13 @@ bool Scene::addSphere(float x, float y, float z, float radius) {
 	return true;
 }
 
+bool Scene::addModel(Model* model) {
+	primitives.push_back(model);
+	//TODO do we need to add a modelCount variable?
+	return true;
+}
+
+
 void Scene::buildOctree() {
 	std::cout << "generating spatial tree.." << std::endl;
 	//calculate the size we need.
@@ -290,7 +298,7 @@ void Scene::buildOctree() {
 	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives,32);//ToDo 32 is hardcoded max depth
 	std::cout << "spatial tree generated with dimentions: " << treeMax << ","
 			<< treeMin << std::endl;
-	//this->spatialTree->print();
+	//sthis->spatialTree->print();
 }
 
 bool Scene::renderScene() {

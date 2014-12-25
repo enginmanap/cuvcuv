@@ -23,6 +23,7 @@
 #include "Octree.h"
 #include "Film.h"
 #include "Material.h"
+#include "Model.h"
 
 
 #ifndef COLOR_DEPTH
@@ -81,6 +82,8 @@ public:
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
 	bool addMaterial(Material*);
+	Material* getMaterial(std::string& materialName) {return materialMap[materialName];};
+	Material* getMaterial() {return materialMap[materialNames.top()];};
 
 	bool setCurrentAttenuation(float, float, float);
 
@@ -96,12 +99,17 @@ public:
 	bool addVertex(float, float, float);
 	bool addTriangle(int, int, int);
 	bool addSphere(float, float, float, float);
-	bool addLight(float, float, float, float, float, float, float);
+	bool addModel(Model*);
 
+	bool addLight(float, float, float, float, float, float, float);
 
 	bool pushTransform();
 	Mat4f popTransform();
 	Mat4f addTransform(Mat4f&);
+	/**
+	 * returns the current transform
+	 */
+	Mat4f getTransform() {return transformStack.top();};
 
 	void buildOctree();
 	bool renderScene();

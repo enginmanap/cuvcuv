@@ -13,10 +13,11 @@
 #include "Primitive.h"
 #include "Triangle.h"
 
-
+#ifndef INITIAL_VERTEX_COUNT
+#define INITIAL_VERTEX_COUNT 1000
+#endif //INITIAL_VERTEX_COUNT
 
 class Model : public Primitive {
-	int maxVertexCount, currentVertex;
 	std::vector<Vec3f> vertexVector;
 
 	int triangleCount;
@@ -24,6 +25,7 @@ class Model : public Primitive {
 
 	Octree *spatialTree;
 	void generateBoundingBox();
+	Vec3f calculateNormal(const Vec4f& intersectionPoint) const {return Vec3f();};//FIXME this is a placeholder
 
 public:
 	Model(const Mat4f&);
@@ -39,6 +41,8 @@ public:
 	void buildOctree();
 
 	bool intersectiontest(Ray, float&) const;
+
+
 };
 
 #endif /* SRC_MODEL_H_ */

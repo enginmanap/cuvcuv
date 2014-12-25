@@ -15,6 +15,7 @@
 #include "Vec3f.h"
 #include "FileReader.h"
 
+
 class MaterialReader : public FileReader {
 	Material* material;
 
@@ -23,7 +24,6 @@ class MaterialReader : public FileReader {
 public:
 
 	MaterialReader(std::string filename): FileReader(filename){this->material=NULL;};
-	virtual ~MaterialReader();
 
 	Material* readMaterialFile();
 };
