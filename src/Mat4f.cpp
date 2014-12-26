@@ -117,15 +117,17 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 	for (int i = 0; i < 4; ++i) {
 		if (fabs(copy[i][i]) < EPSILON) {
 			Vec4f temp = copy[i];
-			int rowID = 0;
-			//we should swap rows. find the biggest row.
+			int biggestRowID = 0;
+			float biggestValue = std::numeric_limits<float>::max() * -1;
+
+			//should we swap rows? find the biggest row, that is not 0
 			for (int j = i; j < 4; ++j) {
-				if (copy[j][i] > temp[i]) {
-					temp = copy[j];
-					rowID = j;
+				if (copy[j][i] > biggestValue && copy[j][i]!=0) {
+					biggestRowID = j;
+					biggestValue = copy[j][i];
 				}
 			}
-			if (rowID == 0) {
+			if (biggestRowID == 0) {
 				std::cerr << "no inverse possible row(" << i << ")"
 						<< std::endl;
 				std::cerr << "matrix to invert:" << std::endl << copy
@@ -133,11 +135,12 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 				throw -1;
 				return Mat4f();
 			} else {
-				copy[rowID] = copy[i];
+				temp = copy[biggestRowID];
+				copy[biggestRowID] = copy[i];
 				copy[i] = temp;
 				temp = inverse[i];
-				inverse[i] = inverse[rowID];
-				inverse[rowID] = temp;
+				inverse[i] = inverse[biggestRowID];
+				inverse[biggestRowID] = temp;
 			}
 
 		}

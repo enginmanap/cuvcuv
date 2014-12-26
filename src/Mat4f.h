@@ -10,6 +10,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <limits>
 #include "Vec4f.h"
 
 
