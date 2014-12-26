@@ -38,7 +38,7 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 	}
 
 	std::vector<Primitive*> contained[8], notContained; //TODO this should be done by addPrimitive method.
-	if(maxDepth <= 1 && primitives.size() > 5){
+	if(maxDepth <= 1 && primitives.size() >= 10){
 		std::cerr << "not split due to maxDepth setting for primitive count " << primitives.size() << std::endl;
 	}
 	if (maxDepth > 1 && primitives.size() > 1 && (upperEnd.x - lowerEnd.x > 0.1f)) {
