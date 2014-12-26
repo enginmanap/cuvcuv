@@ -45,12 +45,17 @@ bool FileReader::readLine(std::string &buffer) {
  * false if line finished before given count of parameters
  */
 bool FileReader::readFloatParams(std::stringstream &stringStream, float *parameters,
-		int parameterCount) {
-	for (int param = 0; param < parameterCount; ++param) {
+		int& readParameterCount) {
+	readParameterCount = MAX_PARAMS;
+	for (int param = 0; param < MAX_PARAMS; ++param) {
 		stringStream >> parameters[param];
 		if (stringStream.fail()) {
-			std::cerr << "reading failed for " << param << std::endl;
-			return false;
+			readParameterCount=param;
+			if(param == 0){
+				std::cerr << "reading failed at start, please check input." << std::endl;
+				return false;
+			}
+			return true;
 		}
 	}
 	return true;

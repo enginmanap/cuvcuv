@@ -27,7 +27,7 @@ protected:
 	std::string fileName;
 	std::ifstream fileReadStream;
 	bool readLine(std::string&);
-	virtual bool readFloatParams(std::stringstream&, float *, int);
+	virtual bool readFloatParams(std::stringstream&, float *, int&);
 	virtual bool readStringParams(std::stringstream&, std::string *, int);
 public:
 	FileReader(std::string filename);

@@ -13,6 +13,7 @@ Model* ModelReader::readModelFile(Scene& scene) {
 	std::string command;
 	float parameters[MAX_PARAMS];
 	std::string stringParams[MAX_PARAMS];
+	int parameterCount;
 
 	std::string line;
 
@@ -22,17 +23,33 @@ Model* ModelReader::readModelFile(Scene& scene) {
 		std::stringstream stringStream(line);
 		stringStream >> command;
 		if (command == "VertexCount") {
-			if (readFloatParams(stringStream, parameters, 1)) {
+			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				model->createVertexSpace(parameters[0]);
 			}
 		} else if (command == "v") {
-			if (readFloatParams(stringStream, parameters, 3)) {
-				model->addVertex(parameters[0], parameters[1], parameters[2]);
+			if (readFloatParams(stringStream, parameters, parameterCount)) {
+				if(parameterCount < 3) {
+					std::cerr << "vertex does not contain 3 coordinates, only " << parameterCount << " provided." << std::endl;
+				} else {
+					model->addVertex(parameters[0], parameters[1], parameters[2]);
+				}
 			}
 		} else if (command == "f") {
-			if (readFloatParams(stringStream, parameters, 3)) {
-				model->addTriangle((int) parameters[0], (int) parameters[1],
-						(int) parameters[2]);
+			if (readFloatParams(stringStream, parameters, parameterCount)) {
+				if(parameterCount < 3) {
+					std::cerr << "face does not contain 3 vertices, only " << parameterCount << " provided." << std::endl;
+				} else {
+					model->addTriangle((int) parameters[0], (int) parameters[1],
+							(int) parameters[2]);
+
+					//there might be more faces, we will interpret as GL_TRIANGLE_FAN
+					float fanCenter=parameters[0], previousVertex=parameters[2];
+					for(int i=3; i < parameterCount; ++i) {
+						model->addTriangle((int) fanCenter, previousVertex,
+								(int) parameters[i]);
+						previousVertex = parameters[i];
+					}
+				}
 			}
 		} else if (command == "mtllib") {
 			if (readStringParams(stringStream, stringParams, 1)) {
