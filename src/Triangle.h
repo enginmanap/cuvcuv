@@ -29,7 +29,7 @@ public:
 	};
 	virtual ~Triangle();
 
-	bool intersectiontest(Ray, float&) const;
+	bool intersectiontest(Ray, float&, Primitive**) const;
 };
 
 #endif /* SRC_TRIANGLE_H_ */

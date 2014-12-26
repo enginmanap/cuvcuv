@@ -25,6 +25,6 @@ public:
 	bool setTransformation(const Mat4f&);
 	Sphere(float, float, float, float, Mat4f&);
 	virtual ~Sphere();
-	bool intersectiontest(Ray, float&) const;
+	bool intersectiontest(Ray, float&, Primitive**) const;
 };
 #endif /* SRC_SPHERE_H_ */

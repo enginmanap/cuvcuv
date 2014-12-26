@@ -25,12 +25,13 @@ bool RayTracer::traceToLight(const Ray& ray, const Octree& octree,
 	Vec3f route = light.getPosition() - ray.getPosition();
 	float distanceToLight = route.length();
 	float intersectionDistance;
+	Primitive* placeHolder = NULL; //this primitive will not be used, but it is required
 
 	std::set<Primitive*> primitives;
 	octree.getIntersectingPrimitives(ray,primitives);
 	for (std::set<Primitive*>::const_iterator it = primitives.begin();
 			it != primitives.end(); ++it) {
-		if ((*it)->intersectiontest(ray, intersectionDistance)) {
+		if ((*it)->intersectiontest(ray, intersectionDistance,&placeHolder)) {
 			//found intersection, check if it is before the closest one
 			if (distanceToLight > intersectionDistance) {
 				return false; //if we have one blocking object, it is enough
@@ -59,6 +60,7 @@ Vec3f RayTracer::trace(const Ray& ray, const Octree& octree,
 	float distance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
 	float intersectionDistance;
 	Primitive* intersectingPrimitive = NULL;
+	Primitive* closestIntersectingPrimitive=NULL;
 
 	std::set<Primitive*> primitives;
 	octree.getIntersectingPrimitives(ray,primitives);
@@ -70,19 +72,25 @@ Vec3f RayTracer::trace(const Ray& ray, const Octree& octree,
 		//}
 		for (std::set<Primitive*>::const_iterator it = primitives.begin();
 				it != primitives.end(); ++it) {
-			if ((*it)->intersectiontest(ray, intersectionDistance)) {
+			intersectingPrimitive=NULL;//this will be determined if intersection is with a collection or single
+			if ((*it)->intersectiontest(ray, intersectionDistance,&intersectingPrimitive)) {
 				//found intersection
 				if (distance > intersectionDistance) {
 					distance = intersectionDistance;
-					intersectingPrimitive = *it;
+					if(intersectingPrimitive != NULL){//if null, the intersection was with a single form, if not null, intersection collection
+						closestIntersectingPrimitive = intersectingPrimitive;
+					} else {
+						closestIntersectingPrimitive = *it;
+					}
+
 				}
 
 			}
 		}
 	}
 	//std::cout << "total tests " << totalTests<< std::endl;
-	if (intersectingPrimitive != NULL) {
-		return intersectingPrimitive->getColorForRay(ray, distance, octree,
+	if (closestIntersectingPrimitive != NULL) {
+		return closestIntersectingPrimitive->getColorForRay(ray, distance, octree,
 				lights, depth - 1);
 	} else {
 		return Vec3f(0.0f, 0.0f, 0.0f);

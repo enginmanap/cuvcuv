@@ -40,7 +40,7 @@ public:
 
 	void buildOctree();
 
-	bool intersectiontest(Ray, float&) const;
+	bool intersectiontest(Ray, float&, Primitive**) const;
 
 
 };

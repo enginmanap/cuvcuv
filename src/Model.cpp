@@ -41,11 +41,6 @@ bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
 	if (vertice1 >= 0 && vertice2 >= 0 && vertice3 >= 0
 			&& vertice1 < currentVertexMax && vertice2 < currentVertexMax
 			&& vertice3 < currentVertexMax) {
-		if(vertice1 == 1 and vertice2==5 && vertice3==9){
-			std::cout << "vec1" << this->vertexVector[vertice1] << std::endl;
-			std::cout << "vec2" << this->vertexVector[vertice2] << std::endl;
-			std::cout << "vec3" << this->vertexVector[vertice3] << std::endl;
-		}
 		Triangle* triangle = new Triangle(this->vertexVector[vertice1],
 				this->vertexVector[vertice2], this->vertexVector[vertice3],this->transformMatrix);
 		triangle->setMaterial(this->material);
@@ -98,12 +93,8 @@ void Model::buildOctree() {
 void Model::generateBoundingBox(){
 
 	Vec3f currentBBUpper, currentBBLower;
-	std::cout << "for " << primitives.size() << " primitive, generating AABB" << std::endl;
 	for (std::vector<Primitive*>::iterator primitiveP = primitives.begin();
 			primitiveP != primitives.end(); ++primitiveP) {
-		if((*primitiveP)==primitives[2596]){
-			std::cout << "found" << std::endl;
-		}
 		currentBBUpper = (*primitiveP)->getBBUpper();
 		currentBBLower = (*primitiveP)->getBBLower();
 		if (currentBBUpper.x > bbUpper.x)
@@ -127,23 +118,23 @@ void Model::generateBoundingBox(){
 			<< bbLower << std::endl;
 }
 
-bool Model::intersectiontest(Ray ray, float& distance) const{
+bool Model::intersectiontest(Ray ray, float& distance, Primitive** intersectingPrimitive) const{
 	float closestdistance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
 	float intersectionDistance;
 	std::set<Primitive*> primitives;
 	bool isIntersecting=false;
 
 	spatialTree->getIntersectingPrimitives(ray,primitives);
-
 	if (!primitives.empty()) {
 		for (std::set<Primitive*>::const_iterator it = primitives.begin();
 				it != primitives.end(); ++it) {
-			if ((*it)->intersectiontest(ray, intersectionDistance)) {
+			if ((*it)->intersectiontest(ray, intersectionDistance, intersectingPrimitive)) {
 				//found intersection
 				if (closestdistance > intersectionDistance) {
 					closestdistance = intersectionDistance;//this is to keep the closest one
 					distance=intersectionDistance;//this is to return
 					isIntersecting=true;
+					*intersectingPrimitive = *it;
 				}
 
 			}

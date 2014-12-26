@@ -48,7 +48,7 @@ void Triangle::generateBoundingBox(){
 
 }
 
-bool Triangle::intersectiontest(Ray ray, float& distance) const {
+bool Triangle::intersectiontest(Ray ray, float& distance,Primitive** intersectingPrimitive) const {
 	Ray transformedRay = generateTransformedRay(ray);
 	Vec3f rayPosition = transformedRay.getPosition();
 	Vec3f rayDirection = transformedRay.getDirection();

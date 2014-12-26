@@ -73,7 +73,7 @@ Sphere::~Sphere() {
  * 	returns:
  * 		bool: if there is an intersection
  */
-bool Sphere::intersectiontest(Ray ray, float& distance) const {
+bool Sphere::intersectiontest(Ray ray, float& distance, Primitive** intersectingPrimitive) const {
 	Ray transformedRay = generateTransformedRay(ray);
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
