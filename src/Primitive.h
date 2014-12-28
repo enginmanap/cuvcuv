@@ -31,10 +31,7 @@ protected:
 	static unsigned int lastID;
 	Material* material;
 	Mat4f inverseTransformMat, transformMatrix;
-	Ray transformedRay;
 	Vec3f bbUpper, bbLower, bbCenter, bbwidths;
-
-
 
 	Vec3f calculateColorPerLight(const Vec3f&, const Vec3f&, const Vec3f&,
 			const Vec3f&, const Vec3f&, const Vec3f&, const float) const;
@@ -55,7 +52,7 @@ public:
 
 	Ray generateTransformedRay(const Ray&) const;
 	/**
-	 * return 0 means not in, 1 means partially in, 2 mean contained in.
+	 * return 0 means not in, 1 means partial or fully in.
 	 */
 	unsigned char isInBoundingBox(const Vec3f&, const Vec3f&) const;
 };
