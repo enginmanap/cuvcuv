@@ -17,6 +17,7 @@
 
 class ModelReader : public FileReader {
 	Model* model;
+	bool readFace(std::stringstream&, int*, int&);
 public:
 	ModelReader(std::string filename): FileReader(filename){this->model=NULL;};
 	/**
