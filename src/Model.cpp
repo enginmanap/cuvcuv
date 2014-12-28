@@ -11,6 +11,9 @@ Model::Model(const Mat4f& transformMatrix) : triangleCount(0){
 			this->setTransformation(transformMatrix);
 			this->vertexVector.reserve(INITIAL_VERTEX_COUNT);
 			this->spatialTree=NULL;
+			//this is because obj files start counting from 1, and it is better to add 1 empty vertex than
+			//calculate with -1 for all vertexes.
+			this->vertexVector.push_back(Vec3f(0,0,0));
 }
 
 Model::~Model() {
