@@ -19,7 +19,7 @@ private:
 		if(direction.x == 0) inverseDirection.x = std::numeric_limits<float>::max(); else inverseDirection.x = 1.0f/direction.x;
 		if(direction.y == 0) inverseDirection.y = std::numeric_limits<float>::max(); else inverseDirection.y = 1.0f/direction.y;
 		if(direction.z == 0) inverseDirection.z = std::numeric_limits<float>::max(); else inverseDirection.z = 1.0f/direction.z;
-		inverseDirection.w=std::numeric_limits<float>::infinity();//since direction must have 0 as w
+		inverseDirection.w=0;//std::numeric_limits<float>::infinity();//since direction must have 0 as w
 	}
 public:
 	Ray(): position(Vec4f()),direction(Vec4f()), inverseDirection(Vec4f()), minDistance(0), maxDistance(100) {};
