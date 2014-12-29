@@ -295,7 +295,7 @@ void Scene::buildOctree() {
 	Vec3f treeMin(std::floor(minbb.x), std::floor(minbb.y),
 			std::floor(minbb.z));
 	//now request a octree with this dimentions.
-	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives,32);//ToDo 32 is hardcoded max depth
+	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives,10);//TODO 10 is hardcoded max depth
 	std::cout << "spatial tree generated with dimentions: " << treeMax << ","
 			<< treeMin << std::endl;
 	//sthis->spatialTree->print();
