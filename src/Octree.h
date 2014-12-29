@@ -20,7 +20,7 @@
 class Primitive;
 
 class Octree {
-	std::set<Primitive *> primitives;
+	std::vector<Primitive *> primitives;
 	Octree* parent;
 	Octree* children[8];
 	Vec3f upperEnd, lowerEnd, center;

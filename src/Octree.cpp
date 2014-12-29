@@ -128,15 +128,15 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 			}
 			level = oldLevel;
 			//FIXME should newer happen, but it does
-			this->primitives = std::set<Primitive*>(notContained.begin(), notContained.end());
+			this->primitives = notContained;
 		} else {
 			//if splitting was redudant, then skip splitting
-			this->primitives = std::set<Primitive*>(primitives.begin(), primitives.end());
+			this->primitives = primitives;
 		}
 
 	} else {
 		//we hit some limit, and not going to create children
-		this->primitives = std::set<Primitive*>(primitives.begin(), primitives.end());
+		this->primitives = primitives;
 	}
 
 }
@@ -210,7 +210,7 @@ void Octree::print(){
 	static std::string depth = "";
 	std::string oldDepth = depth;
 	std::ostringstream sstream;
-	for(std::set<Primitive*>::iterator primIter=this->primitives.begin();primIter != this->primitives.end();++primIter){
+	for(std::vector<Primitive*>::iterator primIter=this->primitives.begin();primIter != this->primitives.end();++primIter){
 		sstream << (*primIter)->id << " ";
 	}
 	std::cout << depth << "node " << this->upperEnd <<","<<this->lowerEnd << " has " << this->primitives.size() << " objects: " << sstream.str()<<std::endl;
