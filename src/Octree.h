@@ -25,6 +25,8 @@ class Octree {
 	Octree* children[8];
 	Vec3f upperEnd, lowerEnd, center;
 	unsigned char isSplittingRedudant;
+
+	void addWireframe(std::vector<Primitive*>&);
 public:
 	Octree(Octree*, Vec3f&, Vec3f&, std::vector<Primitive*>&, unsigned char);
 	virtual ~Octree();

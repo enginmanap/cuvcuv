@@ -8,6 +8,88 @@
 #include "Octree.h"
 #include <iostream>
 #include <string>
+#include "Triangle.h"
+
+/**
+ * This method adds 12 primitives per node,
+ * to render as wireframe. This is for debug only,
+ * it should be closed except that.
+ */
+void Octree::addWireframe(std::vector<Primitive*>& primitives){
+	float width = 0.1f;
+	//create small triangles at the lines of the tree
+	//get the 3 vertices
+	Vec3f vertice[10];
+	vertice[0] = upperEnd;
+	vertice[1] = upperEnd;vertice[1].x = lowerEnd.x;
+	vertice[2] = upperEnd;vertice[2].y = lowerEnd.y;
+	vertice[3] = upperEnd;vertice[3].z = lowerEnd.z;
+	vertice[4] = vertice[1];vertice[4].y -= width;
+	vertice[5] = vertice[2];vertice[5].z -= width;
+	vertice[6] = vertice[3];vertice[6].x -= width;
+	vertice[7] = upperEnd; vertice[7].y -=width;
+	vertice[8] = upperEnd; vertice[8].z -=width;
+	vertice[9] = upperEnd; vertice[9].x -=width;
+
+	Material* mat = new Material("white");
+	Vec3f ambient(1,1,1);
+	mat->setAmbient(ambient);
+	Triangle* tri;
+
+	tri = new Triangle(vertice[0], vertice[1], vertice[4], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+	tri = new Triangle(vertice[0], vertice[7], vertice[8], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+
+	tri = new Triangle(vertice[0], vertice[2], vertice[5], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+	tri = new Triangle(vertice[0], vertice[5], vertice[8], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+
+	tri = new Triangle(vertice[0], vertice[3], vertice[6], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+	tri = new Triangle(vertice[0], vertice[6], vertice[9], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+
+	vertice[0] = lowerEnd;
+	vertice[1] = lowerEnd;vertice[1].x = upperEnd.x;
+	vertice[2] = lowerEnd;vertice[2].y = upperEnd.y;
+	vertice[3] = lowerEnd;vertice[3].z = upperEnd.z;
+	vertice[4] = vertice[1];vertice[4].y += width;
+	vertice[5] = vertice[2];vertice[5].z += width;
+	vertice[6] = vertice[3];vertice[6].x += width;
+	vertice[7] = lowerEnd; vertice[7].y +=width;
+	vertice[8] = lowerEnd; vertice[8].z +=width;
+	vertice[9] = lowerEnd; vertice[9].x +=width;
+
+	tri = new Triangle(vertice[0], vertice[1], vertice[4], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+	tri = new Triangle(vertice[0], vertice[7], vertice[8], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+
+	tri = new Triangle(vertice[0], vertice[2], vertice[5], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+	tri = new Triangle(vertice[0], vertice[5], vertice[8], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+
+	tri = new Triangle(vertice[0], vertice[3], vertice[6], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+	tri = new Triangle(vertice[0], vertice[6], vertice[9], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+
+}
 
 /**
  * Creating a node automatically creates subtrees,
@@ -16,6 +98,7 @@
 Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Primitive*>& primitives, unsigned char maxDepth): parent(parent), upperEnd(upperEnd),lowerEnd(lowerEnd) {
 	//this variable is used for logging. With it we can intent based on the depth.
 	static std::string level = "";
+	//
 	Vec3f temp = this->upperEnd + this->lowerEnd;
 	this->center = ((float) 1 / 2) * temp;
 	memset(children, 0, sizeof(Octree*) * 8); //set children to NULL
@@ -138,6 +221,8 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 		//we hit some limit, and not going to create children
 		this->primitives = primitives;
 	}
+	//this->addWireframe(this->primitives);
+	//std::cout << "size is: " << sizeof(Primitive) << std::endl;
 
 }
 
