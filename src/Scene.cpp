@@ -278,27 +278,11 @@ void Scene::buildOctree() {
 		if (currentBBLower.z < minbb.z)
 			minbb.z = currentBBLower.z;
 	}
-	/*
-	 * now we have the min and max values, we should buid a Octree to
-	 * contain all of them. I want the size to be a power of 2, and
-	 * it should be a cube
-	 */
-	Vec3f lengths = maxbb - minbb;
-	float sceneSize = std::max(lengths.x, std::max(lengths.y, lengths.z));
-	int treeRootSize = pow(2, std::ceil(log(sceneSize) / log(2))); //this generates smallest power of 2 that is big equal to size
-
-	//now we have the size and min will be floored, so we can calculate max
-	float treeRootMaxX = treeRootSize + std::floor(minbb.x);
-	float treeRootMaxY = treeRootSize + std::floor(minbb.y);
-	float treeRootMaxZ = treeRootSize + std::floor(minbb.z);
-	Vec3f treeMax(treeRootMaxX, treeRootMaxY, treeRootMaxZ);
-	Vec3f treeMin(std::floor(minbb.x), std::floor(minbb.y),
-			std::floor(minbb.z));
-	//now request a octree with this dimentions.
-	this->spatialTree = new Octree(NULL, treeMax, treeMin, primitives,10);//TODO 10 is hardcoded max depth
-	std::cout << "spatial tree generated with dimentions: " << treeMax << ","
-			<< treeMin << std::endl;
-	//sthis->spatialTree->print();
+	//The octree root node size will be equal to the scene size
+	this->spatialTree = new Octree(NULL, maxbb, minbb, primitives,10);//TODO 10 is hardcoded max depth
+	std::cout << "spatial tree generated with dimentions: " << minbb << ","
+			<< minbb << std::endl;
+	//this->spatialTree->print();
 }
 
 bool Scene::renderScene() {
