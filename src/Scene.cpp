@@ -267,9 +267,9 @@ void Scene::buildOctree() {
 		if (currentBBUpper.x > maxbb.x)
 			maxbb.x = currentBBUpper.x;
 		if (currentBBUpper.y > maxbb.y)
-			maxbb.z = currentBBUpper.y;
+			maxbb.y = currentBBUpper.y;
 		if (currentBBUpper.z > maxbb.z)
-			maxbb.y = currentBBUpper.z;
+			maxbb.z = currentBBUpper.z;
 
 		if (currentBBLower.x < minbb.x)
 			minbb.x = currentBBLower.x;

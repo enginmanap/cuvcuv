@@ -103,9 +103,9 @@ void Model::generateBoundingBox(){
 		if (currentBBUpper.x > bbUpper.x)
 			bbUpper.x = currentBBUpper.x;
 		if (currentBBUpper.y > bbUpper.y)
-			bbUpper.z = currentBBUpper.y;
+			bbUpper.y = currentBBUpper.y;
 		if (currentBBUpper.z > bbUpper.z)
-			bbUpper.y = currentBBUpper.z;
+			bbUpper.z = currentBBUpper.z;
 
 		if (currentBBLower.x < bbLower.x)
 			bbLower.x = currentBBLower.x;
