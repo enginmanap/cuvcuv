@@ -71,10 +71,12 @@ void Model::buildOctree() {
 	std::cout << "generating spatial tree for model" << std::endl;
 	generateBoundingBox();
 	/*
+	 * This requirement is lifted
+	/ *
 	 * since we have the bbUpper and bbLower values, we should buid a Octree to
 	 * contain all of them. I want the size to be a power of 2, and
 	 * it should be a cube
-	 */
+	 * /
 	Vec3f lengths = bbUpper - bbLower;
 	float sceneSize = std::max(lengths.x, std::max(lengths.y, lengths.z));
 	int treeRootSize = pow(2, std::ceil(log(sceneSize) / log(2))); //this generates smallest power of 2 that is big equal to size
@@ -86,6 +88,7 @@ void Model::buildOctree() {
 	Vec3f treeMax(treeRootMaxX, treeRootMaxY, treeRootMaxZ);
 	Vec3f treeMin(std::floor(bbLower.x), std::floor(bbLower.y),
 			std::floor(bbLower.z));
+	*/
 	//now request a octree with this dimentions.
 	this->spatialTree = new Octree(NULL, bbUpper, bbLower, primitives,10);//TODO 10 is hardcoded max depth
 	std::cout << "spatial tree for model generated with dimentions: " << bbUpper << ","
