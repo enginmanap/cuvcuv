@@ -15,7 +15,7 @@ class Ray {
 private:
 	Vec4f position, direction, inverseDirection;
 	float minDistance, maxDistance;
-	void generateInverseDirection(){
+void generateInverseDirection(){
 		if(direction.x == 0) inverseDirection.x = std::numeric_limits<float>::max(); else inverseDirection.x = 1.0f/direction.x;
 		if(direction.y == 0) inverseDirection.y = std::numeric_limits<float>::max(); else inverseDirection.y = 1.0f/direction.y;
 		if(direction.z == 0) inverseDirection.z = std::numeric_limits<float>::max(); else inverseDirection.z = 1.0f/direction.z;
