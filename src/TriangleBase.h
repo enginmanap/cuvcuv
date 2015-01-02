@@ -5,8 +5,8 @@
  *      Author: Engin Manap
  */
 
-#ifndef SRC_TRIANGLE_H_
-#define SRC_TRIANGLE_H_
+#ifndef SRC_TRIANGLEBASE_H_
+#define SRC_TRIANGLEBASE_H_
 
 #include <vector>
 #include "Light.h"
@@ -32,4 +32,4 @@ public:
 	bool intersectiontest(Ray, float&, Primitive**) const;
 };
 
-#endif /* SRC_TRIANGLE_H_ */
+#endif /* SRC_TRIANGLEBASE_H_ */
