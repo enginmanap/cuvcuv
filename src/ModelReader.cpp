@@ -88,15 +88,27 @@ Model* ModelReader::readModelFile(Scene& scene) {
 				if(parameterCount < 3) {
 					std::cerr << "face does not contain 3 vertices, only " << parameterCount << " provided." << std::endl;
 				} else {
-					model->addTriangleBase(faceParameters[0], faceParameters[1*3],
-							faceParameters[2*3]);//the ones between are not used yet
-
-					//there might be more faces, we will interpret as GL_TRIANGLE_FAN
-					float fanCenter=faceParameters[0], previousVertex=faceParameters[2*3];
-					for(int i=3; i < parameterCount; ++i) {
-						model->addTriangleBase((int) fanCenter, previousVertex,
-								(int) faceParameters[i*3]);
-						previousVertex = faceParameters[i*3];
+					if(faceParameters[2] == 0){//this is a basic triangle with out any normal definition
+						model->addTriangleBase(faceParameters[0], faceParameters[1*3],
+								faceParameters[2*3]);
+						//there might be more faces, we will interpret as GL_TRIANGLE_FAN
+						float fanCenter=faceParameters[0], previousVertex=faceParameters[2*3];
+						for(int i=3; i < parameterCount; ++i) {
+							model->addTriangleBase((int) fanCenter, previousVertex,
+									(int) faceParameters[i*3]);
+							previousVertex = faceParameters[i*3];
+						}
+					} else { //this is a triangle with normal definitions
+						model->addTriangle(faceParameters[0], faceParameters[1*3], faceParameters[2*3],
+								faceParameters[2], faceParameters[1*3+2], faceParameters[2*3+2]);
+						//there might be more faces, we will interpret as GL_TRIANGLE_FAN
+						int fanCenter=faceParameters[0], fanCenterNormal=faceParameters[2],previousVertex=faceParameters[2*3], previousVertexNormal=faceParameters[2*3+2];
+						for(int i=3; i < parameterCount; ++i) {
+							model->addTriangle(fanCenter, previousVertex,faceParameters[i*3],
+									fanCenterNormal, previousVertexNormal,faceParameters[i*3+2]);
+							previousVertex = faceParameters[i*3];
+							previousVertexNormal = faceParameters[i*3+2];
+						}
 					}
 				}
 			}

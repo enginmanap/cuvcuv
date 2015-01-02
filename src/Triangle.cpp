@@ -15,14 +15,19 @@ Vec3f Triangle::calculateNormal(const Vec4f& intersectionPoint) const{
 		 * since we have the intersection point, we will assume it is
 		 * in  the triangle plane, and interpolate based on distance
 		 */
-		Vec3f intersection = intersectionPoint;
-		Vec3f distance1 = this->a - intersection;
-		Vec3f distance2 = this->b - intersection;
-		Vec3f distance3 = this->c - intersection;
-		Vec3f totalDistance = distance1 + distance2 + distance3;
-		Vec3f normal = distance1.length() * n1 + distance2.length() * n2 + distance3.length() * n3;
-		normal = normal * (1 / totalDistance.length());// a dirt hack to
-		return normal;
+		Vec3f intersection = intersectionPoint* this->inverseTransformMat;
+
+		Vec3f vectorIntersectionA = intersection - a;
+		float dotProductIABA = vec3fNS::dot(vectorIntersectionA, vectorBA);
+		float dotProductIACA = vec3fNS::dot(vectorIntersectionA, vectorCA);
+		float denom = dotProductBABA * dotProductCACA - dotProductBACA * dotProductBACA;
+		float v = (dotProductCACA * dotProductIABA - dotProductBACA * dotProductIACA) / denom;
+		float w = (dotProductBABA * dotProductIACA - dotProductBACA * dotProductIABA) / denom;
+		float u = 1.0f - v - w;
+		//order is u->a, v->b, w->c
+		Vec3f normal = u*n1 + v*n2 + w*n3;
+
+		return vec3fNS::normalize(Vec4f(normal, 0.0f) * this->inverseMatrixTranspose);
 	}
 
 }
