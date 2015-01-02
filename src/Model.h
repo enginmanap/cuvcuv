@@ -12,6 +12,7 @@
 #include <string>
 #include "Primitive.h"
 #include "TriangleBase.h"
+#include "Triangle.h"
 
 #ifndef INITIAL_VERTEX_COUNT
 #define INITIAL_VERTEX_COUNT 1000
@@ -38,7 +39,8 @@ public:
 
 	void addVertex(float x, float y, float z){	this->vertexVector.push_back(Vec3f(x, y, z));};
 	void addVertexNormal(float x, float y, float z){	this->vertexNormalVector.push_back(Vec3f(x, y, z));};
-	bool addTriangle(int, int, int);
+	bool addTriangleBase(int, int, int);
+	bool addTriangle(int, int, int, int, int, int);
 
 	void buildOctree();
 

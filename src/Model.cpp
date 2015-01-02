@@ -67,7 +67,7 @@ bool Model::verifyTriangleIndexes(int& vertice1, int& vertice2, int& vertice3){
 	}
 }
 
-bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
+bool Model::addTriangleBase(int vertice1, int vertice2, int vertice3) {
 	if(verifyTriangleIndexes(vertice1,vertice2,vertice3)){
 		TriangleBase* triangle = new TriangleBase(this->vertexVector[vertice1],
 				this->vertexVector[vertice2], this->vertexVector[vertice3],this->transformMatrix);
@@ -80,8 +80,27 @@ bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
 		return true;
 	}
 	return false;
-
 }
+
+bool Model::addTriangle(int vertice1, int vertice2, int vertice3,
+						int normal1, int normal2, int normal3) {
+	if(verifyTriangleIndexes(vertice1,vertice2,vertice3)){
+		Triangle* triangle = new Triangle(
+				this->vertexVector[vertice1],	this->vertexVector[vertice2], this->vertexVector[vertice3],
+				this->vertexNormalVector[normal1],	this->vertexNormalVector[normal2], this->vertexNormalVector[normal3],
+				this->transformMatrix,true);
+		triangle->setMaterial(this->material);
+
+		//std::cout << "new triangle with material: " << this->material->getName() << std::endl;
+		//triangle->setTransformation(transformStack.top());
+		primitives.push_back(triangle);
+		triangleCount++;
+		return true;
+	}
+	return false;
+}
+
+
 
 void Model::buildOctree() {
 	std::cout << "generating spatial tree for model" << std::endl;

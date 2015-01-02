@@ -82,13 +82,13 @@ Model* ModelReader::readModelFile(Scene& scene) {
 				if(parameterCount < 3) {
 					std::cerr << "face does not contain 3 vertices, only " << parameterCount << " provided." << std::endl;
 				} else {
-					model->addTriangle(faceParameters[0], faceParameters[1*3],
+					model->addTriangleBase(faceParameters[0], faceParameters[1*3],
 							faceParameters[2*3]);//the ones between are not used yet
 
 					//there might be more faces, we will interpret as GL_TRIANGLE_FAN
 					float fanCenter=faceParameters[0], previousVertex=faceParameters[2*3];
 					for(int i=3; i < parameterCount; ++i) {
-						model->addTriangle((int) fanCenter, previousVertex,
+						model->addTriangleBase((int) fanCenter, previousVertex,
 								(int) faceParameters[i*3]);
 						previousVertex = faceParameters[i*3];
 					}
