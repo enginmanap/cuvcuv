@@ -72,7 +72,13 @@ Model* ModelReader::readModelFile(Scene& scene) {
 		} else if (command == "vt") {
 			//TODO implement setting texture
 		} else if (command == "vn") {
-			//TODO implement setting normal
+			if (readFloatParams(stringStream, parameters, parameterCount)) {
+				if(parameterCount < 3) {
+					std::cerr << "vertex normal does not contain 3 coordinates, only " << parameterCount << " provided." << std::endl;
+				} else {
+					model->addVertexNormal(parameters[0], parameters[1], parameters[2]);
+				}
+			}
 		} else if (command == "s") {
 			//TODO implement setting smoothing
 		} else if (command == "g") {
