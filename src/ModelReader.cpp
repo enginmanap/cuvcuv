@@ -8,6 +8,7 @@
 #include "ModelReader.h"
 
 bool ModelReader::readFace(std::stringstream& ss, int params[], int& readNumbers){
+	memset(params,0,MAX_PARAMS*3);
     std::string current;
     int currentValue=0;
     for (int param = 0; param < MAX_PARAMS; ++param) {
