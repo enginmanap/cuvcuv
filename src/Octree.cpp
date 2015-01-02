@@ -34,26 +34,26 @@ void Octree::addWireframe(std::vector<Primitive*>& primitives){
 	Material* mat = new Material("white");
 	Vec3f ambient(1,1,1);
 	mat->setAmbient(ambient);
-	Triangle* tri;
+	TriangleBase* tri;
 
-	tri = new Triangle(vertice[0], vertice[1], vertice[4], Mat4f());
+	tri = new TriangleBase(vertice[0], vertice[1], vertice[4], Mat4f());
 	tri->setMaterial(mat);
 	primitives.push_back(tri);
-	tri = new Triangle(vertice[0], vertice[7], vertice[8], Mat4f());
-	tri->setMaterial(mat);
-	primitives.push_back(tri);
-
-	tri = new Triangle(vertice[0], vertice[2], vertice[5], Mat4f());
-	tri->setMaterial(mat);
-	primitives.push_back(tri);
-	tri = new Triangle(vertice[0], vertice[5], vertice[8], Mat4f());
+	tri = new TriangleBase(vertice[0], vertice[7], vertice[8], Mat4f());
 	tri->setMaterial(mat);
 	primitives.push_back(tri);
 
-	tri = new Triangle(vertice[0], vertice[3], vertice[6], Mat4f());
+	tri = new TriangleBase(vertice[0], vertice[2], vertice[5], Mat4f());
 	tri->setMaterial(mat);
 	primitives.push_back(tri);
-	tri = new Triangle(vertice[0], vertice[6], vertice[9], Mat4f());
+	tri = new TriangleBase(vertice[0], vertice[5], vertice[8], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+
+	tri = new TriangleBase(vertice[0], vertice[3], vertice[6], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+	tri = new TriangleBase(vertice[0], vertice[6], vertice[9], Mat4f());
 	tri->setMaterial(mat);
 	primitives.push_back(tri);
 
@@ -68,24 +68,24 @@ void Octree::addWireframe(std::vector<Primitive*>& primitives){
 	vertice[8] = lowerEnd; vertice[8].z +=width;
 	vertice[9] = lowerEnd; vertice[9].x +=width;
 
-	tri = new Triangle(vertice[0], vertice[1], vertice[4], Mat4f());
+	tri = new TriangleBase(vertice[0], vertice[1], vertice[4], Mat4f());
 	tri->setMaterial(mat);
 	primitives.push_back(tri);
-	tri = new Triangle(vertice[0], vertice[7], vertice[8], Mat4f());
-	tri->setMaterial(mat);
-	primitives.push_back(tri);
-
-	tri = new Triangle(vertice[0], vertice[2], vertice[5], Mat4f());
-	tri->setMaterial(mat);
-	primitives.push_back(tri);
-	tri = new Triangle(vertice[0], vertice[5], vertice[8], Mat4f());
+	tri = new TriangleBase(vertice[0], vertice[7], vertice[8], Mat4f());
 	tri->setMaterial(mat);
 	primitives.push_back(tri);
 
-	tri = new Triangle(vertice[0], vertice[3], vertice[6], Mat4f());
+	tri = new TriangleBase(vertice[0], vertice[2], vertice[5], Mat4f());
 	tri->setMaterial(mat);
 	primitives.push_back(tri);
-	tri = new Triangle(vertice[0], vertice[6], vertice[9], Mat4f());
+	tri = new TriangleBase(vertice[0], vertice[5], vertice[8], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+
+	tri = new TriangleBase(vertice[0], vertice[3], vertice[6], Mat4f());
+	tri->setMaterial(mat);
+	primitives.push_back(tri);
+	tri = new TriangleBase(vertice[0], vertice[6], vertice[9], Mat4f());
 	tri->setMaterial(mat);
 	primitives.push_back(tri);
 

@@ -217,7 +217,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 	if (vertice1 >= 0 && vertice2 >= 0 && vertice3 >= 0
 			&& vertice1 < currentVertex && vertice2 < currentVertex
 			&& vertice3 < currentVertex) {
-		Triangle* triangle = new Triangle(this->vertexVector[vertice1],
+		TriangleBase* triangle = new TriangleBase(this->vertexVector[vertice1],
 				this->vertexVector[vertice2], this->vertexVector[vertice3],transformStack.top());
 		triangle->setMaterial(currentMaterial);
 		//std::cout << "new triangle with material: " << currentMaterial->getName() << std::endl;

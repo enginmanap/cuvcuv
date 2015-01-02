@@ -47,7 +47,7 @@ bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
 	if(vertice3 < 0) vertice3 =currentVertexMax + vertice3;
 	if (vertice1 < currentVertexMax && vertice2 < currentVertexMax
 			&& vertice3 < currentVertexMax) {
-		Triangle* triangle = new Triangle(this->vertexVector[vertice1],
+		TriangleBase* triangle = new TriangleBase(this->vertexVector[vertice1],
 				this->vertexVector[vertice2], this->vertexVector[vertice3],this->transformMatrix);
 		triangle->setMaterial(this->material);
 

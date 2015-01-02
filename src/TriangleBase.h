@@ -15,7 +15,7 @@
 #include "Ray.h"
 #include "Primitive.h"
 
-class Triangle: public Primitive {
+class TriangleBase: public Primitive {
 
 private:
 	Vec3f a, b, c;
@@ -24,10 +24,10 @@ private:
 	void generateBoundingBox();
 public:
 	bool setTransformation(const Mat4f&);
-	Triangle(const Vec3f& vertice1, const Vec3f& vertice2, const Vec3f& vertice3, const Mat4f& transformMat):a(vertice1), b(vertice2), c(vertice3){
+	TriangleBase(const Vec3f& vertice1, const Vec3f& vertice2, const Vec3f& vertice3, const Mat4f& transformMat):a(vertice1), b(vertice2), c(vertice3){
 		this->setTransformation(transformMat); //this generates normal and bounding box.
 	};
-	virtual ~Triangle();
+	virtual ~TriangleBase();
 
 	bool intersectiontest(Ray, float&, Primitive**) const;
 };

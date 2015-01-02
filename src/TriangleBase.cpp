@@ -9,11 +9,11 @@
 
 
 
-Triangle::~Triangle() {
+TriangleBase::~TriangleBase() {
 
 }
 
-bool Triangle::setTransformation(const Mat4f& transformMatrix){
+bool TriangleBase::setTransformation(const Mat4f& transformMatrix){
 	Primitive::setTransformation(transformMatrix);//call to super, so inverse will be calculated
 	Vec3f normal = vec3fNS::cross((b - a), (c - a));
 	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
@@ -22,7 +22,7 @@ bool Triangle::setTransformation(const Mat4f& transformMatrix){
 }
 
 
-void Triangle::generateBoundingBox(){
+void TriangleBase::generateBoundingBox(){
 	//std::cout<<"generate box" << std::endl;
 	//first calculate values of the vertex points, after transformations
 	Vec3f transformedA = Vec4f(a,1.0f) * this->transformMatrix; //1.0f since this is not a direction, but position
@@ -48,7 +48,7 @@ void Triangle::generateBoundingBox(){
 
 }
 
-bool Triangle::intersectiontest(Ray ray, float& distance,Primitive** intersectingPrimitive) const {
+bool TriangleBase::intersectiontest(Ray ray, float& distance,Primitive** intersectingPrimitive) const {
 	Ray transformedRay = generateTransformedRay(ray);
 	Vec3f rayPosition = transformedRay.getPosition();
 	Vec3f rayDirection = transformedRay.getDirection();
@@ -75,6 +75,6 @@ bool Triangle::intersectiontest(Ray ray, float& distance,Primitive** intersectin
 	return true;
 }
 
-Vec3f Triangle::calculateNormal(const Vec4f& position) const {
+Vec3f TriangleBase::calculateNormal(const Vec4f& position) const {
 	return triangleNormal;
 }
