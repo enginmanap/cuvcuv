@@ -29,7 +29,7 @@ public:
 	Vec4f operator-(const Vec4f&)const;
 	Vec4f operator+(const Vec4f&);
 	Vec4f operator*(const Vec4f&) const;
-	operator Vec3f(){return Vec3f(x,y,z);};
+	operator Vec3f() const {return Vec3f(x,y,z);};
 
 	//these elements are here, so gcc can inline/optimise them. it can be forced, but I won't.
 	float getElement(const int index) const {switch (index) {
