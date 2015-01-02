@@ -283,7 +283,7 @@ void Scene::buildOctree() {
 	}
 	//The octree root node size will be equal to the scene size
 	this->spatialTree = new Octree(NULL, maxbb, minbb, primitives,10);//TODO 10 is hardcoded max depth
-	std::cout << "spatial tree generated with dimentions: " << minbb << ","
+	std::cout << "spatial tree generated with dimentions: " << maxbb << ","
 			<< minbb << std::endl;
 	//this->spatialTree->print();
 }
