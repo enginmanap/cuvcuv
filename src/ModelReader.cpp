@@ -73,6 +73,10 @@ Model* ModelReader::readModelFile(Scene& scene) {
 			//TODO implement setting texture
 		} else if (command == "vn") {
 			//TODO implement setting normal
+		} else if (command == "s") {
+			//TODO implement setting smoothing
+		} else if (command == "g") {
+			//TODO implement setting grouping
 		} else if (command == "f") {
 			if (readFace(stringStream, faceParameters, parameterCount)) {
 				if(parameterCount < 3) {
@@ -94,15 +98,22 @@ Model* ModelReader::readModelFile(Scene& scene) {
 			if (readStringParams(stringStream, stringParams, 1)) {
 				//create a material reader and read material lib
 				MaterialReader materialReader(stringParams[0]);
-				Material* mat = materialReader.readMaterialFile();
-				scene.addMaterial(mat); //clearing the material is going to be done by scene
-				model->setMaterial(mat);
+				std::vector<Material*> materials = materialReader.readMaterialFile();
+				if(materials.size() != 0){
+					scene.addMaterial(materials); //clearing the material is going to be done by scene
+					//model->setMaterial(materials[0]);
+				} else {
+					std::cerr << "Material file " << stringParams[0] <<" has no material to be read." << std::endl;
+				}
 			}
 		} else if (command == "usemtl") {
 			if (readStringParams(stringStream, stringParams, 1)) {
 				Material* mat = scene.getMaterial(stringParams[0]);
-				if(mat!=NULL)
+				if(mat!=NULL) {
 					model->setMaterial(mat);
+				} else {
+					std::cerr << "Material with name " << stringParams[0] << " can not be found." << std::endl;
+				}
 			}
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;

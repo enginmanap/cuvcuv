@@ -10,6 +10,7 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
 
 #include "Material.h"
 #include "Vec3f.h"
@@ -17,15 +18,16 @@
 
 
 class MaterialReader : public FileReader {
-	Material* material;
+	std::vector<Material*> materials;
+	Material* currentMaterial;
 
 	Vec3f temporaryVector;
 
 public:
 
-	MaterialReader(std::string filename): FileReader(filename){this->material=NULL;};
+	MaterialReader(std::string filename): FileReader(filename),currentMaterial(NULL){};
 
-	Material* readMaterialFile();
+	std::vector<Material*> readMaterialFile();
 };
 
 #endif /* SRC_MATERIALREADER_H_ */

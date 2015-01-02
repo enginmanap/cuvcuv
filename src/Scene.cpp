@@ -176,10 +176,13 @@ bool Scene::setCurrentShininess(float shininess) {
 	return true;
 }
 
-bool Scene::addMaterial(Material* material){
-	materialMap[material->getName()] = material;
-	currentMaterial = material;
-	std::cout << "new material " << material->getName() << " added." << std::endl;
+bool Scene::addMaterial(std::vector<Material*> materials){
+	for (unsigned int index = 0; index < materials.size(); ++index) {
+		materialMap[materials[index]->getName()] = materials[index];
+		currentMaterial = materials[index];
+		std::cout << "new material " << materials[index]->getName() << " added." << std::endl;
+	}
+
 	return true;
 }
 

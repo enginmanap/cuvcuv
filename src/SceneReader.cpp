@@ -236,8 +236,8 @@ Scene* SceneReader::readFile() {
 			if (readStringParams(stringStream, stringParams, 1)) {
 				//create a material reader and read material lib
 				MaterialReader materialReader(stringParams[0]);
-				Material* mat = materialReader.readMaterialFile();
-				scene->addMaterial(mat); //clearing the material is going to be done by scene
+				std::vector<Material*> materials = materialReader.readMaterialFile();
+				scene->addMaterial(materials); //clearing the material is going to be done by scene
 			}
 		} else if (command == "loadModel") {
 			if (readStringParams(stringStream, stringParams, 1)) {

@@ -81,7 +81,7 @@ public:
 	bool setCurrentDiffuse(float, float, float);
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
-	bool addMaterial(Material*);
+	bool addMaterial(std::vector<Material*>);
 	Material* getMaterial(std::string& materialName) {return materialMap[materialName];};
 	Material* getMaterial() {return materialMap[materialNames.top()];};
 

@@ -8,7 +8,9 @@
 #include "MaterialReader.h"
 
 
-Material* MaterialReader::readMaterialFile() {
+std::vector<Material*> MaterialReader::readMaterialFile() {
+
+
 	std::string command;
 	float floatParameters[MAX_PARAMS];
 	std::string stringParameters[MAX_PARAMS];
@@ -25,7 +27,8 @@ Material* MaterialReader::readMaterialFile() {
 			exit(1);
 		} else {
 			if (readStringParams(stringStream, stringParameters, 1)) {
-				material = new Material(stringParameters[0]);
+				currentMaterial = new Material(stringParameters[0]);
+				materials.push_back(currentMaterial);
 			} else {
 				std::cerr << "newmtl command parameters could not be read"
 						<< std::endl;
@@ -49,7 +52,7 @@ Material* MaterialReader::readMaterialFile() {
 					temporaryVector.x=floatParameters[0];
 					temporaryVector.y=floatParameters[1];
 					temporaryVector.z=floatParameters[2];
-					material->setAmbient(temporaryVector);
+					currentMaterial->setAmbient(temporaryVector);
 				}
 			}
 		} else if (command == "Ke") {//emission
@@ -60,7 +63,7 @@ Material* MaterialReader::readMaterialFile() {
 				temporaryVector.x=floatParameters[0];
 				temporaryVector.y=floatParameters[1];
 				temporaryVector.z=floatParameters[2];
-				material->setEmission(temporaryVector);
+				currentMaterial->setEmission(temporaryVector);
 				}
 			}
 		} else if (command == "Kd") {//diffuse
@@ -71,7 +74,7 @@ Material* MaterialReader::readMaterialFile() {
 					temporaryVector.x=floatParameters[0];
 					temporaryVector.y=floatParameters[1];
 					temporaryVector.z=floatParameters[2];
-					material->setDiffuse(temporaryVector);
+					currentMaterial->setDiffuse(temporaryVector);
 				}
 			}
 		} else if (command == "Ks") {//specular
@@ -82,16 +85,27 @@ Material* MaterialReader::readMaterialFile() {
 					temporaryVector.x=floatParameters[0];
 					temporaryVector.y=floatParameters[1];
 					temporaryVector.z=floatParameters[2];
-					material->setSpecular(temporaryVector);
+					currentMaterial->setSpecular(temporaryVector);
 				}
 			}
 		} else if (command == "Ns") {//shininess
 			if (readFloatParams(stringStream, floatParameters, parameterCount)) {
-				material->setShininess(floatParameters[0]);
+				currentMaterial->setShininess(floatParameters[0]);
 			}
+		} else if (command == "newmtl") {//shininess
+			if (readStringParams(stringStream, stringParameters, 1)) {
+				currentMaterial = new Material(stringParameters[0]);
+				materials.push_back(currentMaterial);
+			} else {
+				std::cerr << "newmtl command parameters could not be read"	<< std::endl;
+			}
+		} else if (command == "d") {
+			//TODO implement setting dissolved (transparency
+		} else if (command == "illum") {
+			//TODO implement setting illimunation model
 		} else
 			std::cerr << "command unknown: \"" << command << "\"" << std::endl;
 
 	}
-	return material;
+	return materials;
 }
