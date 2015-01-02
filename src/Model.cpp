@@ -17,7 +17,8 @@ Model::Model(const Mat4f& transformMatrix) : triangleCount(0){
 }
 
 Model::~Model() {
-	// TODO Auto-generated destructor stub
+	if(this->spatialTree!=NULL)
+		delete this->spatialTree;
 }
 
 bool Model::createVertexSpace(int maxVertexCount) {
