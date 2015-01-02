@@ -28,11 +28,6 @@ bool Model::createVertexSpace(int maxVertexCount) {
 	return true;
 }
 
-bool Model::addVertex(float x, float y, float z) {
-	this->vertexVector.push_back(Vec3f(x, y, z));
-	return true;
-}
-
 void Model::printVertexes() {
 	for (unsigned int i = 0; i < vertexVector.size(); ++i) {
 		std::cout << "vertex[" << i << "]=" << this->vertexVector[i]

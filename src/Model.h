@@ -19,6 +19,7 @@
 
 class Model : public Primitive {
 	std::vector<Vec3f> vertexVector;
+	std::vector<Vec3f> vertexNormalVector;
 
 	int triangleCount;
 	std::vector<Primitive*> primitives;
@@ -35,7 +36,8 @@ public:
 	bool createVertexSpace(int);
 	void printVertexes();
 
-	bool addVertex(float, float, float);
+	void addVertex(float x, float y, float z){	this->vertexVector.push_back(Vec3f(x, y, z));};
+	void addVertexNormal(float x, float y, float z){	this->vertexNormalVector.push_back(Vec3f(x, y, z));};
 	bool addTriangle(int, int, int);
 
 	void buildOctree();
