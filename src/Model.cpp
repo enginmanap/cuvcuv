@@ -10,6 +10,7 @@
 Model::Model(const Mat4f& transformMatrix) : triangleCount(0){
 			this->setTransformation(transformMatrix);
 			this->vertexVector.reserve(INITIAL_VERTEX_COUNT);
+			this->vertexNormalVector.reserve(INITIAL_VERTEX_COUNT);
 			this->spatialTree=NULL;
 			//this is because obj files start counting from 1, and it is better to add 1 empty vertex than
 			//calculate with -1 for all vertexes.
@@ -35,7 +36,18 @@ void Model::printVertexes() {
 	}
 }
 
-bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
+/**
+ * if the indexes are negative, it means reverse order,
+ * this function updates them to in order. If indexes are bigger than
+ * current max, it returns false.
+ *
+ * @params
+ * vertice1,vertice2,vertice3: vertex indexes
+ *
+ * @returns:
+ * true if the indexes are valid, false if they are not.
+ */
+bool Model::verifyTriangleIndexes(int& vertice1, int& vertice2, int& vertice3){
 	int currentVertexMax = vertexVector.size();
 	//negative index means starting from last. last vertice is -1
 	if(vertice1 < 0) vertice1 =currentVertexMax + vertice1;
@@ -43,14 +55,6 @@ bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
 	if(vertice3 < 0) vertice3 =currentVertexMax + vertice3;
 	if (vertice1 < currentVertexMax && vertice2 < currentVertexMax
 			&& vertice3 < currentVertexMax) {
-		TriangleBase* triangle = new TriangleBase(this->vertexVector[vertice1],
-				this->vertexVector[vertice2], this->vertexVector[vertice3],this->transformMatrix);
-		triangle->setMaterial(this->material);
-
-		//std::cout << "new triangle with material: " << this->material->getName() << std::endl;
-		//triangle->setTransformation(transformStack.top());
-		primitives.push_back(triangle);
-		triangleCount++;
 		return true;
 	} else {
 		std::cerr << "one of the vertices used is not defined ("<< currentVertexMax << ") ";
@@ -61,6 +65,22 @@ bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
 		std::cerr << std::endl;
 		return false;
 	}
+}
+
+bool Model::addTriangle(int vertice1, int vertice2, int vertice3) {
+	if(verifyTriangleIndexes(vertice1,vertice2,vertice3)){
+		TriangleBase* triangle = new TriangleBase(this->vertexVector[vertice1],
+				this->vertexVector[vertice2], this->vertexVector[vertice3],this->transformMatrix);
+		triangle->setMaterial(this->material);
+
+		//std::cout << "new triangle with material: " << this->material->getName() << std::endl;
+		//triangle->setTransformation(transformStack.top());
+		primitives.push_back(triangle);
+		triangleCount++;
+		return true;
+	}
+	return false;
+
 }
 
 void Model::buildOctree() {
