@@ -7,12 +7,6 @@
 
 #include "TriangleBase.h"
 
-
-
-TriangleBase::~TriangleBase() {
-
-}
-
 bool TriangleBase::setTransformation(const Mat4f& transformMatrix){
 	Primitive::setTransformation(transformMatrix);//call to super, so inverse will be calculated
 	Vec3f normal = vec3fNS::cross((b - a), (c - a));

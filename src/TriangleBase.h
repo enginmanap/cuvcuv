@@ -16,18 +16,16 @@
 #include "Primitive.h"
 
 class TriangleBase: public Primitive {
-
-private:
+protected:
 	Vec3f a, b, c;
-	Vec3f triangleNormal;
-	Vec3f calculateNormal(const Vec4f&) const;
+	virtual Vec3f calculateNormal(const Vec4f&) const;
 	void generateBoundingBox();
+	Vec3f triangleNormal;
 public:
 	bool setTransformation(const Mat4f&);
 	TriangleBase(const Vec3f& vertice1, const Vec3f& vertice2, const Vec3f& vertice3, const Mat4f& transformMat):a(vertice1), b(vertice2), c(vertice3){
 		this->setTransformation(transformMat); //this generates normal and bounding box.
 	};
-	virtual ~TriangleBase();
 
 	bool intersectiontest(Ray, float&, Primitive**) const;
 };
