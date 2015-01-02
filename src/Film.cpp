@@ -2,7 +2,7 @@
  * Fim.cpp
  *
  *  Created on: 27 Kas 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #include "Film.h"

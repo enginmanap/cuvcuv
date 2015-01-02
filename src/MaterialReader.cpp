@@ -2,7 +2,7 @@
  * MaterialReader.cpp
  *
  *  Created on: 23 Ara 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #include "MaterialReader.h"

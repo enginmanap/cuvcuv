@@ -2,7 +2,7 @@
  * Scene.cpp
  *
  *  Created on: 29 Eki 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #include "Scene.h"

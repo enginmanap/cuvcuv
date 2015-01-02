@@ -2,7 +2,7 @@
  * Material.cpp
  *
  *  Created on: 10 Ara 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #include "Material.h"

@@ -2,7 +2,7 @@
  * ModelReader.cpp
  *
  *  Created on: 25 Ara 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #include "ModelReader.h"

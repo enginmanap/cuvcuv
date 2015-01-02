@@ -2,7 +2,7 @@
  * ModelReader.h
  *
  *  Created on: 25 Ara 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #ifndef SRC_MODELREADER_H_

@@ -2,7 +2,7 @@
  * Material.h
  *
  *  Created on: 10 Ara 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #ifndef SRC_MATERIAL_H_

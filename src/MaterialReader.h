@@ -2,7 +2,7 @@
  * MaterialReader.h
  *
  *  Created on: 23 Ara 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #ifndef SRC_MATERIALREADER_H_

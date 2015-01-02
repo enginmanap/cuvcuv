@@ -2,7 +2,7 @@
  * Sphere.h
  *
  *  Created on: 29 Eki 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #ifndef SRC_SPHERE_H_

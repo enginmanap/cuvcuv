@@ -2,13 +2,13 @@
  * octree.cpp
  *
  *  Created on: 16 Kas 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #include "Octree.h"
 #include <iostream>
 #include <string>
-#include "Triangle.h"
+#include "TriangleBase.h"
 
 /**
  * This method adds 12 primitives per node,
