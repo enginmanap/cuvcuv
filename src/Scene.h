@@ -15,7 +15,7 @@
 #include <string>
 #include "Vec3f.h"
 #include "Sphere.h"
-#include "Triangle.h"
+#include "TriangleBase.h"
 #include "Camera.h"
 #include "Ray.h"
 #include "RayTracer.h"

@@ -1,8 +1,8 @@
 /*
- * Triange.h
+ * TriangeBase.h
  *
  *  Created on: 2 Kas 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
 #ifndef SRC_TRIANGLE_H_

@@ -1,11 +1,11 @@
 /*
- * Triange.cpp
+ * TriangeBase.cpp
  *
  *  Created on: 2 Kas 2014
- *      Author: engin
+ *      Author: Engin Manap
  */
 
-#include "Triangle.h"
+#include "TriangleBase.h"
 
 
 

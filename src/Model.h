@@ -11,7 +11,7 @@
 
 #include <string>
 #include "Primitive.h"
-#include "Triangle.h"
+#include "TriangleBase.h"
 
 #ifndef INITIAL_VERTEX_COUNT
 #define INITIAL_VERTEX_COUNT 1000
