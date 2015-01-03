@@ -16,13 +16,19 @@ INCLUDES := $(wildcard $(SOURCE_PATH)/*.h)
 OBJECTS  := $(SOURCES:$(SOURCE_PATH)/%.cpp=$(OBJECT_PATH)/%.o)
 rm       = rm -f
 
-$(BINARY_PATH)/$(EXE): $(OBJECTS)
+$(BINARY_PATH)/$(EXE): $(OBJECTS) | $(BINARY_PATH)
 	@$(LINKER) $@ $(OBJECTS) $(LDFLAGS) 
 	@echo "Linking complete!"
 
-$(OBJECTS): $(OBJECT_PATH)/%.o : $(SOURCE_PATH)/%.cpp
+$(OBJECTS): $(OBJECT_PATH)/%.o : $(SOURCE_PATH)/%.cpp | $(OBJECT_PATH)
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
+
+$(OBJECT_PATH):
+	mkdir -p $(OBJECT_PATH)
+
+$(BINARY_PATH):
+	mkdir -p $(BINARY_PATH)
 
 .PHONEY: clean
 clean:
