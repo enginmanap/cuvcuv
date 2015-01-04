@@ -24,13 +24,14 @@
 
 class FileReader {
 protected:
+	std::string filePath;
 	std::string fileName;
 	std::ifstream fileReadStream;
 	bool readLine(std::string&);
 	virtual bool readFloatParams(std::stringstream&, float *, int&);
 	virtual bool readStringParams(std::stringstream&, std::string *, int);
 public:
-	FileReader(std::string filename);
+	FileReader(std::string filePath, std::string filename);
 	virtual ~FileReader();
 
 };

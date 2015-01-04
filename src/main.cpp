@@ -38,8 +38,18 @@ int main(int argc, char *argv[]) {
         std::cout << "usage: "<< argv[0] << " filename" << std::endl;
         exit(1);
     }
-
     std::string fileToread = argv[1];
+    std::string masterPath;
+
+    unsigned int startPos = 0;
+    unsigned int endPos = fileToread.find_last_of('/');
+    if(endPos == std::string::npos){
+        std::cout << "file is in the current directory" << std::endl;
+        masterPath = "";
+    } else {
+    	masterPath = fileToread.substr(startPos, endPos+1);//+1 for including seperator in the end
+    	fileToread = fileToread.substr(endPos+1);
+    }
 
 	unsigned int height = HEIGHT, width = WIDTH;
 
@@ -47,7 +57,7 @@ int main(int argc, char *argv[]) {
 	Scene* scene = NULL;
 	//read the file
 	try {
-		reader = new SceneReader(fileToread);
+		reader = new SceneReader(masterPath,fileToread);
 
 		scene = reader->readFile();
 		scene->getSamplingSize(height, width);

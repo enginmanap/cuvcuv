@@ -24,9 +24,10 @@
 #define MAX_PARAMS 10
 
 class SceneReader: public FileReader {
+	std::string filePath;
 	Scene* scene;
 public:
-	SceneReader(std::string filename): FileReader(filename){this->scene = NULL;};
+	SceneReader(std::string filePath, std::string filename): FileReader(filePath,filename),filePath(filePath){this->scene = NULL;};
 	/**
 	 * A file can contain these:
 	 * size width height

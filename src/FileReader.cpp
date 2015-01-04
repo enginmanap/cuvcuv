@@ -7,12 +7,12 @@
 
 #include "FileReader.h"
 
-FileReader::FileReader(std::string fileName): fileName(fileName) {
+FileReader::FileReader(std::string filePath, std::string fileName):filePath(filePath), fileName(fileName) {
+	std::string concat = filePath + fileName;
 
-
-	fileReadStream.open(fileName.c_str());
+	fileReadStream.open(concat.c_str());
 	if (!fileReadStream.is_open()) {
-		std::cerr << "file \"" << fileName << "\" could not open for reading"
+		std::cerr << "file \"" << filePath << fileName << "\" could not open for reading"
 				<< std::endl;
 		throw 1;
 	}

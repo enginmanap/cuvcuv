@@ -116,7 +116,7 @@ Model* ModelReader::readModelFile(Scene& scene) {
 		} else if (command == "mtllib") {
 			if (readStringParams(stringStream, stringParams, 1)) {
 				//create a material reader and read material lib
-				MaterialReader materialReader(stringParams[0]);
+				MaterialReader materialReader(filePath, stringParams[0]);
 				std::vector<Material*> materials = materialReader.readMaterialFile();
 				if(materials.size() != 0){
 					scene.addMaterial(materials); //clearing the material is going to be done by scene

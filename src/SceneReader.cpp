@@ -235,14 +235,25 @@ Scene* SceneReader::readFile() {
 		} else if (command == "mtllib") {
 			if (readStringParams(stringStream, stringParams, 1)) {
 				//create a material reader and read material lib
-				MaterialReader materialReader(stringParams[0]);
+				MaterialReader materialReader(filePath,stringParams[0]);
 				std::vector<Material*> materials = materialReader.readMaterialFile();
 				scene->addMaterial(materials); //clearing the material is going to be done by scene
 			}
 		} else if (command == "loadModel") {
 			if (readStringParams(stringStream, stringParams, 1)) {
 				//create a ModelReader and load any Materials and load 1 model
-				ModelReader modelReader(stringParams[0]);
+			    std::string fileToread = stringParams[0];
+			    std::string objPath;
+
+			    unsigned int startPos = 0;
+			    unsigned int endPos = fileToread.find_last_of('/');
+			    if(endPos == std::string::npos){
+			        objPath = "";
+			    } else {
+			    	objPath = fileToread.substr(startPos, endPos+1);//+1 for including seperator in the end
+			    	fileToread = fileToread.substr(endPos+1);
+			    }
+				ModelReader modelReader(objPath,fileToread);
 				modelReader.readModelFile(*scene);
 			}
 		} else
