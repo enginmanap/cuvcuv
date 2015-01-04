@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 		scene->getSamplingSize(height, width);
 		std::cout << "sample size is " << height << ", " << width << std::endl;
 	} catch (int i) {
-		std::cout << "file read failed" << "exiting" << std::endl;
+		std::cout << "file read failed" << " exiting" << std::endl;
 		exit(1);
 	}
 
