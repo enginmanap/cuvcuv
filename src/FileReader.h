@@ -33,7 +33,14 @@ protected:
 public:
 	FileReader(std::string filePath, std::string filename);
 	virtual ~FileReader();
-
+	inline static char separator()
+	{
+		#ifdef _WIN32
+			return '\\';
+		#else
+			return '/';
+		#endif
+	}
 };
 
 #endif /* SRC_FILEREADER_H_ */
