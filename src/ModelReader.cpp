@@ -110,13 +110,14 @@ Model* ModelReader::readModelFile(Scene& scene) {
 								faceParameters[2], faceParameters[1*3+2], faceParameters[2*3+2],
 								faceParameters[1], faceParameters[1*3+1], faceParameters[2*3+1]);
 						//there might be more faces, we will interpret as GL_TRIANGLE_FAN
-						int fanCenter=faceParameters[0], fanCenterNormal=faceParameters[2],previousVertex=faceParameters[2*3], previousVertexNormal=faceParameters[2*3+2];
+						int fanCenter=faceParameters[0], fanCenterNormal=faceParameters[2], fanCenterTexture=faceParameters[1], previousVertex=faceParameters[2*3], previousVertexNormal=faceParameters[2*3+2], previousVertexTexture=faceParameters[2*3+1];
 						for(int i=3; i < parameterCount; ++i) {
 							model->addTriangle(fanCenter, previousVertex,faceParameters[i*3],
 									fanCenterNormal, previousVertexNormal,faceParameters[i*3+2],
-									fanCenterNormal, faceParameters[(i-1)*3+1],faceParameters[i*3+1]);//FIXME why don't use variable for text. coord?
+									fanCenterTexture, previousVertexTexture,faceParameters[i*3+1]);//FIXME why don't use variable for text. coord?
 							previousVertex = faceParameters[i*3];
 							previousVertexNormal = faceParameters[i*3+2];
+							previousVertexTexture = faceParameters[i*3+1];
 						}
 					}
 				}

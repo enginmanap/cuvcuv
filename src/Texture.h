@@ -20,7 +20,7 @@ public:
 	Texture(std::string);
 	virtual ~Texture();
 
-	Vec3f getColor(const int, const int) const;
+	Vec3f getColor(const float, const float) const;
 };
 
 #endif /* SRC_TEXTURE_H_ */

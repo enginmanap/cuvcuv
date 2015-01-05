@@ -34,17 +34,17 @@ public:
 		dotProductBABA = vec3fNS::dot(vectorBA, vectorBA);
 		dotProductBACA = vec3fNS::dot(vectorBA, vectorCA);
 		dotProductCACA = vec3fNS::dot(vectorCA, vectorCA);
-		if(normal1.x == 0 && normal1.y == 0 && normal1.z == 0){
-			//FIXME  this is just wrong
-
+		if(normal1.length() == 0 && normal2.length() == 0 && normal3.length() == 0){
+			//FIXME  this is ugly
+			smoothShading = false;
 		} else {
 			//TriangleBase processes transform
 			if(!smoothing){
 				triangleNormal = vec3fNS::normalize(n1 + n2 + n3);
 			}
 		}
-
 	};
+
 	void setTextureCoordinates(float t11,float t12,float t21,float t22,float t31,float t32){
 		//FIXME this is just ugly
 		t1.x = t11;
