@@ -309,7 +309,7 @@ bool Scene::renderScene() {
 				this->film->setPixel(x,y,color);
 			}
 #pragma omp critical
-			morePixels = this->camera->getRays(x,y, sampleRate, ray);
+			morePixels = this->camera->getRays(x, y, sampleRate, ray);
 		}
 	}
 	return true;
