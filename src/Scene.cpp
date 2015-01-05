@@ -52,6 +52,11 @@ Scene::~Scene() {
 		   materialMap.erase(toErase);
 	}
 
+	for (std::vector<Texture*>::iterator it = textures.begin();
+			it != textures.end(); ++it) {
+		delete (*it);
+	}
+
 	delete spatialTree;
 	delete film;
 }
@@ -81,7 +86,7 @@ bool Scene::pushTransform() {
 
 	std::ostringstream outputStringStream;
 	outputStringStream << DEFAULT_MATERIAL_NAME << "_"<< ++materialCount;
-	currentMaterial = new Material(outputStringStream.str(),currentMaterial->getAmbient(), currentMaterial->getDiffuse(), currentMaterial->getSpecular(), currentMaterial->getEmission(), currentMaterial->getShininess());
+	currentMaterial = new Material(outputStringStream.str(),currentMaterial->getAmbient(), currentMaterial->getDiffuse(), currentMaterial->getSpecular(), currentMaterial->getEmission(), currentMaterial->getShininess(), currentMaterial->getMapKd());
 	materialMap[currentMaterial->getName()] = currentMaterial;
 
 	//std::cout << "adding material with name" << currentMaterial->getName()<<std::endl;
@@ -176,7 +181,7 @@ bool Scene::setCurrentShininess(float shininess) {
 	return true;
 }
 
-bool Scene::addMaterial(std::vector<Material*> materials){
+bool Scene::addMaterial(std::vector<Material*>& materials){
 	for (unsigned int index = 0; index < materials.size(); ++index) {
 		materialMap[materials[index]->getName()] = materials[index];
 		currentMaterial = materials[index];
@@ -185,7 +190,6 @@ bool Scene::addMaterial(std::vector<Material*> materials){
 
 	return true;
 }
-
 
 bool Scene::setCurrentAttenuation(float constant, float lineer,
 		float quadratic) {

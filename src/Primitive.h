@@ -36,6 +36,7 @@ protected:
 	Vec3f calculateColorPerLight(const Vec3f&, const Vec3f&, const Vec3f&,
 			const Vec3f&, const Vec3f&, const Vec3f&, const float) const;
 	virtual Vec3f calculateNormal(const Vec4f&) const = 0;
+	virtual Vec3f getDiffuse(const Vec3f&) const { return this->material->getDiffuse();};
 	virtual void generateBoundingBox() = 0;
 public:
 	Vec3f getBBUpper(){ return bbUpper;}

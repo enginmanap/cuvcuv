@@ -28,7 +28,7 @@ public:
 
 	MaterialReader(std::string filePath, std::string filename): FileReader(filePath, filename), filePath(filePath), currentMaterial(NULL){};
 
-	std::vector<Material*> readMaterialFile();
+	std::vector<Material*> readMaterialFile(std::vector<Texture*>&);
 };
 
 #endif /* SRC_MATERIALREADER_H_ */

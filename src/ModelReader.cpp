@@ -8,7 +8,7 @@
 #include "ModelReader.h"
 
 bool ModelReader::readFace(std::stringstream& ss, int params[], int& readNumbers){
-	memset(params,0,MAX_PARAMS*3);
+	memset(params,0,MAX_PARAMS*3*sizeof(int));
     std::string current;
     int currentValue=0;
     for (int param = 0; param < MAX_PARAMS; ++param) {
@@ -71,7 +71,13 @@ Model* ModelReader::readModelFile(Scene& scene) {
 				}
 			}
 		} else if (command == "vt") {
-			//TODO implement setting texture
+			if (readFloatParams(stringStream, parameters, parameterCount)) {
+				if(parameterCount < 2) {
+					std::cerr << "vertex texture coordinate does not contain 2 coordinates, only " << parameterCount << " provided." << std::endl;
+				} else {
+					model->addVertexTextureCoordinate(parameters[0], parameters[1]);
+				}
+			}
 		} else if (command == "vn") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if(parameterCount < 3) {
@@ -89,7 +95,7 @@ Model* ModelReader::readModelFile(Scene& scene) {
 				if(parameterCount < 3) {
 					std::cerr << "face does not contain 3 vertices, only " << parameterCount << " provided." << std::endl;
 				} else {
-					if(faceParameters[2] == 0){//this is a basic triangle with out any normal definition
+					if(faceParameters[1] == 0 && faceParameters[2] == 0){//this is a basic triangle with out any normal definition
 						model->addTriangleBase(faceParameters[0], faceParameters[1*3],
 								faceParameters[2*3]);
 						//there might be more faces, we will interpret as GL_TRIANGLE_FAN
@@ -99,14 +105,16 @@ Model* ModelReader::readModelFile(Scene& scene) {
 									(int) faceParameters[i*3]);
 							previousVertex = faceParameters[i*3];
 						}
-					} else { //this is a triangle with normal definitions
+					} else { //this is a triangle with normal definitions and texture coordinates
 						model->addTriangle(faceParameters[0], faceParameters[1*3], faceParameters[2*3],
-								faceParameters[2], faceParameters[1*3+2], faceParameters[2*3+2]);
+								faceParameters[2], faceParameters[1*3+2], faceParameters[2*3+2],
+								faceParameters[1], faceParameters[1*3+1], faceParameters[2*3+1]);
 						//there might be more faces, we will interpret as GL_TRIANGLE_FAN
 						int fanCenter=faceParameters[0], fanCenterNormal=faceParameters[2],previousVertex=faceParameters[2*3], previousVertexNormal=faceParameters[2*3+2];
 						for(int i=3; i < parameterCount; ++i) {
 							model->addTriangle(fanCenter, previousVertex,faceParameters[i*3],
-									fanCenterNormal, previousVertexNormal,faceParameters[i*3+2]);
+									fanCenterNormal, previousVertexNormal,faceParameters[i*3+2],
+									fanCenterNormal, faceParameters[(i-1)*3+1],faceParameters[i*3+1]);//FIXME why don't use variable for text. coord?
 							previousVertex = faceParameters[i*3];
 							previousVertexNormal = faceParameters[i*3+2];
 						}
@@ -116,13 +124,19 @@ Model* ModelReader::readModelFile(Scene& scene) {
 		} else if (command == "mtllib") {
 			if (readStringParams(stringStream, stringParams, 1)) {
 				//create a material reader and read material lib
+
 				MaterialReader materialReader(filePath, stringParams[0]);
-				std::vector<Material*> materials = materialReader.readMaterialFile();
+				std::vector<Texture*> textureVector;
+				std::vector<Material*> materials = materialReader.readMaterialFile(textureVector);
+
 				if(materials.size() != 0){
 					scene.addMaterial(materials); //clearing the material is going to be done by scene
 					//model->setMaterial(materials[0]);
 				} else {
 					std::cerr << "Material file " << stringParams[0] <<" has no material to be read." << std::endl;
+				}
+				if(!textureVector.empty()){
+					scene.addTexture(textureVector);
 				}
 			}
 		} else if (command == "usemtl") {

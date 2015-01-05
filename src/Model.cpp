@@ -16,6 +16,7 @@ Model::Model(const Mat4f& transformMatrix) : triangleCount(0){
 			//calculate with -1 for all vertexes.
 			this->vertexVector.push_back(Vec3f(0,0,0));
 			this->vertexNormalVector.push_back(Vec3f(0,0,0));
+			this->vertexTextureCoordinateVector.push_back(Vec3f(0,0,0));
 }
 
 Model::~Model() {
@@ -84,12 +85,16 @@ bool Model::addTriangleBase(int vertice1, int vertice2, int vertice3) {
 }
 
 bool Model::addTriangle(int vertice1, int vertice2, int vertice3,
-						int normal1, int normal2, int normal3) {
+						int normal1, int normal2, int normal3,
+						int texture1, int texture2, int texture3) {
 	if(verifyTriangleIndexes(vertice1,vertice2,vertice3)){
 		Triangle* triangle = new Triangle(
 				this->vertexVector[vertice1],	this->vertexVector[vertice2], this->vertexVector[vertice3],
 				this->vertexNormalVector[normal1],	this->vertexNormalVector[normal2], this->vertexNormalVector[normal3],
 				this->transformMatrix,true);
+		triangle->setTextureCoordinates(vertexTextureCoordinateVector[texture1].x,vertexTextureCoordinateVector[texture1].y,
+				vertexTextureCoordinateVector[texture2].x,vertexTextureCoordinateVector[texture2].y,
+				vertexTextureCoordinateVector[texture3].x,vertexTextureCoordinateVector[texture3].y);
 		triangle->setMaterial(this->material);
 
 		//std::cout << "new triangle with material: " << this->material->getName() << std::endl;

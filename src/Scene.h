@@ -41,6 +41,8 @@ class Scene {
 	static int materialCount;
 	Material* currentMaterial;//this will change with push/pop of materialNames
 
+	std::vector<Texture*> textures;
+
 	std::string saveFilename;
 
 	Camera *camera;
@@ -81,7 +83,8 @@ public:
 	bool setCurrentDiffuse(float, float, float);
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
-	bool addMaterial(std::vector<Material*>);
+	bool addMaterial(std::vector<Material*>&);
+	void addTexture(std::vector<Texture*>& newTextures){textures.insert(textures.end(), newTextures.begin(),newTextures.end());};
 	Material* getMaterial(std::string& materialName) {return materialMap[materialName];};
 	Material* getMaterial() {return materialMap[materialNames.top()];};
 

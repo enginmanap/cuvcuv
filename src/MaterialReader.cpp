@@ -7,8 +7,17 @@
 
 #include "MaterialReader.h"
 
-
-std::vector<Material*> MaterialReader::readMaterialFile() {
+/**
+ * This function returns a vector of materials,
+ * and pushes any textures to the parameter.
+ *
+ * @params:
+ * textures: std::vector<Texture*>
+ *
+ * @returns:
+ * std::vector<Material*>
+ */
+std::vector<Material*> MaterialReader::readMaterialFile(std::vector<Texture*>& textures) {
 
 
 	std::string command;
@@ -96,6 +105,14 @@ std::vector<Material*> MaterialReader::readMaterialFile() {
 			if (readStringParams(stringStream, stringParameters, 1)) {
 				currentMaterial = new Material(stringParameters[0]);
 				materials.push_back(currentMaterial);
+			} else {
+				std::cerr << "newmtl command parameters could not be read"	<< std::endl;
+			}
+		} else if (command == "map_Kd") {//shininess
+			if (readStringParams(stringStream, stringParameters, 1)) {
+				Texture* texture = new Texture(stringParameters[0]);
+				currentMaterial->setMapKd(texture);
+				textures.push_back(texture);
 			} else {
 				std::cerr << "newmtl command parameters could not be read"	<< std::endl;
 			}

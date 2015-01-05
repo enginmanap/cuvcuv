@@ -95,7 +95,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			color = color
 					+ it.getAttenuationFactor(lightDistance)
 							* calculateColorPerLight(direction, it.getColor(),
-									normal, halfVec, material->getDiffuse(),  material->getSpecular(),
+									normal, halfVec, this->getDiffuse(intersectionPoint),  material->getSpecular(),
 									 material->getShininess());
 		}
 
