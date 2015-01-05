@@ -64,7 +64,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			((Vec3f) ray.getPosition()) - intersectionPoint);
 
 	//check if light is blocked or not
-	Vec3f intersectionPos = intersectionPoint + EPSILON * 10.0f *Vec4f(normal4, 0.0f);//FIXME this should be normal, is it not?
+	Vec3f intersectionPos = intersectionPoint + EPSILON * 10.0f *normal4;
 	//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
 
 	for (unsigned int i = 0; i < lights.size(); i++) {
