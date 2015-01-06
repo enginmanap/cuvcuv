@@ -19,7 +19,6 @@ public:
 	float z;
 	Vec3f(): x(0),y(0),z(0){};//if no value is given, all elements are zero
 	Vec3f(float x, float y, float z):x(x),y(y),z(z) {};
-	virtual ~Vec3f();
 
 	float getElement(const int) const;
 	Vec3f normalize() const;

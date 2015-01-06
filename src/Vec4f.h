@@ -22,7 +22,6 @@ public:
 	Vec4f():x(0),y(0),z(0),w(0){};
 	Vec4f(Vec3f vec, float w):x(vec.x), y(vec.y), z(vec.z), w(w) {};
 	Vec4f(float x, float y, float z, float w):x(x),y(y),z(z),w(w){};
-	virtual ~Vec4f();
 	Vec4f normalize() const;
 	float length();
 

@@ -7,10 +7,6 @@
 
 #include "Vec3f.h"
 
-Vec3f::~Vec3f() {
-
-}
-
 Vec3f Vec3f::normalize() const {
 	return vec3fNS::normalize(*this);
 }
