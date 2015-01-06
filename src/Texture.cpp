@@ -32,15 +32,20 @@ Texture::~Texture() {
 Vec3f Texture::getColor(const float x, const float y) const{
 	//TODO implement bilinear/Trilinear filtering
 	if(y > 1 || x > 1){
-		std::cerr << "the requested pixel is out of texture. texture size: (" << height <<"," << width << "), request: (" << x << "," << y << ")" << std::endl;
+		std::cerr << "the requested pixel is out of texture. texture size: (" << height <<"," << width << "), request: (" << x*width << "," << y*height << ")" << "(" << x << "," << y << ")" << std::endl;
 		return Vec3f(0,0,0);
 	}
 	int tX = x * width;
 	int tY = y * height;
 	//std::cout << "h " << height << " w " << width << std::endl;
 	unsigned char* pixel = image + ((width*height) - (width * tY) + tX) * components;
-	//std::cout << "requested pixel " << x * height <<", "<< y * height;
-	//std::cout << " value " << (int)*pixel << ", " << (int)*(pixel+1) << ", " << (int)*(pixel+2) << std::endl;
+	/*
+#pragma omp critical
+	{
+	std::cout << "requested pixel " << x * width <<", "<< y * height << ", after " << ((width*height) - (width * tY) + tX) <<" pixels." << std::endl;
+	std::cout << " value " << (int)*pixel << ", " << (int)*(pixel+1) << ", " << (int)*(pixel+2) << std::endl;
+	}
+	 */
 	//now we will  construct the color
 	return Vec3f((*pixel)/255.0f,(*(pixel+1))/255.0f,(*(pixel+2))/255.0f);
 }
