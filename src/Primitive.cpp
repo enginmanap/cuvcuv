@@ -59,63 +59,72 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	Vec4f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
 	Vec3f normal = this->calculateNormal(intersectionPoint);
-	Vec4f normal4(normal, 0.0f);
-	Vec3f eyeDirn = vec3fNS::normalize(
-			((Vec3f) ray.getPosition()) - intersectionPoint);
+	bool raySide = vec3fNS::dot(normal,ray.getDirection()) < 0;//is ray opposite side as normal, so it can reflect/get light
+	if(raySide){//We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
+		Vec4f normal4(normal, 0.0f);
+		Vec3f eyeDirn = vec3fNS::normalize(
+				((Vec3f) ray.getPosition()) - intersectionPoint);
 
-	//check if light is blocked or not
-	Vec3f intersectionPos = intersectionPoint + EPSILON * 10.0f *normal4;
-	//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
+		//check if light is blocked or not
+		Vec3f intersectionPos = intersectionPoint + EPSILON * 10.0f *normal4;
+		//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
 
-	for (unsigned int i = 0; i < lights.size(); i++) {
-		Light it = lights[i];
-		Vec3f lightPos;
-		Vec3f direction;
-		lightPos.x = it.getPosition().x;
-		lightPos.y = it.getPosition().y;
-		lightPos.z = it.getPosition().z;
-		if (fabs(it.getPosition().w) < EPSILON) {
-			direction = vec3fNS::normalize(lightPos);
+		for (unsigned int i = 0; i < lights.size(); i++) {
+			Light it = lights[i];
+			Vec3f lightPos;
+			Vec3f direction;
+			lightPos.x = it.getPosition().x;
+			lightPos.y = it.getPosition().y;
+			lightPos.z = it.getPosition().z;
+			if (fabs(it.getPosition().w) < EPSILON) {
+				direction = vec3fNS::normalize(lightPos);
+			} else {
+				lightPos = (1 / it.getPosition().w) * lightPos;
+				direction = vec3fNS::normalize(lightPos - intersectionPoint);
+			}
+			Vec3f rayDir = ray.getDirection();
+			//std::cout << "dot for " << vec3fNS::dot(normal,ray.getDirection()) << std::endl;
+
+			bool lightSide = vec3fNS::dot(normal,direction) > 0;//is light on the same side as normal
+			if(lightSide ){
+				//std::cout << "entered" << std::endl;
+				Ray rayToLight(intersectionPos,
+						direction, 0, 100);
+
+				if (tracer.traceToLight(rayToLight, octree, *(&it))) {
+					float lightDistance =
+							((Vec3f)(it.getPosition() - rayToLight.getPosition())).length();//casting to vec3 because w is 0
+					Vec3f halfVec = vec3fNS::normalize(direction + eyeDirn);
+
+					color = color
+							+ it.getAttenuationFactor(lightDistance)
+									* calculateColorPerLight(direction, it.getColor(),
+											normal, halfVec, this->getDiffuse(intersectionPoint),  material->getSpecular(),
+											 material->getShininess());
+				}
+
+			}
+		}
+		//now we have the color for this object itself, calculate reflections.
+		if (fabs( material->getSpecular().x) < EPSILON && fabs( material->getSpecular().y) < EPSILON
+				&& fabs( material->getSpecular().z) < EPSILON) {
+			//the object is not reflective, so stop here
 		} else {
-			lightPos = (1 / it.getPosition().w) * lightPos;
-			direction = vec3fNS::normalize(lightPos - intersectionPoint);
-		}
+			if (depth > 0) {
+
+				Vec3f reflectionDir = ray.getDirection()- 2 * Vec4fNS::dot(ray.getDirection(), normal4) * normal4;
+				Ray reflectionRay(intersectionPos,reflectionDir	, 0, 100);
+				Vec3f reflectedColor = tracer.trace(reflectionRay, octree,
+						lights, depth);
+				reflectedColor = vec3fNS::clamp(reflectedColor, 0, 1);
+				//std::cout << "reflection " << reflectedColor << std::endl;
+				color = color + material->getSpecular() * reflectedColor;
 
 
-
-
-		Ray rayToLight(intersectionPos,
-				direction, 0, 100);
-
-		if (tracer.traceToLight(rayToLight, octree, *(&it))) {
-			float lightDistance =
-					((Vec3f)(it.getPosition() - rayToLight.getPosition())).length();//casting to vec3 because w is 0
-			Vec3f halfVec = vec3fNS::normalize(direction + eyeDirn);
-
-			color = color
-					+ it.getAttenuationFactor(lightDistance)
-							* calculateColorPerLight(direction, it.getColor(),
-									normal, halfVec, this->getDiffuse(intersectionPoint),  material->getSpecular(),
-									 material->getShininess());
-		}
-
-	}
-	//now we have the color for this object itself, calculate reflections.
-	if (fabs( material->getSpecular().x) < EPSILON && fabs( material->getSpecular().y) < EPSILON
-			&& fabs( material->getSpecular().z) < EPSILON) {
-		//the object is not reflective, so stop here
-	} else {
-		if (depth > 0) {
-			Vec3f reflectionDir = ray.getDirection()- 2 * Vec4fNS::dot(ray.getDirection(), normal4) * normal4;
-			Ray reflectionRay(intersectionPos,reflectionDir	, 0, 100);
-			Vec3f reflectedColor = tracer.trace(reflectionRay, octree,
-					lights, depth);
-			reflectedColor = vec3fNS::clamp(reflectedColor, 0, 1);
-			//std::cout << "reflection " << reflectedColor << std::endl;
-			color = color + material->getSpecular() * reflectedColor;
-
+			}
 		}
 	}
+	//these calculations are left because they are side free (also makes debugging easier)
 	color = color + material->getAmbient() + material->getEmission();
 	return color;
 }
