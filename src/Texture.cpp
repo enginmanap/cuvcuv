@@ -29,23 +29,37 @@ Texture::~Texture() {
 	stbi_image_free(image);
 }
 
-Vec3f Texture::getColor(const float x, const float y) const{
+Vec3f Texture::getColor(float x, float y) const{
 	//TODO implement bilinear/Trilinear filtering
-	if(y > 1 || x > 1){
-		std::cerr << "the requested pixel is out of texture. texture size: (" << height <<"," << width << "), request: (" << x*width << "," << y*height << ")" << "(" << x << "," << y << ")" << std::endl;
+
+	// sometimes relative coordinates can be bigger than 1 caused by rounding errors etc.
+	// same goes for 0 too
+	if(x < 0 && x > -EPSILON){
+		x = 0.0f;
+	} else if(x > 1 && x < 1 + EPSILON){
+		x = 1.0f;
+	}
+	if (y < 0 && y > -EPSILON){
+		y = 0.0f;
+	} else if (y > 1 && y < 1 + EPSILON){
+		y = 1.0f;
+	}
+	//this case means the difference was bigger than epsilon
+	if(x > 1 || x < 0 || y > 1 || y<0) {
+		std::cerr << "the requested pixel is out of texture. texture size: (" << height <<"," << width << "), request: (" << y*height << "," << x*width << ")" << "(" << y << "," << x << ")" << std::endl;
 		return Vec3f(0,0,0);
 	}
 	int tX = x * width;
 	int tY = y * height;
 	//std::cout << "h " << height << " w " << width << std::endl;
-	unsigned char* pixel = image + ((width*height) - (width * tY) + tX) * components;
-	/*
+	unsigned char* pixel = image + ((width*(height-1)) - (width * tY) + tX) * components;
+/*
 #pragma omp critical
 	{
-	std::cout << "requested pixel " << x * width <<", "<< y * height << ", after " << ((width*height) - (width * tY) + tX) <<" pixels." << std::endl;
-	std::cout << " value " << (int)*pixel << ", " << (int)*(pixel+1) << ", " << (int)*(pixel+2) << std::endl;
+        std::cout << "requested pixel " << tX <<", "<< tY << ", as " << x << "," << y <<" pixels with " << components << " components." << std::endl;
+        std::cout << " value " << (int)*pixel << ", " << (int)*(pixel+1) << ", " << (int)*(pixel+2) << std::endl;
 	}
-	 */
+*/
 	//now we will  construct the color
 	return Vec3f((*pixel)/255.0f,(*(pixel+1))/255.0f,(*(pixel+2))/255.0f);
 }
