@@ -239,23 +239,22 @@ Octree::~Octree() {
  * http://www.siggraph.org/education/materials/HyperGraph/raytrace/rtinter3.htm
  */
 bool Octree::isRayIntersects(const Ray& ray) const {
-	Vec4f directionInverse = ray.getInverseDirection();
+	//Vec4f directionInverse = ray.getInverseDirection();
 
-	Vec4f rayPos = ray.getPosition();
-	float lowerXIntersection = (lowerEnd.x - rayPos.x) * directionInverse.x;
-	float upperXIntersection = (upperEnd.x - rayPos.x) * directionInverse.x;
+	float lowerXIntersection = (lowerEnd.x - ray.getPosition().x) * ray.getInverseDirection().x;
+	float upperXIntersection = (upperEnd.x - ray.getPosition().x) * ray.getInverseDirection().x;
 
 	float tmin = std::min(lowerXIntersection, upperXIntersection);
 	float tmax = std::max(lowerXIntersection, upperXIntersection);
 
-	float lowerYIntersection = (lowerEnd.y - rayPos.y) * directionInverse.y;
-	float upperYIntersection = (upperEnd.y - rayPos.y) * directionInverse.y;
+	float lowerYIntersection = (lowerEnd.y - ray.getPosition().y) * ray.getInverseDirection().y;
+	float upperYIntersection = (upperEnd.y - ray.getPosition().y) * ray.getInverseDirection().y;
 
 	tmin = std::max(tmin, std::min(lowerYIntersection, upperYIntersection));
 	tmax = std::min(tmax, std::max(lowerYIntersection, upperYIntersection));
 
-	float loverZIntersection = (lowerEnd.z - rayPos.z) * directionInverse.z;
-	float upperZIntersection = (upperEnd.z - rayPos.z) * directionInverse.z;
+	float loverZIntersection = (lowerEnd.z - ray.getPosition().z) * ray.getInverseDirection().z;
+	float upperZIntersection = (upperEnd.z - ray.getPosition().z) * ray.getInverseDirection().z;
 
 	tmin = std::max(tmin, std::min(loverZIntersection, upperZIntersection));
 	tmax = std::min(tmax, std::max(loverZIntersection, upperZIntersection));
@@ -270,10 +269,9 @@ bool Octree::isRayIntersects(const Ray& ray) const {
  */
 void Octree::getIntersectingPrimitives(const Ray& ray, std::set<Primitive*>& primitiveSet) const {
 	//the camera might be in the box, in that case, the box itself is considered intersecting
-	Vec3f rayPos = ray.getPosition();
 	bool isCameraIn = false;
-	if (rayPos.x >= lowerEnd.x && rayPos.x <= upperEnd.x && rayPos.y >= lowerEnd.y && rayPos.y <= upperEnd.y && rayPos.z >= lowerEnd.z
-			&& rayPos.z <= upperEnd.z) {
+	if (ray.getPosition().x >= lowerEnd.x && ray.getPosition().x <= upperEnd.x && ray.getPosition().y >= lowerEnd.y && ray.getPosition().y <= upperEnd.y && ray.getPosition().z >= lowerEnd.z
+			&& ray.getPosition().z <= upperEnd.z) {
 		//the equals are needed, because event though calculating exact 0 is hard, giving it is easy
 		isCameraIn = true;
 	}

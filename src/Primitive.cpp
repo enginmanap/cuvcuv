@@ -82,7 +82,6 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 				lightPos = (1 / it.getPosition().w) * lightPos;
 				direction = vec3fNS::normalize(lightPos - intersectionPoint);
 			}
-			Vec3f rayDir = ray.getDirection();
 			//std::cout << "dot for " << vec3fNS::dot(normal,ray.getDirection()) << std::endl;
 
 			bool lightSide = vec3fNS::dot(normal,direction) > 0;//is light on the same side as normal
