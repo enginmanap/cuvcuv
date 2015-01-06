@@ -110,7 +110,12 @@ std::vector<Material*> MaterialReader::readMaterialFile(std::vector<Texture*>& t
 			}
 		} else if (command == "map_Kd") {//shininess
 			if (readStringParams(stringStream, stringParameters, 1)) {
-				Texture* texture = new Texture(stringParameters[0]);
+				Texture* texture = NULL;
+				if(stringParameters[0].find_first_of("/") == 0){
+					texture = new Texture(filePath + stringParameters[0].substr(1));
+				} else {
+					texture = new Texture(filePath + stringParameters[0]);
+				}
 				currentMaterial->setMapKd(texture);
 				textures.push_back(texture);
 			} else {
