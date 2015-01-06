@@ -41,13 +41,12 @@ int main(int argc, char *argv[]) {
     std::string fileToread = argv[1];
     std::string masterPath;
 
-    unsigned int startPos = 0;
     unsigned int endPos = fileToread.find_last_of('/');
     if(endPos == std::string::npos){
         std::cout << "file is in the current directory" << std::endl;
         masterPath = "";
     } else {
-    	masterPath = fileToread.substr(startPos, endPos+1);//+1 for including seperator in the end
+    	masterPath = fileToread.substr(0, endPos+1);//+1 for including seperator in the end
     	fileToread = fileToread.substr(endPos+1);
     }
 

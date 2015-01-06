@@ -114,7 +114,7 @@ Model* ModelReader::readModelFile(Scene& scene) {
 						for(int i=3; i < parameterCount; ++i) {
 							model->addTriangle(fanCenter, previousVertex,faceParameters[i*3],
 									fanCenterNormal, previousVertexNormal,faceParameters[i*3+2],
-									fanCenterTexture, previousVertexTexture,faceParameters[i*3+1]);//FIXME why don't use variable for text. coord?
+									fanCenterTexture, previousVertexTexture,faceParameters[i*3+1]);
 							previousVertex = faceParameters[i*3];
 							previousVertexNormal = faceParameters[i*3+2];
 							previousVertexTexture = faceParameters[i*3+1];

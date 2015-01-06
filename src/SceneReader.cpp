@@ -250,12 +250,12 @@ Scene* SceneReader::readFile() {
 			    std::string fileToread = stringParams[0];
 			    std::string objPath;
 
-			    unsigned int startPos = 0;
+
 			    unsigned int endPos = fileToread.find_last_of('/');
 			    if(endPos == std::string::npos){
 			        objPath = "";
 			    } else {
-			    	objPath = fileToread.substr(startPos, endPos+1);//+1 for including seperator in the end
+			    	objPath = fileToread.substr(0, endPos+1);//+1 for including seperator in the end
 			    	fileToread = fileToread.substr(endPos+1);
 			    }
 				ModelReader modelReader(objPath,fileToread);

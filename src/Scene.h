@@ -37,7 +37,7 @@ class Scene {
 	unsigned char sampleRate;
 
 	std::map<std::string,Material*> materialMap;
-	std::stack<std::string> materialNames;//this is necessery because no name materials are possible;
+	std::stack<std::string> materialNames;//this is necessery because we need to keep the name of material before pushTransform
 	static int materialCount;
 	Material* currentMaterial;//this will change with push/pop of materialNames
 

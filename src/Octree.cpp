@@ -95,12 +95,11 @@ void Octree::addWireframe(std::vector<Primitive*>& primitives){
  * Creating a node automatically creates subtrees,
  * put primitives in respective
  */
-Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Primitive*>& primitives, unsigned char maxDepth): parent(parent), upperEnd(upperEnd),lowerEnd(lowerEnd) {
+Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Primitive*>& primitives, unsigned char maxDepth):
+		parent(parent), upperEnd(upperEnd),lowerEnd(lowerEnd), center((1.0f/2)*(this->upperEnd + this->lowerEnd)) {
 	//this variable is used for logging. With it we can intent based on the depth.
 	static std::string level = "";
-	//
-	Vec3f temp = this->upperEnd + this->lowerEnd;
-	this->center = ((float) 1 / 2) * temp;
+
 	memset(children, 0, sizeof(Octree*) * 8); //set children to NULL
 	if (this->parent == NULL) {
 		this->isSplittingRedudant = 0; //if root node

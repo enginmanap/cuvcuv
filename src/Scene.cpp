@@ -44,6 +44,10 @@ Scene::~Scene() {
 		delete (*it);
 	}
 
+	materialMap.erase(currentMaterial->getName());
+	delete currentMaterial;
+	currentMaterial = NULL;
+
 	std::map<std::string, Material*>::iterator itr = materialMap.begin();
 	while (itr != materialMap.end()) {
 		   std::map<std::string, Material*>::iterator toErase = itr;
@@ -51,6 +55,8 @@ Scene::~Scene() {
 		   delete toErase->second;
 		   materialMap.erase(toErase);
 	}
+
+
 
 	for (std::vector<Texture*>::iterator it = textures.begin();
 			it != textures.end(); ++it) {

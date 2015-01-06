@@ -58,13 +58,14 @@ Vec3f RayTracer::trace(const Ray& ray, const Octree& octree,
 		const std::vector<Light> &lights, const unsigned int depth) const {
 	//static unsigned int totalTests = 0, mostTests = 0;
 	float distance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
-	float intersectionDistance;
+
 	Primitive* intersectingPrimitive = NULL;
 	Primitive* closestIntersectingPrimitive=NULL;
 
 	std::set<Primitive*> primitives;
 	octree.getIntersectingPrimitives(ray,primitives);
 	if (!primitives.empty()) {
+		float intersectionDistance;
 		//totalTests += primitives.size();
 		//if (primitives.size() > mostTests) {
 		//	std::cout << "maximum tests " << primitives.size() << std::endl;
