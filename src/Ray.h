@@ -26,9 +26,11 @@ public:
 	Vec4f getPosition() const {return position;};
 	Vec4f getDirection() const {return direction;};
 	Vec4f getInverseDirection() const {return inverseDirection;};
-	Ray(Vec4f& position, Vec4f& direction, float minDistance,float maxDistance) : position(position),direction(direction), minDistance(minDistance), maxDistance(maxDistance) {
+	Ray(const Vec4f& position, const Vec4f& direction, float minDistance,float maxDistance) : position(position),direction(direction), minDistance(minDistance), maxDistance(maxDistance) {
 		generateInverseDirection();}
-	Ray(Vec3f&, Vec3f&, float,float);
+	Ray(const Vec3f& position, const Vec3f& direction, float min,float max):position(Vec4f(position,1.0f)), direction(Vec4f(direction,0.0f)), minDistance(min), maxDistance(max) {
+		generateInverseDirection();
+	}
 
 	void setDirection(const Vec4f& direction) {
 		this->direction = direction;
