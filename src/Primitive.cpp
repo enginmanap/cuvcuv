@@ -58,42 +58,35 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 
 	Vec4f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
-	Vec3f normal = this->calculateNormal(intersectionPoint);
-	bool raySide = vec3fNS::dot(normal,ray.getDirection()) < 0;//is ray opposite side as normal, so it can reflect/get light
+	Vec4f normal(this->calculateNormal(intersectionPoint),0);
+	bool raySide = Vec4fNS::dot(normal,ray.getDirection()) < 0;//is ray opposite side as normal, so it can reflect/get light
 	if(raySide){//We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
-		Vec4f normal4(normal, 0.0f);
-		Vec3f eyeDirn = vec3fNS::normalize(
-				((Vec3f) ray.getPosition()) - intersectionPoint);
-
 		//check if light is blocked or not
-		Vec3f intersectionPos = intersectionPoint + EPSILON * 10.0f *normal4;
+		intersectionPoint = intersectionPoint + EPSILON * 10.0f *normal;
 		//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
 
 		for (unsigned int i = 0; i < lights.size(); i++) {
 			Light it = lights[i];
-			Vec3f lightPos;
-			Vec3f direction;
-			lightPos.x = it.getPosition().x;
-			lightPos.y = it.getPosition().y;
-			lightPos.z = it.getPosition().z;
-			if (fabs(it.getPosition().w) < EPSILON) {
-				direction = vec3fNS::normalize(lightPos);
-			} else {
-				lightPos = (1 / it.getPosition().w) * lightPos;
-				direction = vec3fNS::normalize(lightPos - intersectionPoint);
-			}
-			//std::cout << "dot for " << vec3fNS::dot(normal,ray.getDirection()) << std::endl;
 
-			bool lightSide = vec3fNS::dot(normal,direction) > 0;//is light on the same side as normal
-			if(lightSide ){
+			Vec4f direction;
+			if (fabs(it.getPosition().w) < EPSILON) {
+				direction = Vec4fNS::normalize(it.getPosition());
+			} else {
+				Vec4f lightPos = it.getPosition();
+				lightPos = (1 / it.getPosition().w) * lightPos;
+				direction = Vec4fNS::normalize(lightPos - intersectionPoint);
+			}
+			if(Vec4fNS::dot(normal,direction) > 0){//is light on the same side as normal
 				//std::cout << "entered" << std::endl;
-				Ray rayToLight(intersectionPos,
+				Ray rayToLight(intersectionPoint,
 						direction, 0, 100);
 
 				if (tracer.traceToLight(rayToLight, octree, *(&it))) {
 					float lightDistance =
 							((Vec3f)(it.getPosition() - rayToLight.getPosition())).length();//casting to vec3 because w is 0
-					Vec3f halfVec = vec3fNS::normalize(direction + eyeDirn);
+					Vec4f eyeDirn = Vec4fNS::normalize(
+							ray.getPosition() - intersectionPoint);
+					Vec4f halfVec = Vec4fNS::normalize(direction + eyeDirn);
 
 					color = color
 							+ it.getAttenuationFactor(lightDistance)
@@ -111,8 +104,8 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 		} else {
 			if (depth > 0) {
 
-				Vec3f reflectionDir = ray.getDirection()- 2 * Vec4fNS::dot(ray.getDirection(), normal4) * normal4;
-				Ray reflectionRay(intersectionPos,reflectionDir	, 0, 100);
+				Vec4f reflectionDir = ray.getDirection()- 2 * Vec4fNS::dot(ray.getDirection(), normal) * normal;
+				Ray reflectionRay(intersectionPoint,reflectionDir, 0, 100);
 				Vec3f reflectedColor = tracer.trace(reflectionRay, octree,
 						lights, depth);
 				reflectedColor = vec3fNS::clamp(reflectedColor, 0, 1);
