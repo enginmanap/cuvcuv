@@ -258,6 +258,9 @@ Scene* SceneReader::readFile() {
 			    	objPath = fileToread.substr(0, endPos+1);//+1 for including seperator in the end
 			    	fileToread = fileToread.substr(endPos+1);
 			    }
+			    if(filePath != ""){
+			    	objPath = filePath +"/"+ objPath;
+			    }
 				ModelReader modelReader(objPath,fileToread);
 				modelReader.readModelFile(*scene);
 			}
