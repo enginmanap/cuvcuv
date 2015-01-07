@@ -17,8 +17,8 @@ Vec3f Primitive::calculateColorPerLight(const Vec3f& direction,
 
 	Vec3f lambert, phong;
 
-	float nDotl = vec3fNS::dot(normal, direction);
-	float nDotH = vec3fNS::dot(normal, halfVec);
+	float nDotl = Vec3fNS::dot(normal, direction);
+	float nDotH = Vec3fNS::dot(normal, halfVec);
 
 	lambert = diffuse * color;
 	lambert = std::max(nDotl, 0.0f) * lambert;
@@ -108,7 +108,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 				Ray reflectionRay(intersectionPoint,reflectionDir, 0, 100);
 				Vec3f reflectedColor = tracer.trace(reflectionRay, octree,
 						lights, depth);
-				reflectedColor = vec3fNS::clamp(reflectedColor, 0, 1);
+				reflectedColor = Vec3fNS::clamp(reflectedColor, 0, 1);
 				//std::cout << "reflection " << reflectedColor << std::endl;
 				color = color + material->getSpecular() * reflectedColor;
 

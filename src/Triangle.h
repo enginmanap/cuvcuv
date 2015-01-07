@@ -31,16 +31,16 @@ public:
 		this->inverseMatrixTranspose = this->inverseTransformMat.transpose();
 		vectorBA = b - a;
 		vectorCA = c - a;
-		dotProductBABA = vec3fNS::dot(vectorBA, vectorBA);
-		dotProductBACA = vec3fNS::dot(vectorBA, vectorCA);
-		dotProductCACA = vec3fNS::dot(vectorCA, vectorCA);
+		dotProductBABA = Vec3fNS::dot(vectorBA, vectorBA);
+		dotProductBACA = Vec3fNS::dot(vectorBA, vectorCA);
+		dotProductCACA = Vec3fNS::dot(vectorCA, vectorCA);
 		if(normal1.length() == 0 && normal2.length() == 0 && normal3.length() == 0){
 			//FIXME  this is ugly
 			smoothShading = false;
 		} else {
 			//TriangleBase processes transform
 			if(!smoothing){
-				triangleNormal = vec3fNS::normalize(n1 + n2 + n3);
+				triangleNormal = Vec3fNS::normalize(n1 + n2 + n3);
 			}
 		}
 	};

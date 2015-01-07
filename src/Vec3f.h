@@ -33,7 +33,7 @@ public:
 std::ostream& operator<<(std::ostream &strm, const Vec3f &vector);
 Vec3f operator*(float, const Vec3f&);
 
-namespace vec3fNS {
+namespace Vec3fNS {
 
 Vec3f normalize(const Vec3f&);
 Vec3f cross(const Vec3f&, const Vec3f&);

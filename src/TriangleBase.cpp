@@ -9,9 +9,9 @@
 
 bool TriangleBase::setTransformation(const Mat4f& transformMatrix){
 	Primitive::setTransformation(transformMatrix);//call to super, so inverse will be calculated
-	Vec3f normal = vec3fNS::cross((b - a), (c - a));
+	Vec3f normal = Vec3fNS::cross((b - a), (c - a));
 	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
-	triangleNormal = vec3fNS::normalize(normal);
+	triangleNormal = Vec3fNS::normalize(normal);
 	return true;
 }
 
@@ -48,21 +48,21 @@ bool TriangleBase::intersectiontest(Ray ray, float& distance,Primitive** interse
 	Vec3f rayDirection = transformedRay.getDirection();
 	Vec3f edge1 = b - a;
 	Vec3f edge2 = c - a;
-	Vec3f pvec = vec3fNS::cross(rayDirection, edge2);
-	float det = vec3fNS::dot(edge1, pvec);
+	Vec3f pvec = Vec3fNS::cross(rayDirection, edge2);
+	float det = Vec3fNS::dot(edge1, pvec);
 	if (fabs(det) < EPSILON)
 		return false;
 	float invDet = 1 / det;
 	Vec3f tvec = rayPosition - a;
-	float u = vec3fNS::dot(tvec, pvec) * invDet;
+	float u = Vec3fNS::dot(tvec, pvec) * invDet;
 	if (u < -EPSILON || u > 1)
 		return false;
-	Vec3f qvec = vec3fNS::cross(tvec, edge1);
-	float v = vec3fNS::dot(rayDirection, qvec) * invDet;
+	Vec3f qvec = Vec3fNS::cross(tvec, edge1);
+	float v = Vec3fNS::dot(rayDirection, qvec) * invDet;
 	if (v < -EPSILON || u + v > 1)
 		return false;
 
-	distance = vec3fNS::dot(edge2, qvec) * invDet;
+	distance = Vec3fNS::dot(edge2, qvec) * invDet;
 	if (distance < 0.0f) { //object is behind the triangle
 		return false;
 	}

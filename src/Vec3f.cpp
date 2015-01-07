@@ -8,10 +8,10 @@
 #include "Vec3f.h"
 
 Vec3f Vec3f::normalize() const {
-	return vec3fNS::normalize(*this);
+	return Vec3fNS::normalize(*this);
 }
 
-Vec3f vec3fNS::normalize(const Vec3f& vector) {
+Vec3f Vec3fNS::normalize(const Vec3f& vector) {
 	//calculate the vector size
 	float length = sqrt(
 			(vector.x * vector.x) + (vector.y * vector.y)
@@ -22,18 +22,18 @@ Vec3f vec3fNS::normalize(const Vec3f& vector) {
 	return temp;
 }
 
-Vec3f vec3fNS::cross(const Vec3f& vector1, const Vec3f& vector2) {
+Vec3f Vec3fNS::cross(const Vec3f& vector1, const Vec3f& vector2) {
 	Vec3f temp(vector1.y * vector2.z - vector1.z * vector2.y,
 			vector1.z * vector2.x - vector1.x * vector2.z,
 			vector1.x * vector2.y - vector1.y * vector2.x);
 	return temp;
 }
 
-float vec3fNS::dot(const Vec3f& vector1, const Vec3f& vector2) {
+float Vec3fNS::dot(const Vec3f& vector1, const Vec3f& vector2) {
 	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
 }
 
-Vec3f vec3fNS::clamp(const Vec3f& vector, float min, float max) {
+Vec3f Vec3fNS::clamp(const Vec3f& vector, float min, float max) {
 	if (min > max) {
 		std::cerr << "clamping is not possible for min: " << min << " max"
 				<< max << std::endl;

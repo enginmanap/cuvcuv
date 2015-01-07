@@ -78,18 +78,18 @@ bool Sphere::intersectiontest(Ray ray, float& distance, Primitive** intersecting
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
 	Vec3f rayDirection = transformedRay.getDirection();
-	float p1s = vec3fNS::dot(rayDirection, rayDirection);
+	float p1s = Vec3fNS::dot(rayDirection, rayDirection);
 	Vec3f rayPosition = transformedRay.getPosition();
 
 	Vec3f p0MinusC = rayPosition - this->position;
-	float p1timesp0mc = vec3fNS::dot(rayDirection, p0MinusC);
+	float p1timesp0mc = Vec3fNS::dot(rayDirection, p0MinusC);
 	//now the formula is this:
 	//(distance * distance) * p1s + distance * (2*p1timesp0mc) + (p0MinusC * p0MinusC) - (this->radius * this->radius) = 0
 	//Assign a,b,c so later parts should be easier to follow;
 
 	float a = p1s;
 	float b = 2 * p1timesp0mc;
-	float c = vec3fNS::dot(p0MinusC, p0MinusC) - (this->radius * this->radius);
+	float c = Vec3fNS::dot(p0MinusC, p0MinusC) - (this->radius * this->radius);
 
 	//calculate the discriminant
 	// discriminant = b^2 - 4ac
@@ -139,6 +139,6 @@ bool Sphere::intersectiontest(Ray ray, float& distance, Primitive** intersecting
 Vec3f Sphere::calculateNormal(const Vec4f& position) const {
 	//calculate the normal, if there were no transformations, than inverse transpose the normal.
 	Vec3f normal = ((Vec3f) (position * this->inverseTransformMat))	- this->position;
-	return vec3fNS::normalize(Vec4f(normal, 0.0f) * this->inverseMatrixTranspose);
+	return Vec3fNS::normalize(Vec4f(normal, 0.0f) * this->inverseMatrixTranspose);
 
 }

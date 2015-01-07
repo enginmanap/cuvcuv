@@ -25,7 +25,7 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	up.x = upx;
 	up.y = upy;
 	up.z = upz;
-	up = vec3fNS::normalize(up);
+	up = Vec3fNS::normalize(up);
 
 	this->fovy = fovy * M_PI / 180;
 	double d = (height * 0.5) / tan(this->fovy * 0.5);
@@ -42,9 +42,9 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 
 	Vec3f positionMinusCenter = position - look;
 
-	w = vec3fNS::normalize(positionMinusCenter);
-	u = vec3fNS::normalize(vec3fNS::cross(up, w));
-	v = vec3fNS::cross(w, u);
+	w = Vec3fNS::normalize(positionMinusCenter);
+	u = Vec3fNS::normalize(Vec3fNS::cross(up, w));
+	v = Vec3fNS::cross(w, u);
 
 
 	halfWidth = (float) width / 2;
@@ -110,7 +110,7 @@ void Camera::getRay(unsigned int x, unsigned int y, Ray& ray, float xOffset, flo
 		//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
 		Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 
-		direction = vec3fNS::normalize(direction);
+		direction = Vec3fNS::normalize(direction);
 		//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
 		ray.setPosition(Vec4f(position ,1.0f));
 		ray.setDirection(Vec4f(direction, 0.0f));

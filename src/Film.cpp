@@ -46,7 +46,7 @@ bool Film::setPixel(unsigned int& x, unsigned int& y, Vec3f& color) {
 		oldz = this->pixels[index + 2] * currentSampleCount;
 		oldw = this->pixels[index + 3] * currentSampleCount;
 
-		color = colorRange * vec3fNS::clamp(color, 0, 1); //Opengl auto clamps, we do manually.
+		color = colorRange * Vec3fNS::clamp(color, 0, 1); //Opengl auto clamps, we do manually.
 #ifdef USE_FREEIMAGE_PNG
 		oldx += (unsigned char) color.z;
 		oldy += (unsigned char) color.y;
