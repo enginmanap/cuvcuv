@@ -51,7 +51,7 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	halfHeight = (float) height / 2;
 	xChangeFactor = tan(this->fovx / 2) / halfWidth;
 	yChangeFactor = tan(this->fovy / 2) / halfHeight;
-
+	srand(time(NULL));
 }
 
 bool Camera::getPoint(unsigned int& x, unsigned int& y) {
