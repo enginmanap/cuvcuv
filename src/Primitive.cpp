@@ -78,8 +78,10 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			}
 			if(Vec4fNS::dot(normal,direction) > 0){//is light on the same side as normal
 				//std::cout << "entered" << std::endl;
-
-				if (tracer.traceToLight(intersectionPoint, octree, *(&it))) {
+				float ligthVisibility = tracer.traceToLight(intersectionPoint, octree, *(&it));
+//#pragma omp critical
+//				std::cout << "light visibility is " << ligthVisibility << std::endl;
+				if (ligthVisibility) {
 					float lightDistance =
 							((Vec3f)(it.getPosition() - intersectionPoint)).length();//casting to vec3 because w is 0
 					Vec4f eyeDirn = Vec4fNS::normalize(
@@ -87,7 +89,8 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 					Vec4f halfVec = Vec4fNS::normalize(direction + eyeDirn);
 
 					color = color
-							+ it.getAttenuationFactor(lightDistance)
+							+ ligthVisibility
+							* it.getAttenuationFactor(lightDistance)
 									* calculateColorPerLight(direction, it.getColor(),
 											normal, halfVec, this->getDiffuse(intersectionPoint),  material->getSpecular(),
 											 material->getShininess());

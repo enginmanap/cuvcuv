@@ -7,53 +7,59 @@
 
 #include "RayTracer.h"
 
-RayTracer::RayTracer() {
-
-}
-
-RayTracer::~RayTracer() {
-
-}
-
 /**
  * returns true if the ray can reach light with out hitting
  * any objects. false if there are any obstacles.
  *
  */
-bool RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octree,
+float RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octree,
 		const Light& light) const {
-	Vec4f direction;
 
-	if (fabs(light.getPosition().w) < EPSILON) {
-		direction = light.getPosition();
-	} else {
-		Vec4f lightPos = light.getPosition();
-		lightPos = (1 / light.getPosition().w) * lightPos;
-		direction = lightPos - intersectionPoint;
-	}
+	//we should cast number of rays, and average the visibility results
+	unsigned int SOFT_SHADOW_RAYS = 25;
+	float visibility = 0.0f;
+	bool isBlocked;
+	for(unsigned int i = 0; i < SOFT_SHADOW_RAYS; ++i){
+		Vec3f direction;
+		Vec4f lightPosition = light.getPosition();
+		if (fabs(lightPosition.w) < EPSILON) {
+			direction = lightPosition;
+		} else {
+			Vec4f lightPos = lightPosition;
+			lightPos = (1 / lightPosition.w) * lightPos;
+			direction = lightPos - intersectionPoint;
+		}
 
+		direction = direction.normalize();
+		direction.x += ((rand() % 200) / 1000.0f) - 0.1f;
+		direction.y += ((rand() % 200) / 1000.0f) - 0.1f;
+		direction.z += ((rand() % 200) / 1000.0f) - 0.1f;
+		direction = direction.normalize();
+		Ray rayToLight(intersectionPoint,
+				direction, 0, 100);
+		float distanceToLight = ((Vec3f)(lightPosition - intersectionPoint)).length();
 
+		float intersectionDistance;
+		Primitive* placeHolder = NULL; //this primitive will not be used, but it is required
+		std::set<Primitive*> primitives;
+		octree.getIntersectingPrimitives(rayToLight,primitives);
+		isBlocked = false;
+		for (std::set<Primitive*>::const_iterator it = primitives.begin();
+				it != primitives.end(); ++it) {
+			if ((*it)->intersectiontest(rayToLight, intersectionDistance,&placeHolder)) {
+				//found intersection, check if it is before the closest one
+				if (distanceToLight > intersectionDistance) {
+					isBlocked = true; //if we have one blocking object, it is enough
+					break;
+				}
 
-	direction = direction.normalize();
-	Ray rayToLight(intersectionPoint,
-			direction, 0, 100);
-	float distanceToLight = ((Vec3f)(light.getPosition() - intersectionPoint)).length();
-
-	float intersectionDistance;
-	Primitive* placeHolder = NULL; //this primitive will not be used, but it is required
-	std::set<Primitive*> primitives;
-	octree.getIntersectingPrimitives(rayToLight,primitives);
-	for (std::set<Primitive*>::const_iterator it = primitives.begin();
-			it != primitives.end(); ++it) {
-		if ((*it)->intersectiontest(rayToLight, intersectionDistance,&placeHolder)) {
-			//found intersection, check if it is before the closest one
-			if (distanceToLight > intersectionDistance) {
-				return true; //if we have one blocking object, it is enough
 			}
-
+		}
+		if(!isBlocked){
+			visibility += 1.0f;
 		}
 	}
-	return false;
+	return visibility/SOFT_SHADOW_RAYS;
 }
 
 /**

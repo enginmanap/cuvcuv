@@ -10,6 +10,8 @@
 
 #include <vector>
 #include <limits>
+#include <stdlib.h>
+#include <time.h>       /* time */
 
 #include "Ray.h"
 #include "Primitive.h"
@@ -19,11 +21,10 @@
 
 class RayTracer {
 public:
-	RayTracer();
-	virtual ~RayTracer();
+	RayTracer(){srand(time(NULL));};
 
 	Vec3f trace(const Ray&, const Octree&, const std::vector<Light>&, const unsigned int) const;
-	bool traceToLight(const Vec4f&, const Octree&, const Light&) const;
+	float traceToLight(const Vec4f&, const Octree&, const Light&) const;
 };
 
 #endif /* SRC_RAYTRACER_H_ */
