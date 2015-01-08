@@ -78,12 +78,10 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			}
 			if(Vec4fNS::dot(normal,direction) > 0){//is light on the same side as normal
 				//std::cout << "entered" << std::endl;
-				Ray rayToLight(intersectionPoint,
-						direction, 0, 100);
 
-				if (tracer.traceToLight(rayToLight, octree, *(&it))) {
+				if (tracer.traceToLight(intersectionPoint, octree, *(&it))) {
 					float lightDistance =
-							((Vec3f)(it.getPosition() - rayToLight.getPosition())).length();//casting to vec3 because w is 0
+							((Vec3f)(it.getPosition() - intersectionPoint)).length();//casting to vec3 because w is 0
 					Vec4f eyeDirn = Vec4fNS::normalize(
 							ray.getPosition() - intersectionPoint);
 					Vec4f halfVec = Vec4fNS::normalize(direction + eyeDirn);

@@ -23,7 +23,7 @@ public:
 	virtual ~RayTracer();
 
 	Vec3f trace(const Ray&, const Octree&, const std::vector<Light>&, const unsigned int) const;
-	bool traceToLight(const Ray&, const Octree&, const Light&) const;
+	bool traceToLight(const Vec4f&, const Octree&, const Light&) const;
 };
 
 #endif /* SRC_RAYTRACER_H_ */

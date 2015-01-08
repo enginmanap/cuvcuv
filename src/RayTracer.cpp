@@ -20,26 +20,40 @@ RayTracer::~RayTracer() {
  * any objects. false if there are any obstacles.
  *
  */
-bool RayTracer::traceToLight(const Ray& ray, const Octree& octree,
+bool RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octree,
 		const Light& light) const {
-	Vec3f route = light.getPosition() - ray.getPosition();
-	float distanceToLight = route.length();
+	Vec4f direction;
+
+	if (fabs(light.getPosition().w) < EPSILON) {
+		direction = light.getPosition();
+	} else {
+		Vec4f lightPos = light.getPosition();
+		lightPos = (1 / light.getPosition().w) * lightPos;
+		direction = lightPos - intersectionPoint;
+	}
+
+
+
+	direction = direction.normalize();
+	Ray rayToLight(intersectionPoint,
+			direction, 0, 100);
+	float distanceToLight = ((Vec3f)(light.getPosition() - intersectionPoint)).length();
+
 	float intersectionDistance;
 	Primitive* placeHolder = NULL; //this primitive will not be used, but it is required
-
 	std::set<Primitive*> primitives;
-	octree.getIntersectingPrimitives(ray,primitives);
+	octree.getIntersectingPrimitives(rayToLight,primitives);
 	for (std::set<Primitive*>::const_iterator it = primitives.begin();
 			it != primitives.end(); ++it) {
-		if ((*it)->intersectiontest(ray, intersectionDistance,&placeHolder)) {
+		if ((*it)->intersectiontest(rayToLight, intersectionDistance,&placeHolder)) {
 			//found intersection, check if it is before the closest one
 			if (distanceToLight > intersectionDistance) {
-				return false; //if we have one blocking object, it is enough
+				return true; //if we have one blocking object, it is enough
 			}
 
 		}
 	}
-	return true;
+	return false;
 }
 
 /**
