@@ -17,12 +17,14 @@
 #include "Ray.h"
 #include "Mat4f.h"
 #include "Material.h"
+#include "RayTracer.h"
 
 #ifndef EPSILON
 #define EPSILON 0.001F
 #endif
 
 class Octree;
+class RayTracer;
 
 class Primitive {
 public:
@@ -48,7 +50,7 @@ public:
 	virtual bool intersectiontest(Ray, float&, Primitive**) const= 0;
 	Vec3f getColorForRay(const Ray&, float,
 			const Octree&, const std::vector<Light>&,
-			const unsigned int) const;
+			const unsigned int, const RayTracer*) const;
 	bool setMaterial(Material*);
 
 	Ray generateTransformedRay(const Ray&) const;

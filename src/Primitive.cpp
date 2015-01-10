@@ -6,7 +6,6 @@
  */
 
 #include "Primitive.h"
-#include "RayTracer.h"
 
 unsigned int Primitive::lastID = 0;
 
@@ -51,10 +50,8 @@ bool Primitive::setMaterial(Material* mat) {
 
 Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 		const Octree& octree,
-		const std::vector<Light>& lights, const unsigned int depth) const {
+		const std::vector<Light>& lights, const unsigned int depth, const RayTracer* tracer) const {
 	Vec3f color;
-
-	RayTracer tracer;
 
 	Vec4f intersectionPoint = distance * ray.getDirection();
 	intersectionPoint = intersectionPoint + ray.getPosition();
@@ -78,7 +75,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			}
 			if(Vec4fNS::dot(normal,direction) > 0){//is light on the same side as normal
 				//std::cout << "entered" << std::endl;
-				float ligthVisibility = tracer.traceToLight(intersectionPoint, octree, *(&it));
+				float ligthVisibility = tracer->traceToLight(intersectionPoint, octree, *(&it));
 //#pragma omp critical
 //				std::cout << "light visibility is " << ligthVisibility << std::endl;
 				if (ligthVisibility) {
@@ -88,12 +85,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 							ray.getPosition() - intersectionPoint);
 					Vec4f halfVec = Vec4fNS::normalize(direction + eyeDirn);
 
-					color = color
-							+ ligthVisibility
-							* it.getAttenuationFactor(lightDistance)
-									* calculateColorPerLight(direction, it.getColor(),
-											normal, halfVec, this->getDiffuse(intersectionPoint),  material->getSpecular(),
-											 material->getShininess());
+					color = color + ligthVisibility	* it.getAttenuationFactor(lightDistance) * calculateColorPerLight(direction, it.getColor(),	normal, halfVec, this->getDiffuse(intersectionPoint),  material->getSpecular(), material->getShininess());
 				}
 
 			}
@@ -107,7 +99,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 
 				Vec4f reflectionDir = ray.getDirection()- 2 * Vec4fNS::dot(ray.getDirection(), normal) * normal;
 				Ray reflectionRay(intersectionPoint,reflectionDir, 0, 100);
-				Vec3f reflectedColor = tracer.trace(reflectionRay, octree,
+				Vec3f reflectedColor = tracer->trace(reflectionRay, octree,
 						lights, depth);
 				reflectedColor = Vec3fNS::clamp(reflectedColor, 0, 1);
 				//std::cout << "reflection " << reflectedColor << std::endl;
