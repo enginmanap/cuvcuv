@@ -19,13 +19,18 @@
 #include "Vec3f.h"
 #include "Octree.h"
 
+
 class Octree;
 
-class RayTracer {
-public:
-	RayTracer(){//srand(time(NULL));
-	};
+#ifndef SHADOW_RATE
+#define SHADOW_RATE 50
+#endif //SHADOW_RATE
 
+class RayTracer {
+private:
+	float deviations[SHADOW_RATE][2];
+public:
+	RayTracer();
 	Vec3f trace(const Ray&, const Octree&, const std::vector<Light>&, const unsigned int) const;
 	float traceToLight(const Vec4f&, const Octree&, const Light&) const;
 };

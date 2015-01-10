@@ -7,6 +7,25 @@
 
 #include "RayTracer.h"
 
+RayTracer::RayTracer()
+{
+	deviations[0][0] = 0;
+	deviations[0][1] = 0;
+	if(SHADOW_RATE >=4){
+		deviations[1][0] = -0.5f;deviations[1][1] = -0.5f;//check lower left
+		deviations[2][0] =  0.5f;deviations[2][1] =  0.5f;//check upper right
+		deviations[3][0] = -0.5f;deviations[3][1] =  0.5f;//upper left
+		deviations[4][0] =  0.5f;deviations[4][1] = -0.5f;//lower right
+
+		//srand(time(NULL));
+		for (int i = 5; i < SHADOW_RATE; ++i) {
+			deviations[i][0]= rand()/float(RAND_MAX+1)- 0.5;
+			deviations[i][1]= rand()/float(RAND_MAX+1)- 0.5;
+		}
+	}
+}
+
+
 /**
  * returns true if the ray can reach light with out hitting
  * any objects. false if there are any obstacles.
@@ -15,54 +34,28 @@
 float RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octree,
 		const Light& light) const {
 	//calculate the mo
-	Vec4f lightPosition = light.getPosition();
 	//we should cast number of rays, and average the visibility results
-	unsigned const int SOFT_SHADOW_RAYS = 100;
 	float visibility = 0.0f;
 	bool isBlocked;
-	float uOffset,vOffset;
 
-	Vec3f direction;
+	for(unsigned int i = 0; i < SHADOW_RATE; ++i){
+		Vec3f direction;
+		Vec4f lightPosition = light.getPosition();
+        float distanceToLight = ((Vec3f)(lightPosition - intersectionPoint)).length();
+		lightPosition.x += deviations[i][0] * 0.025 * distanceToLight;
+		lightPosition.y += deviations[i][1] * 0.025 * distanceToLight;
+		if (fabs(lightPosition.w) < EPSILON) {
+			direction = lightPosition;
+		} else {
+			Vec4f lightPos = lightPosition;
+			lightPos = (1 / lightPosition.w) * lightPos;
+			direction = lightPos - intersectionPoint;
+		}
 
-	if (fabs(lightPosition.w) < EPSILON) {
-		direction = lightPosition;
-	} else {
-		Vec4f lightPos = lightPosition;
-		lightPos = (1 / lightPosition.w) * lightPos;
-		direction = lightPos - intersectionPoint;
-	}
-
-	Vec3f u,v,w, offset, u2, v2;
-	w = direction.normalize();
-	u = Vec3fNS::cross(w, -1 * lightPosition).normalize();
-	v = Vec3fNS::cross(w,u).normalize();
-
-
-	for(unsigned int i = 0; i < SOFT_SHADOW_RAYS; ++i){
-		uOffset = rand()/float(RAND_MAX+1)- 0.5;
-		vOffset = rand()/float(RAND_MAX+1)- 0.5;
-		u2= uOffset * u;
-		v2= vOffset * v;
-		offset = u2 + v2;
-		//offset = offset;
-//#pragma omp critical
-		//std::cout << "uoff: "<< uOffset << ", voff: " << vOffset << ", total: " << offset << std::endl;
-
-
-		//offset = (1 / 5.0f )* offset;
-//#pragma omp critical
-		//std::cout << "u: "<< u << ", v" << v << ", direction: " << w << std::endl;
-		/*
-		lightPosition.x += xOffset;
-		lightPosition.y += yOffset;
-		lightPosition.z += 1 - xOffset - yOffset;
-		*/
 		Ray rayToLight(intersectionPoint,
-				(direction + offset).normalize(), 0, 100);
-		//we need to calculate the direction first.
+				direction, 0, 100);
 
 
-		float distanceToLight = ((Vec3f)(lightPosition - intersectionPoint)).length();
 
 		float intersectionDistance;
 		Primitive* placeHolder = NULL; //this primitive will not be used, but it is required
@@ -81,7 +74,16 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octr
 			}
 		}
 		if(!isBlocked){
-			visibility += 1.0/SOFT_SHADOW_RAYS;
+			visibility += 1.0/SHADOW_RATE;
+		}
+		if(i == 5 ) { //after first 5
+			if( visibility == 5.0/SHADOW_RATE) { //if all of them see light, no one will be blocked
+				//std::cout << "all visible " << std::endl;
+				return 1.0f;
+			} else if ( visibility == 0) { // if none of them see light, no one will see either
+				//std::cout << "all blocked" << std::endl;
+				return 0.0f;
+			}
 		}
 	}
 	return visibility;
