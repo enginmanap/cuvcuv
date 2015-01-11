@@ -17,6 +17,7 @@
 
 class Texture {
 private:
+	std::string name;
 	int height,width,components;
 	unsigned char* image;
 

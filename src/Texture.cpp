@@ -12,7 +12,7 @@
 /**
  * loads image with given filename
  */
-Texture::Texture(std::string fileName) {
+Texture::Texture(std::string fileName): name(fileName) {
 
 	//this function sets height witdh and components (RGB, RGBA etc.)
 	//0 means read all components, 1 for greyscale, 2 for greyscale with alpha 3-4 RGB/A
@@ -46,18 +46,18 @@ Vec3f Texture::getColor(float x, float y) const{
 	}
 	//this case means the difference was bigger than epsilon
 	if(x > 1 || x < 0 || y > 1 || y<0) {
-		std::cerr << "the requested pixel is out of texture. texture size: (" << height <<"," << width << "), request: (" << y*height << "," << x*width << ")" << "(" << y << "," << x << ")" << std::endl;
+		std::cerr << "the requested pixel is out of texture \" << name <<\". texture size: (" << height <<"," << width << "), request: (" << y*height << "," << x*width << ")" << "(" << y << "," << x << ")" << std::endl;
 		return Vec3f(0,0,0);
 	}
-	int tX = x * width;
-	int tY = y * height;
+	int tX = x * (width-1);//-1 because it should start from 0, not one
+	int tY = y * (height-1);// same here
 	//std::cout << "h " << height << " w " << width << std::endl;
-	unsigned char* pixel = image + ((width*(height-1)) - (width * tY) + tX) * components;
+	unsigned char* pixel = image + (width*(height-1- tY) + tX) * components;
 /*
 #pragma omp critical
 	{
-        std::cout << "requested pixel " << tX <<", "<< tY << ", as " << x << "," << y <<" pixels with " << components << " components." << std::endl;
-        std::cout << " value " << (int)*pixel << ", " << (int)*(pixel+1) << ", " << (int)*(pixel+2) << std::endl;
+		std::cerr << "\"" << name <<"\" texture size: (" << height <<"," << width << "), request: (" << tY << "," << tX << ")" << "(" << y << "," << x << ")" << ", means " << (width*(height-1)) - (width * tY) << "," << tX<< std::endl;
+
 	}
 */
 	//now we will  construct the color
