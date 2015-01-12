@@ -1,7 +1,7 @@
 CXX = g++
  
 #CXXFLAGS = -fopenmp -Wall -O3 -DUSE_FREEIMAGE_PNG
-CXXFLAGS = -fopenmp -Wall -msse2 -O3
+CXXFLAGS = -fopenmp -Wall -msse2 -O3 --std=c++98
 LINKER   = g++ -o
 LDFLAGS = -L./lib/ -lgomp -lfreeimage
 
