@@ -189,11 +189,17 @@ bool Scene::setCurrentShininess(float shininess) {
 
 bool Scene::addMaterial(std::vector<Material*>& materials){
 	for (unsigned int index = 0; index < materials.size(); ++index) {
+		if(materialMap[materials[index]->getName()]!=NULL){
+			//we had a material with same name
+			std::cout << "double definition of material " << materials[index]->getName() <<", last one will be kept" << std::endl;
+			delete materialMap[materials[index]->getName()];
+			materialMap.erase(materials[index]->getName());
+		}
 		materialMap[materials[index]->getName()] = materials[index];
 		currentMaterial = materials[index];
 		std::cout << "new material " << materials[index]->getName() << " added." << std::endl;
 	}
-
+	materialNames.push(currentMaterial->getName());
 	return true;
 }
 
