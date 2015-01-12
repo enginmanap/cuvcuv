@@ -53,7 +53,7 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octr
 		}
 
 		Ray rayToLight(intersectionPoint,
-				direction, 0, 100);
+				direction.normalize(), 0, 100);
 
 
 
