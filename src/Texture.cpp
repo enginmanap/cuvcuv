@@ -47,7 +47,8 @@ Vec3f Texture::getColor(float x, float y) const{
 	}
 	//this case means the difference was bigger than epsilon
 	if(x > 1 || x < 0 || y > 1 || y<0) {
-		std::cerr << "the requested pixel is out of texture \" << name <<\". texture size: (" << height <<"," << width << "), request: (" << y*height << "," << x*width << ")" << "(" << y << "," << x << ")" << std::endl;
+#pragma omp critical
+		std::cerr << "the requested pixel is out of texture \""<< name <<"\". texture size: (" << height <<"," << width << "), request: (" << y*height << "," << x*width << ")" << "(" << y << "," << x << ")" << std::endl;
 		return Vec3f(0,0,0);
 	}
 	int tX = x * (width-1);//-1 because it should start from 0, not one
