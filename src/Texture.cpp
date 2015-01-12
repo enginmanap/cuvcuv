@@ -19,6 +19,7 @@ Texture::Texture(std::string fileName): name(fileName) {
 	image = stbi_load(fileName.c_str(), &width, &height, &components, 0);
 	if(image == NULL){
 		std::cerr << "texture load failed for file " << fileName << std::endl;
+		std::cout << stbi_failure_reason() <<  std::endl;
 		throw 1;
 	} else {
 		std::cout << "texture loaded from file " << fileName << std::endl;
