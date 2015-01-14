@@ -7,24 +7,60 @@
 
 #include "RayTracer.h"
 
-RayTracer::RayTracer()
-{
-	deviations[0][0] = 0;
-	deviations[0][1] = 0;
-	if(SHADOW_RATE >=4){
-		deviations[1][0] = -0.5f;deviations[1][1] = -0.5f;//check lower left
-		deviations[2][0] =  0.5f;deviations[2][1] =  0.5f;//check upper right
-		deviations[3][0] = -0.5f;deviations[3][1] =  0.5f;//upper left
-		deviations[4][0] =  0.5f;deviations[4][1] = -0.5f;//lower right
+#ifndef LIGHT_SIZE
+#define LIGHT_SIZE 1.0f
+#endif //LIGHT_SIZE
 
-		//srand(time(NULL));
-		for (int i = 5; i < SHADOW_RATE; ++i) {
-			deviations[i][0]= rand()/float(RAND_MAX+1)- 0.5;
-			deviations[i][1]= rand()/float(RAND_MAX+1)- 0.5;
-		}
+
+#ifndef SHADOW_RATE
+#define SHADOW_RATE 6
+#endif //SHADOW_RATE
+
+
+RayTracer::RayTracer(){
+	float halfSize = LIGHT_SIZE / 2;
+	if(SHADOW_RATE > 2){//since 2x2 means randomize this
+		corners[0][0] = -1 * halfSize;corners[0][1] = -1 * halfSize;//check lower left
+		corners[1][0] =  halfSize;corners[1][1] =  halfSize;//check upper right
+		corners[2][0] = -1 * halfSize;corners[2][1] =  halfSize;//upper left
+		corners[3][0] =  halfSize;corners[3][1] = -1 * halfSize;//lower right
 	}
 }
 
+bool RayTracer::isLightVisible(const Vec4f& intersectionPoint, const Octree& octree,
+		const Light& light, float offsetX, float offsetY) const {
+	Vec3f direction;
+	Vec4f lightPosition = light.getPosition();
+	float distanceToLight = ((Vec3f)(lightPosition - intersectionPoint)).length();
+	lightPosition.x += offsetX;
+	lightPosition.y += offsetY;
+	if (fabs(lightPosition.w) < EPSILON) {
+		direction = lightPosition;
+	} else {
+		Vec4f lightPos = lightPosition;
+		lightPos = (1 / lightPosition.w) * lightPos;
+		direction = lightPos - intersectionPoint;
+	}
+
+	Ray rayToLight(intersectionPoint,
+			direction.normalize(), 0, 100);
+
+	float intersectionDistance;
+	Primitive* placeHolder = NULL; //this primitive will not be used, but it is required
+	std::set<Primitive*> primitives;
+	octree.getIntersectingPrimitives(rayToLight,primitives);
+	for (std::set<Primitive*>::const_iterator it = primitives.begin();
+			it != primitives.end(); ++it) {
+		if ((*it)->intersectiontest(rayToLight, intersectionDistance,&placeHolder)) {
+			//found intersection, check if it is before the closest one
+			if (distanceToLight > intersectionDistance) {
+				return false;
+			}
+
+		}
+	}
+	return true;
+}
 
 /**
  * returns true if the ray can reach light with out hitting
@@ -36,56 +72,48 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octr
 	//calculate the mo
 	//we should cast number of rays, and average the visibility results
 	float visibility = 0.0f;
-	bool isBlocked;
 
-	for(unsigned int i = 0; i < SHADOW_RATE; ++i){
-		Vec3f direction;
-		Vec4f lightPosition = light.getPosition();
-        float distanceToLight = ((Vec3f)(lightPosition - intersectionPoint)).length();
-		lightPosition.x += deviations[i][0] * 0.025 * distanceToLight;
-		lightPosition.y += deviations[i][1] * 0.025 * distanceToLight;
-		if (fabs(lightPosition.w) < EPSILON) {
-			direction = lightPosition;
-		} else {
-			Vec4f lightPos = lightPosition;
-			lightPos = (1 / lightPosition.w) * lightPos;
-			direction = lightPos - intersectionPoint;
-		}
+	if(isLightVisible(intersectionPoint, octree, light, 0, 0)){
+		visibility += 1.0/(SHADOW_RATE*SHADOW_RATE);
+	}
 
-		Ray rayToLight(intersectionPoint,
-				direction.normalize(), 0, 100);
-
-
-
-		float intersectionDistance;
-		Primitive* placeHolder = NULL; //this primitive will not be used, but it is required
-		std::set<Primitive*> primitives;
-		octree.getIntersectingPrimitives(rayToLight,primitives);
-		isBlocked = false;
-		for (std::set<Primitive*>::const_iterator it = primitives.begin();
-				it != primitives.end(); ++it) {
-			if ((*it)->intersectiontest(rayToLight, intersectionDistance,&placeHolder)) {
-				//found intersection, check if it is before the closest one
-				if (distanceToLight > intersectionDistance) {
-					isBlocked = true; //if we have one blocking object, it is enough
-					break;
-				}
-
+	//set the corners specific values, so they can be tested beforehand
+	if(SHADOW_RATE > 2){
+		for(unsigned int i = 0; i < 4; ++i){
+			if(isLightVisible(intersectionPoint, octree, light, corners[i][0], corners[i][1])){
+				visibility += 1.0/(SHADOW_RATE*SHADOW_RATE);
 			}
 		}
-		if(!isBlocked){
-			visibility += 1.0/SHADOW_RATE;
-		}
-		if(i == 5 ) { //after first 5
-			if( visibility == 5.0/SHADOW_RATE) { //if all of them see light, no one will be blocked
-				//std::cout << "all visible " << std::endl;
-				return 1.0f;
-			} else if ( visibility == 0) { // if none of them see light, no one will see either
-				//std::cout << "all blocked" << std::endl;
-				return 0.0f;
-			}
+		if( visibility == 5.0/(SHADOW_RATE*SHADOW_RATE)) { //if all corners and center see light, no one will be blocked
+			//std::cout << "all visible " << std::endl;
+			return 1.0f;
+		} else if ( visibility == 0) { // if none of them see light, no one will see either
+			//std::cout << "all blocked" << std::endl;
+			return 0.0f;
 		}
 	}
+		//at this point we know there is a penumbra we calculate light
+		if(SHADOW_RATE >= 2){
+			float gridSize = LIGHT_SIZE / SHADOW_RATE;
+
+			float offsetX,offsetY;
+			visibility -=1.0/(SHADOW_RATE*SHADOW_RATE);//remove center
+			for(unsigned int i = 0; i < SHADOW_RATE; ++i){
+				for(unsigned int j = 0; j < SHADOW_RATE; ++j){
+					//pass the corners
+					if(!((i==0 && j==0)||(i==SHADOW_RATE-1 && j==0)||(i==0 && j==SHADOW_RATE-1)||(i==SHADOW_RATE-1 && j==SHADOW_RATE-1))){
+						offsetX= ((rand()/float(RAND_MAX+1)*gridSize) + gridSize*i) - LIGHT_SIZE/2;
+						offsetY= ((rand()/float(RAND_MAX+1)*gridSize) + gridSize*j) - LIGHT_SIZE/2;
+
+						if(isLightVisible(intersectionPoint, octree, light, offsetX, offsetY)){
+							visibility += 1.0/(SHADOW_RATE*SHADOW_RATE);
+						}
+					}
+				}
+			}
+		}
+
+	//std::cout << "vis: " << visibility << std::endl;
 	return visibility;
 }
 

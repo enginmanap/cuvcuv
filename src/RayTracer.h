@@ -22,13 +22,10 @@
 
 class Octree;
 
-#ifndef SHADOW_RATE
-#define SHADOW_RATE 50
-#endif //SHADOW_RATE
-
 class RayTracer {
 private:
-	float deviations[SHADOW_RATE][2];
+	float corners[4][2];
+	bool isLightVisible(const Vec4f&, const Octree&, const Light&, float, float) const;
 public:
 	RayTracer();
 	Vec3f trace(const Ray&, const Octree&, const std::vector<Light>&, const unsigned int) const;
