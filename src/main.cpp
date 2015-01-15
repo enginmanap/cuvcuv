@@ -5,7 +5,7 @@
 #include "FreeImage.h"
 #else
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "stb/stb_image_write.h"
 #endif
 
 #define HEIGHT  640

@@ -7,7 +7,7 @@
 
 #include "Texture.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "stb/stb_image.h"
 
 /**
  * loads image with given filename
