@@ -11,10 +11,8 @@ Vec4f Vec4f::normalize() const {
 	return Vec4fNS::normalize(*this);
 }
 
-float Vec4f::length(){
-	return sqrt(
-			((x * x) + (y * y)
-					+ (z * z)) / (w * w) );
+float Vec4f::length() {
+	return sqrt(((x * x) + (y * y) + (z * z)) / (w * w));
 }
 
 Vec4f Vec4fNS::normalize(const Vec4f& vector) {
@@ -91,7 +89,6 @@ Vec4f operator*(float i, const Vec4f& vector) {
 
 	return Vec4f(i * vector.x, i * vector.y, i * vector.z, i * vector.w);
 }
-
 
 std::ostream& operator<<(std::ostream &strm, const Vec4f &vector) {
 	return strm << "(" << vector.x << ", " << vector.y << ", " << vector.z

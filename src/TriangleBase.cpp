@@ -7,42 +7,47 @@
 
 #include "TriangleBase.h"
 
-bool TriangleBase::setTransformation(const Mat4f& transformMatrix){
-	Primitive::setTransformation(transformMatrix);//call to super, so inverse will be calculated
+bool TriangleBase::setTransformation(const Mat4f& transformMatrix) {
+	Primitive::setTransformation(transformMatrix); //call to super, so inverse will be calculated
 	Vec3f normal = Vec3fNS::cross((b - a), (c - a));
 	normal = Vec4f(normal, 0.0f) * this->inverseTransformMat.transpose();
 	triangleNormal = Vec3fNS::normalize(normal);
 	return true;
 }
 
-
-void TriangleBase::generateBoundingBox(){
+void TriangleBase::generateBoundingBox() {
 	//std::cout<<"generate box" << std::endl;
 	//first calculate values of the vertex points, after transformations
-	Vec3f transformedA = Vec4f(a,1.0f) * this->transformMatrix; //1.0f since this is not a direction, but position
-	Vec3f transformedB = Vec4f(b,1.0f) * this->transformMatrix;
-	Vec3f transformedC = Vec4f(c,1.0f) * this->transformMatrix;
+	Vec3f transformedA = Vec4f(a, 1.0f) * this->transformMatrix; //1.0f since this is not a direction, but position
+	Vec3f transformedB = Vec4f(b, 1.0f) * this->transformMatrix;
+	Vec3f transformedC = Vec4f(c, 1.0f) * this->transformMatrix;
 
 	//now calculate the bounding box
-	float xMax = std::max(transformedA.x, std::max(transformedB.x, transformedC.x));
-	float yMax = std::max(transformedA.y, std::max(transformedB.y, transformedC.y));
-	float zMax = std::max(transformedA.z, std::max(transformedB.z, transformedC.z));
-	this->bbUpper = Vec3f(xMax,yMax,zMax);
+	float xMax = std::max(transformedA.x,
+			std::max(transformedB.x, transformedC.x));
+	float yMax = std::max(transformedA.y,
+			std::max(transformedB.y, transformedC.y));
+	float zMax = std::max(transformedA.z,
+			std::max(transformedB.z, transformedC.z));
+	this->bbUpper = Vec3f(xMax, yMax, zMax);
 
-	float xMin = std::min(transformedA.x, std::min(transformedB.x, transformedC.x));
-	float yMin = std::min(transformedA.y, std::min(transformedB.y, transformedC.y));
-	float zMin = std::min(transformedA.z, std::min(transformedB.z, transformedC.z));
-	this->bbLower=Vec3f(xMin,yMin,zMin);
+	float xMin = std::min(transformedA.x,
+			std::min(transformedB.x, transformedC.x));
+	float yMin = std::min(transformedA.y,
+			std::min(transformedB.y, transformedC.y));
+	float zMin = std::min(transformedA.z,
+			std::min(transformedB.z, transformedC.z));
+	this->bbLower = Vec3f(xMin, yMin, zMin);
 
-	float xCenter = (xMax + xMin) /2;
-	float yCenter = (yMax + yMin) /2;
-	float zCenter = (zMax + zMin) /2;
-	this->bbCenter=Vec3f(xCenter,yCenter,zCenter);
-
+	float xCenter = (xMax + xMin) / 2;
+	float yCenter = (yMax + yMin) / 2;
+	float zCenter = (zMax + zMin) / 2;
+	this->bbCenter = Vec3f(xCenter, yCenter, zCenter);
 
 }
 
-bool TriangleBase::intersectiontest(Ray ray, float& distance,Primitive** intersectingPrimitive) const {
+bool TriangleBase::intersectiontest(Ray ray, float& distance,
+		Primitive** intersectingPrimitive) const {
 	Ray transformedRay = generateTransformedRay(ray);
 	Vec3f rayPosition = transformedRay.getPosition();
 	Vec3f rayDirection = transformedRay.getDirection();

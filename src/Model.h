@@ -8,7 +8,6 @@
 #ifndef SRC_MODEL_H_
 #define SRC_MODEL_H_
 
-
 #include <string>
 #include "Primitive.h"
 #include "TriangleBase.h"
@@ -18,7 +17,7 @@
 #define INITIAL_VERTEX_COUNT 1000
 #endif //INITIAL_VERTEX_COUNT
 
-class Model : public Primitive {
+class Model: public Primitive {
 	std::vector<Vec3f> vertexVector;
 	std::vector<Vec3f> vertexNormalVector;
 	std::vector<Vec3f> vertexTextureCoordinateVector;
@@ -28,7 +27,10 @@ class Model : public Primitive {
 
 	Octree *spatialTree;
 	void generateBoundingBox();
-	Vec3f calculateNormal(const Vec4f& intersectionPoint) const {return Vec3f();};//this is a placeholder, it should newer called
+	Vec3f calculateNormal(const Vec4f& intersectionPoint) const {
+		return Vec3f();
+	}
+	; //this is a placeholder, it should newer called
 	bool verifyTriangleIndexes(int&, int&, int&);
 public:
 	Model(const Mat4f&);
@@ -38,16 +40,24 @@ public:
 	bool createVertexSpace(int);
 	void printVertexes();
 
-	void addVertex(float x, float y, float z){this->vertexVector.push_back(Vec3f(x, y, z));};
-	void addVertexNormal(float x, float y, float z){this->vertexNormalVector.push_back(Vec3f(x, y, z));};
-	void addVertexTextureCoordinate(float x, float y){this->vertexTextureCoordinateVector.push_back(Vec3f(x, y, 0));};
+	void addVertex(float x, float y, float z) {
+		this->vertexVector.push_back(Vec3f(x, y, z));
+	}
+	;
+	void addVertexNormal(float x, float y, float z) {
+		this->vertexNormalVector.push_back(Vec3f(x, y, z));
+	}
+	;
+	void addVertexTextureCoordinate(float x, float y) {
+		this->vertexTextureCoordinateVector.push_back(Vec3f(x, y, 0));
+	}
+	;
 	bool addTriangleBase(int, int, int);
 	bool addTriangle(int, int, int, int, int, int, int, int, int);
 
 	void buildOctree();
 
 	bool intersectiontest(Ray, float&, Primitive**) const;
-
 
 };
 

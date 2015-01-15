@@ -16,8 +16,7 @@
 #include "Vec3f.h"
 #include "FileReader.h"
 
-
-class MaterialReader : public FileReader {
+class MaterialReader: public FileReader {
 	std::string filePath;
 	std::vector<Material*> materials;
 	Material* currentMaterial;
@@ -26,7 +25,11 @@ class MaterialReader : public FileReader {
 
 public:
 
-	MaterialReader(std::string filePath, std::string filename): FileReader(filePath, filename), filePath(filePath), currentMaterial(NULL){};
+	MaterialReader(std::string filePath, std::string filename) :
+			FileReader(filePath, filename), filePath(filePath), currentMaterial(
+					NULL) {
+	}
+	;
 
 	std::vector<Material*> readMaterialFile(std::vector<Texture*>&);
 };

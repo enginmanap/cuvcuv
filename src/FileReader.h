@@ -21,7 +21,6 @@
 #define MAX_PARAMS 10
 #endif //MAX_PARAMS
 
-
 class FileReader {
 protected:
 	std::string filePath;
@@ -33,13 +32,12 @@ protected:
 public:
 	FileReader(std::string filePath, std::string filename);
 	virtual ~FileReader();
-	inline static char separator()
-	{
-		#ifdef _WIN32
-			return '\\';
-		#else
-			return '/';
-		#endif
+	inline static char separator() {
+#ifdef _WIN32
+		return '\\';
+#else
+		return '/';
+#endif
 	}
 };
 

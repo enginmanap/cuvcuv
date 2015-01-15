@@ -15,20 +15,48 @@ class Ray {
 private:
 	Vec4f position, direction, inverseDirection;
 	float minDistance, maxDistance;
-void generateInverseDirection(){
-		if(direction.x == 0) inverseDirection.x = std::numeric_limits<float>::max(); else inverseDirection.x = 1.0f/direction.x;
-		if(direction.y == 0) inverseDirection.y = std::numeric_limits<float>::max(); else inverseDirection.y = 1.0f/direction.y;
-		if(direction.z == 0) inverseDirection.z = std::numeric_limits<float>::max(); else inverseDirection.z = 1.0f/direction.z;
-		inverseDirection.w=0;//std::numeric_limits<float>::infinity();//since direction must have 0 as w
+	void generateInverseDirection() {
+		if (direction.x == 0)
+			inverseDirection.x = std::numeric_limits<float>::max();
+		else
+			inverseDirection.x = 1.0f / direction.x;
+		if (direction.y == 0)
+			inverseDirection.y = std::numeric_limits<float>::max();
+		else
+			inverseDirection.y = 1.0f / direction.y;
+		if (direction.z == 0)
+			inverseDirection.z = std::numeric_limits<float>::max();
+		else
+			inverseDirection.z = 1.0f / direction.z;
+		inverseDirection.w = 0; //std::numeric_limits<float>::infinity();//since direction must have 0 as w
 	}
 public:
-	Ray(): position(Vec4f()),direction(Vec4f()), inverseDirection(Vec4f()), minDistance(0), maxDistance(100) {};
-	Vec4f getPosition() const {return position;};
-	Vec4f getDirection() const {return direction;};
-	Vec4f getInverseDirection() const {return inverseDirection;};
-	Ray(const Vec4f& position, const Vec4f& direction, float minDistance,float maxDistance) : position(position),direction(direction), minDistance(minDistance), maxDistance(maxDistance) {
-		generateInverseDirection();}
-	Ray(const Vec3f& position, const Vec3f& direction, float min,float max):position(Vec4f(position,1.0f)), direction(Vec4f(direction,0.0f)), minDistance(min), maxDistance(max) {
+	Ray() :
+			position(Vec4f()), direction(Vec4f()), inverseDirection(Vec4f()), minDistance(
+					0), maxDistance(100) {
+	}
+	;
+	Vec4f getPosition() const {
+		return position;
+	}
+	;
+	Vec4f getDirection() const {
+		return direction;
+	}
+	;
+	Vec4f getInverseDirection() const {
+		return inverseDirection;
+	}
+	;
+	Ray(const Vec4f& position, const Vec4f& direction, float minDistance,
+			float maxDistance) :
+			position(position), direction(direction), minDistance(minDistance), maxDistance(
+					maxDistance) {
+		generateInverseDirection();
+	}
+	Ray(const Vec3f& position, const Vec3f& direction, float min, float max) :
+			position(Vec4f(position, 1.0f)), direction(Vec4f(direction, 0.0f)), minDistance(
+					min), maxDistance(max) {
 		generateInverseDirection();
 	}
 

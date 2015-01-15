@@ -17,8 +17,14 @@ public:
 	float x;
 	float y;
 	float z;
-	Vec3f(): x(0),y(0),z(0){};//if no value is given, all elements are zero
-	Vec3f(float x, float y, float z):x(x),y(y),z(z) {};
+	Vec3f() :
+			x(0), y(0), z(0) {
+	}
+	; //if no value is given, all elements are zero
+	Vec3f(float x, float y, float z) :
+			x(x), y(y), z(z) {
+	}
+	;
 
 	float getElement(const int) const;
 	Vec3f normalize() const;
@@ -26,7 +32,10 @@ public:
 	Vec3f operator+(const Vec3f&) const;
 	Vec3f operator*(const Vec3f&) const;
 	float& operator[](int); //it is not const, so we can assign to it.
-	float length() const {return sqrt((x * x) + (y * y) + (z * z));};
+	float length() const {
+		return sqrt((x * x) + (y * y) + (z * z));
+	}
+	;
 
 };
 

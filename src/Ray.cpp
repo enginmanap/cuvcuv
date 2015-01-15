@@ -7,7 +7,7 @@
 
 #include "Ray.h"
 
-
-std::ostream& operator<<(std::ostream &strm, const Ray &ray){
-	return strm << "pos(" << ray.getPosition() << "), direction(" << ray.getDirection() << ")";
+std::ostream& operator<<(std::ostream &strm, const Ray &ray) {
+	return strm << "pos(" << ray.getPosition() << "), direction("
+			<< ray.getDirection() << ")";
 }

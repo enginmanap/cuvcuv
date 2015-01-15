@@ -27,7 +27,11 @@ class SceneReader: public FileReader {
 	std::string filePath;
 	Scene* scene;
 public:
-	SceneReader(std::string filePath, std::string filename): FileReader(filePath,filename),filePath(filePath){this->scene = NULL;};
+	SceneReader(std::string filePath, std::string filename) :
+			FileReader(filePath, filename), filePath(filePath) {
+		this->scene = NULL;
+	}
+	;
 	/**
 	 * A file can contain these:
 	 * size width height

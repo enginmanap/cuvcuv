@@ -23,16 +23,16 @@ private:
 	float fovy, fovx;
 	unsigned int height, width;
 	unsigned int currentPoint;
-	Vec3f w,u,v;
+	Vec3f w, u, v;
 
-	float xChangeFactor,yChangeFactor,halfWidth,halfHeight;
+	float xChangeFactor, yChangeFactor, halfWidth, halfHeight;
 	void getRay(unsigned int x, unsigned int y, Ray& ray);
-	void getRay(unsigned int, unsigned int, Ray&, float,float);
+	void getRay(unsigned int, unsigned int, Ray&, float, float);
 public:
-	Camera(float, float, float, float, float, float, float, float, float,
-			float, unsigned int, unsigned int);
+	Camera(float, float, float, float, float, float, float, float, float, float,
+			unsigned int, unsigned int);
 	bool getPoint(unsigned int& x, unsigned int& y);
-	bool getRays(unsigned int&, unsigned int&,unsigned int,Ray*);
+	bool getRays(unsigned int&, unsigned int&, unsigned int, Ray*);
 
 };
 

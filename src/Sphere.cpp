@@ -7,38 +7,52 @@
 
 #include "Sphere.h"
 
-
-void Sphere::generateBoundingBox(){
+void Sphere::generateBoundingBox() {
 	//calculate the bounding box for this sphere
 
 	//we assume it was a sphere in 0,0,0 with radius 1, we will put real values in motion afterwards
 	float xRadius, yRadius, zRadius;
-	xRadius = sqrt(pow(this->transformMatrix.getElement(0,0),2) +pow(this->transformMatrix.getElement(1,0),2) + pow(this->transformMatrix.getElement(2,0),2));
-	yRadius = sqrt(pow(this->transformMatrix.getElement(0,1),2) +pow(this->transformMatrix.getElement(1,1),2) +pow(this->transformMatrix.getElement(2,1),2));
-	zRadius = sqrt(pow(this->transformMatrix.getElement(0,2),2) +pow(this->transformMatrix.getElement(1,2),2) +pow(this->transformMatrix.getElement(2,2),2));
+	xRadius = sqrt(
+			pow(this->transformMatrix.getElement(0, 0), 2)
+					+ pow(this->transformMatrix.getElement(1, 0), 2)
+					+ pow(this->transformMatrix.getElement(2, 0), 2));
+	yRadius = sqrt(
+			pow(this->transformMatrix.getElement(0, 1), 2)
+					+ pow(this->transformMatrix.getElement(1, 1), 2)
+					+ pow(this->transformMatrix.getElement(2, 1), 2));
+	zRadius = sqrt(
+			pow(this->transformMatrix.getElement(0, 2), 2)
+					+ pow(this->transformMatrix.getElement(1, 2), 2)
+					+ pow(this->transformMatrix.getElement(2, 2), 2));
 
 	//now put real radius in use
-	xRadius *=this->radius;
-	yRadius *=this->radius;
-	zRadius *=this->radius;
+	xRadius *= this->radius;
+	yRadius *= this->radius;
+	zRadius *= this->radius;
 
 	//now calculate max and min points for bounding box. We are adding real position at this step
-	float xMax = xRadius + this->position.x + this->transformMatrix.getElement(3,0);
-	float yMax = yRadius + this->position.y + this->transformMatrix.getElement(3,1);
-	float zMax = zRadius + this->position.z + this->transformMatrix.getElement(3,2);
-	this->bbUpper = Vec3f(xMax,yMax,zMax);
+	float xMax = xRadius + this->position.x
+			+ this->transformMatrix.getElement(3, 0);
+	float yMax = yRadius + this->position.y
+			+ this->transformMatrix.getElement(3, 1);
+	float zMax = zRadius + this->position.z
+			+ this->transformMatrix.getElement(3, 2);
+	this->bbUpper = Vec3f(xMax, yMax, zMax);
 
-	float xMin = -xRadius + this->position.x + this->transformMatrix.getElement(3,0);
-	float yMin = -yRadius + this->position.y + this->transformMatrix.getElement(3,1);
-	float zMin = -zRadius + this->position.z + this->transformMatrix.getElement(3,2);
-	this->bbLower=Vec3f(xMin,yMin,zMin);
+	float xMin = -xRadius + this->position.x
+			+ this->transformMatrix.getElement(3, 0);
+	float yMin = -yRadius + this->position.y
+			+ this->transformMatrix.getElement(3, 1);
+	float zMin = -zRadius + this->position.z
+			+ this->transformMatrix.getElement(3, 2);
+	this->bbLower = Vec3f(xMin, yMin, zMin);
 
-	float xCenter = (xMax + xMin) /2;
-	float yCenter = (yMax + yMin) /2;
-	float zCenter = (zMax + zMin) /2;
-	this->bbCenter=Vec3f(xCenter,yCenter,zCenter);
+	float xCenter = (xMax + xMin) / 2;
+	float yCenter = (yMax + yMin) / 2;
+	float zCenter = (zMax + zMin) / 2;
+	this->bbCenter = Vec3f(xCenter, yCenter, zCenter);
 
-	this->bbwidths = Vec3f(xRadius,yRadius,zRadius);
+	this->bbwidths = Vec3f(xRadius, yRadius, zRadius);
 }
 
 Sphere::Sphere(float x, float y, float z, float rad, Mat4f& transformMat) {
@@ -49,12 +63,11 @@ Sphere::Sphere(float x, float y, float z, float rad, Mat4f& transformMat) {
 	this->setTransformation(transformMat); //this generates bounding box, and inverseTransformTranspose
 }
 
-bool Sphere::setTransformation(const Mat4f& transformMatrix){
-	Primitive::setTransformation(transformMatrix);//call to super, so inverse will be calculated
+bool Sphere::setTransformation(const Mat4f& transformMatrix) {
+	Primitive::setTransformation(transformMatrix); //call to super, so inverse will be calculated
 	this->inverseMatrixTranspose = this->inverseTransformMat.transpose();
 	return true;
 }
-
 
 Sphere::~Sphere() {
 
@@ -73,7 +86,8 @@ Sphere::~Sphere() {
  * 	returns:
  * 		bool: if there is an intersection
  */
-bool Sphere::intersectiontest(Ray ray, float& distance, Primitive** intersectingPrimitive) const {
+bool Sphere::intersectiontest(Ray ray, float& distance,
+		Primitive** intersectingPrimitive) const {
 	Ray transformedRay = generateTransformedRay(ray);
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
@@ -138,7 +152,9 @@ bool Sphere::intersectiontest(Ray ray, float& distance, Primitive** intersecting
 
 Vec3f Sphere::calculateNormal(const Vec4f& position) const {
 	//calculate the normal, if there were no transformations, than inverse transpose the normal.
-	Vec3f normal = ((Vec3f) (position * this->inverseTransformMat))	- this->position;
-	return Vec3fNS::normalize(Vec4f(normal, 0.0f) * this->inverseMatrixTranspose);
+	Vec3f normal = ((Vec3f) (position * this->inverseTransformMat))
+			- this->position;
+	return Vec3fNS::normalize(
+			Vec4f(normal, 0.0f) * this->inverseMatrixTranspose);
 
 }

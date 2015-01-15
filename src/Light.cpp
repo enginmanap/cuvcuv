@@ -7,15 +7,16 @@
 
 #include "Light.h"
 
-bool Light::setAttenuation(Vec3f& attenuation){
+bool Light::setAttenuation(Vec3f& attenuation) {
 	this->attenuation = attenuation;
 	return true;
 }
 
-float Light::getAttenuationFactor(float distance){
-	if(fabs(this->position.w) < EPSILON)
+float Light::getAttenuationFactor(float distance) {
+	if (fabs(this->position.w) < EPSILON)
 		return 1.0f;
-	return (1 / (attenuation.x + attenuation.y * distance + (attenuation.z * distance * distance)));
+	return (1
+			/ (attenuation.x + attenuation.y * distance
+					+ (attenuation.z * distance * distance)));
 }
-
 

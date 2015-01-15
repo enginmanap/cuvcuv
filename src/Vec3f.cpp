@@ -84,7 +84,6 @@ Vec3f operator*(float i, const Vec3f& vector) {
 	return Vec3f(i * vector.x, i * vector.y, i * vector.z);
 }
 
-
 float Vec3f::getElement(const int index) const {
 	switch (index) {
 	case 0:

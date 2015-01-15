@@ -17,8 +17,8 @@
  * @returns:
  * std::vector<Material*>
  */
-std::vector<Material*> MaterialReader::readMaterialFile(std::vector<Texture*>& textures) {
-
+std::vector<Material*> MaterialReader::readMaterialFile(
+		std::vector<Texture*>& textures) {
 
 	std::string command;
 	float floatParameters[MAX_PARAMS];
@@ -32,7 +32,8 @@ std::vector<Material*> MaterialReader::readMaterialFile(std::vector<Texture*>& t
 		std::stringstream stringStream(firstLine);
 		stringStream >> command;
 		if (command != "newmtl") {
-			std::cerr << "First command of material file has to be \"newmtl\"" << std::endl;
+			std::cerr << "First command of material file has to be \"newmtl\""
+					<< std::endl;
 			exit(1);
 		} else {
 			if (readStringParams(stringStream, stringParameters, 1)) {
@@ -53,73 +54,85 @@ std::vector<Material*> MaterialReader::readMaterialFile(std::vector<Texture*>& t
 	while (readLine(line)) {
 		std::stringstream stringStream(line);
 		stringStream >> command;
-		if (command == "Ka") {//ambient
-			if (readFloatParams(stringStream, floatParameters, parameterCount)) {
-				if(parameterCount < 3) {
-					std::cerr << "Ka does not contain 3 floats, only " << parameterCount << " provided." << std::endl;
+		if (command == "Ka") { //ambient
+			if (readFloatParams(stringStream, floatParameters,
+					parameterCount)) {
+				if (parameterCount < 3) {
+					std::cerr << "Ka does not contain 3 floats, only "
+							<< parameterCount << " provided." << std::endl;
 				} else {
-					temporaryVector.x=floatParameters[0];
-					temporaryVector.y=floatParameters[1];
-					temporaryVector.z=floatParameters[2];
+					temporaryVector.x = floatParameters[0];
+					temporaryVector.y = floatParameters[1];
+					temporaryVector.z = floatParameters[2];
 					currentMaterial->setAmbient(temporaryVector);
 				}
 			}
-		} else if (command == "Ke") {//emission
-			if (readFloatParams(stringStream, floatParameters, parameterCount)) {
-				if(parameterCount < 3) {
-					std::cerr << "Ka does not contain 3 floats, only " << parameterCount << " provided." << std::endl;
+		} else if (command == "Ke") { //emission
+			if (readFloatParams(stringStream, floatParameters,
+					parameterCount)) {
+				if (parameterCount < 3) {
+					std::cerr << "Ka does not contain 3 floats, only "
+							<< parameterCount << " provided." << std::endl;
 				} else {
-				temporaryVector.x=floatParameters[0];
-				temporaryVector.y=floatParameters[1];
-				temporaryVector.z=floatParameters[2];
-				currentMaterial->setEmission(temporaryVector);
+					temporaryVector.x = floatParameters[0];
+					temporaryVector.y = floatParameters[1];
+					temporaryVector.z = floatParameters[2];
+					currentMaterial->setEmission(temporaryVector);
 				}
 			}
-		} else if (command == "Kd") {//diffuse
-			if (readFloatParams(stringStream, floatParameters, parameterCount)) {
-				if(parameterCount < 3) {
-					std::cerr << "Ka does not contain 3 floats, only " << parameterCount << " provided." << std::endl;
+		} else if (command == "Kd") { //diffuse
+			if (readFloatParams(stringStream, floatParameters,
+					parameterCount)) {
+				if (parameterCount < 3) {
+					std::cerr << "Ka does not contain 3 floats, only "
+							<< parameterCount << " provided." << std::endl;
 				} else {
-					temporaryVector.x=floatParameters[0];
-					temporaryVector.y=floatParameters[1];
-					temporaryVector.z=floatParameters[2];
+					temporaryVector.x = floatParameters[0];
+					temporaryVector.y = floatParameters[1];
+					temporaryVector.z = floatParameters[2];
 					currentMaterial->setDiffuse(temporaryVector);
 				}
 			}
-		} else if (command == "Ks") {//specular
-			if (readFloatParams(stringStream, floatParameters, parameterCount)) {
-				if(parameterCount < 3) {
-					std::cerr << "Ka does not contain 3 floats, only " << parameterCount << " provided." << std::endl;
+		} else if (command == "Ks") { //specular
+			if (readFloatParams(stringStream, floatParameters,
+					parameterCount)) {
+				if (parameterCount < 3) {
+					std::cerr << "Ka does not contain 3 floats, only "
+							<< parameterCount << " provided." << std::endl;
 				} else {
-					temporaryVector.x=floatParameters[0];
-					temporaryVector.y=floatParameters[1];
-					temporaryVector.z=floatParameters[2];
+					temporaryVector.x = floatParameters[0];
+					temporaryVector.y = floatParameters[1];
+					temporaryVector.z = floatParameters[2];
 					currentMaterial->setSpecular(temporaryVector);
 				}
 			}
-		} else if (command == "Ns") {//shininess
-			if (readFloatParams(stringStream, floatParameters, parameterCount)) {
+		} else if (command == "Ns") { //shininess
+			if (readFloatParams(stringStream, floatParameters,
+					parameterCount)) {
 				currentMaterial->setShininess(floatParameters[0]);
 			}
-		} else if (command == "newmtl") {//shininess
+		} else if (command == "newmtl") { //shininess
 			if (readStringParams(stringStream, stringParameters, 1)) {
 				currentMaterial = new Material(stringParameters[0]);
 				materials.push_back(currentMaterial);
 			} else {
-				std::cerr << "newmtl command parameters could not be read"	<< std::endl;
+				std::cerr << "newmtl command parameters could not be read"
+						<< std::endl;
 			}
-		} else if (command == "map_Kd") {//shininess
+		} else if (command == "map_Kd") { //shininess
 			if (readStringParams(stringStream, stringParameters, 1)) {
 				Texture* texture = NULL;
-				if(stringParameters[0].find_first_of("/") == 0){
-					texture = new Texture(filePath + stringParameters[0].substr(1));
+				if (stringParameters[0].find_first_of("/") == 0) {
+					texture = new Texture(
+							filePath + stringParameters[0].substr(1));
 				} else {
 					texture = new Texture(filePath + stringParameters[0]);
 				}
 				currentMaterial->setMapKd(texture);
 				textures.push_back(texture);
 			} else {
-				std::cerr << "newmtl command parameters could not be read"	<< std::endl;
+				std::cerr << "newmtl command parameters could not be read"
+						<< std::endl;
 			}
 		} else if (command == "d") {
 			//TODO implement setting dissolved (transparency

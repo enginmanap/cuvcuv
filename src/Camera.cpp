@@ -46,7 +46,6 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	u = Vec3fNS::normalize(Vec3fNS::cross(up, w));
 	v = Vec3fNS::cross(w, u);
 
-
 	halfWidth = (float) width / 2;
 	halfHeight = (float) height / 2;
 	xChangeFactor = tan(this->fovx / 2) / halfWidth;
@@ -59,8 +58,9 @@ bool Camera::getPoint(unsigned int& x, unsigned int& y) {
 		x = currentPoint % width;
 		y = currentPoint / width;
 		currentPoint++;
-		if(currentPoint % ((height * width)/100) == 0){
-			std::cout << "rendering: %" << currentPoint / ((height * width)/100) << std::endl;
+		if (currentPoint % ((height * width) / 100) == 0) {
+			std::cout << "rendering: %"
+					<< currentPoint / ((height * width) / 100) << std::endl;
 		}
 		return true;
 	} else {
@@ -72,21 +72,22 @@ bool Camera::getPoint(unsigned int& x, unsigned int& y) {
 /**
  * This method generates a ray
  */
-bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, Ray* ray) {
-	if(rayCount < 1){
+bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount,
+		Ray* ray) {
+	if (rayCount < 1) {
 		std::cerr << "requested ray count less than 1" << std::endl;
 		assert(0);
 	}
 
-	if(this->getPoint(x,y)){
-		getRay(x,y,*ray);
-		if(rayCount != 1) { // we should not alter for 1 ray;
-			for(unsigned int i=1;i<rayCount;++i){
+	if (this->getPoint(x, y)) {
+		getRay(x, y, *ray);
+		if (rayCount != 1) { // we should not alter for 1 ray;
+			for (unsigned int i = 1; i < rayCount; ++i) {
 				//we need a random float between -0.5 and 0.5 for aliasing
 				float xOffset = ((rand() % 100) / 100.0f) - 0.5f;
 				float yOffset = ((rand() % 100) / 100.0f) - 0.5f;
 
-				getRay(x,y,ray[i],xOffset,yOffset);
+				getRay(x, y, ray[i], xOffset, yOffset);
 			}
 		}
 		return true;
@@ -100,25 +101,25 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, Ra
  * this method generates a ray to center of the pixel,
  * with the offset values x and y
  */
-void Camera::getRay(unsigned int x, unsigned int y, Ray& ray, float xOffset, float yOffset) {
-		float horizontalChange = xChangeFactor
-				* ((float) x + (0.5f + xOffset) - halfWidth);
+void Camera::getRay(unsigned int x, unsigned int y, Ray& ray, float xOffset,
+		float yOffset) {
+	float horizontalChange = xChangeFactor
+			* ((float) x + (0.5f + xOffset) - halfWidth);
 
+	float verticalChange = yChangeFactor
+			* (halfHeight - ((float) y + (0.5f + yOffset)));
+	//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
+	Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 
-		float verticalChange = yChangeFactor
-				* (halfHeight - ((float)y + (0.5f + yOffset)));
-		//std::cout << "for " << x << ", " << y << " horizontal change is "<< horizontalChange << " vertical change is "<< verticalChange << std::endl;
-		Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
-
-		direction = Vec3fNS::normalize(direction);
-		//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
-		ray.setPosition(Vec4f(position ,1.0f));
-		ray.setDirection(Vec4f(direction, 0.0f));
+	direction = Vec3fNS::normalize(direction);
+	//std::cout << "the for u(" << u.x << "," << u.y << "," << u.z << ")" << " ray part is (" << direction.x << "," << direction.y << "," << direction.z << ")" << std::endl;
+	ray.setPosition(Vec4f(position, 1.0f));
+	ray.setDirection(Vec4f(direction, 0.0f));
 }
 
 /**
  * This method generates a ray to the center of given point
  */
 void Camera::getRay(unsigned int x, unsigned int y, Ray& ray) {
-	getRay(x,y,ray,0,0);
+	getRay(x, y, ray, 0, 0);
 }

@@ -15,24 +15,33 @@
  * to render as wireframe. This is for debug only,
  * it should be closed except that.
  */
-void Octree::addWireframe(std::vector<Primitive*>& primitives){
+void Octree::addWireframe(std::vector<Primitive*>& primitives) {
 	float width = 0.1f;
 	//create small triangles at the lines of the tree
 	//get the 3 vertices
 	Vec3f vertice[10];
 	vertice[0] = upperEnd;
-	vertice[1] = upperEnd;vertice[1].x = lowerEnd.x;
-	vertice[2] = upperEnd;vertice[2].y = lowerEnd.y;
-	vertice[3] = upperEnd;vertice[3].z = lowerEnd.z;
-	vertice[4] = vertice[1];vertice[4].y -= width;
-	vertice[5] = vertice[2];vertice[5].z -= width;
-	vertice[6] = vertice[3];vertice[6].x -= width;
-	vertice[7] = upperEnd; vertice[7].y -=width;
-	vertice[8] = upperEnd; vertice[8].z -=width;
-	vertice[9] = upperEnd; vertice[9].x -=width;
+	vertice[1] = upperEnd;
+	vertice[1].x = lowerEnd.x;
+	vertice[2] = upperEnd;
+	vertice[2].y = lowerEnd.y;
+	vertice[3] = upperEnd;
+	vertice[3].z = lowerEnd.z;
+	vertice[4] = vertice[1];
+	vertice[4].y -= width;
+	vertice[5] = vertice[2];
+	vertice[5].z -= width;
+	vertice[6] = vertice[3];
+	vertice[6].x -= width;
+	vertice[7] = upperEnd;
+	vertice[7].y -= width;
+	vertice[8] = upperEnd;
+	vertice[8].z -= width;
+	vertice[9] = upperEnd;
+	vertice[9].x -= width;
 
 	Material* mat = new Material("white");
-	Vec3f ambient(1,1,1);
+	Vec3f ambient(1, 1, 1);
 	mat->setAmbient(ambient);
 	TriangleBase* tri;
 
@@ -58,15 +67,24 @@ void Octree::addWireframe(std::vector<Primitive*>& primitives){
 	primitives.push_back(tri);
 
 	vertice[0] = lowerEnd;
-	vertice[1] = lowerEnd;vertice[1].x = upperEnd.x;
-	vertice[2] = lowerEnd;vertice[2].y = upperEnd.y;
-	vertice[3] = lowerEnd;vertice[3].z = upperEnd.z;
-	vertice[4] = vertice[1];vertice[4].y += width;
-	vertice[5] = vertice[2];vertice[5].z += width;
-	vertice[6] = vertice[3];vertice[6].x += width;
-	vertice[7] = lowerEnd; vertice[7].y +=width;
-	vertice[8] = lowerEnd; vertice[8].z +=width;
-	vertice[9] = lowerEnd; vertice[9].x +=width;
+	vertice[1] = lowerEnd;
+	vertice[1].x = upperEnd.x;
+	vertice[2] = lowerEnd;
+	vertice[2].y = upperEnd.y;
+	vertice[3] = lowerEnd;
+	vertice[3].z = upperEnd.z;
+	vertice[4] = vertice[1];
+	vertice[4].y += width;
+	vertice[5] = vertice[2];
+	vertice[5].z += width;
+	vertice[6] = vertice[3];
+	vertice[6].x += width;
+	vertice[7] = lowerEnd;
+	vertice[7].y += width;
+	vertice[8] = lowerEnd;
+	vertice[8].z += width;
+	vertice[9] = lowerEnd;
+	vertice[9].x += width;
 
 	tri = new TriangleBase(vertice[0], vertice[1], vertice[4], Mat4f());
 	tri->setMaterial(mat);
@@ -95,8 +113,10 @@ void Octree::addWireframe(std::vector<Primitive*>& primitives){
  * Creating a node automatically creates subtrees,
  * put primitives in respective
  */
-Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Primitive*>& primitives, unsigned char maxDepth):
-		parent(parent), upperEnd(upperEnd),lowerEnd(lowerEnd), center((1.0f/2)*(this->upperEnd + this->lowerEnd)) {
+Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd,
+		std::vector<Primitive*>& primitives, unsigned char maxDepth) :
+		parent(parent), upperEnd(upperEnd), lowerEnd(lowerEnd), center(
+				(1.0f / 2) * (this->upperEnd + this->lowerEnd)) {
 	//this variable is used for logging. With it we can intent based on the depth.
 	static std::string level = "";
 
@@ -104,7 +124,8 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 	if (this->parent == NULL) {
 		this->isSplittingRedudant = 0; //if root node
 	} else {
-		this->isSplittingRedudant = std::max(this->parent->isSplittingRedudant - 1, 0); //if parent was somewhat redudant, child is too
+		this->isSplittingRedudant = std::max(
+				this->parent->isSplittingRedudant - 1, 0); //if parent was somewhat redudant, child is too
 	}
 	/**
 	 * trying to split until each node has 1 element can easily break memory limits,
@@ -115,16 +136,17 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 	 * the number, but I am going to make it simply by saying can not delve more than
 	 * half the depth.
 	 */
-	if(maxDepth > (primitives.size()/2+1)){//+1 is for 2 primitive cases
-		maxDepth = primitives.size()/2;
+	if (maxDepth > (primitives.size() / 2 + 1)) { //+1 is for 2 primitive cases
+		maxDepth = primitives.size() / 2;
 	}
 
 	std::vector<Primitive*> contained[8], notContained;
-	if(maxDepth <= 1 && primitives.size() >= 10){
+	if (maxDepth <= 1 && primitives.size() >= 10) {
 		//this is not an error case, and it is common appearently
 		//std::cout << "not split due to maxDepth setting for primitive count " << primitives.size() << std::endl;
 	}
-	if (maxDepth > 1 && primitives.size() > 1 && (upperEnd.x - lowerEnd.x > 0.1f)) {
+	if (maxDepth > 1 && primitives.size() > 1
+			&& (upperEnd.x - lowerEnd.x > 0.1f)) {
 		//we should calculate children if we can split more
 
 		//calculate the sides
@@ -180,13 +202,15 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 		down[7].y = lowerEnd.y;
 
 		unsigned char notContainedCounter = 0;
-		for (std::vector<Primitive*>::iterator primIter = primitives.begin(); primIter != primitives.end(); ++primIter) {
+		for (std::vector<Primitive*>::iterator primIter = primitives.begin();
+				primIter != primitives.end(); ++primIter) {
 			notContainedCounter = 0;
 			for (unsigned int subtree = 0; subtree < 8; ++subtree) {
 				/*
 				 * 1 is contact or completely in, and 0 is no contact.
 				 */
-				if((*primIter)->isInBoundingBox(up[subtree], down[subtree]) == 1) {
+				if ((*primIter)->isInBoundingBox(up[subtree], down[subtree])
+						== 1) {
 					contained[subtree].push_back(*primIter);
 				} else {
 					++notContainedCounter;
@@ -206,7 +230,8 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 			std::string oldLevel = level;
 			level = level + "  ";
 			for (unsigned int subtree = 0; subtree < 8; ++subtree) {
-				children[subtree] = new Octree(this, up[subtree], down[subtree], contained[subtree], (maxDepth-1));
+				children[subtree] = new Octree(this, up[subtree], down[subtree],
+						contained[subtree], (maxDepth - 1));
 			}
 			level = oldLevel;
 			//This happens when the element is exactly matches a limit of node as a plane
@@ -240,25 +265,31 @@ Octree::~Octree() {
 bool Octree::isRayIntersects(const Ray& ray) const {
 	//Vec4f directionInverse = ray.getInverseDirection();
 
-	float lowerXIntersection = (lowerEnd.x - ray.getPosition().x) * ray.getInverseDirection().x;
-	float upperXIntersection = (upperEnd.x - ray.getPosition().x) * ray.getInverseDirection().x;
+	float lowerXIntersection = (lowerEnd.x - ray.getPosition().x)
+			* ray.getInverseDirection().x;
+	float upperXIntersection = (upperEnd.x - ray.getPosition().x)
+			* ray.getInverseDirection().x;
 
 	float tmin = std::min(lowerXIntersection, upperXIntersection);
 	float tmax = std::max(lowerXIntersection, upperXIntersection);
 
-	float lowerYIntersection = (lowerEnd.y - ray.getPosition().y) * ray.getInverseDirection().y;
-	float upperYIntersection = (upperEnd.y - ray.getPosition().y) * ray.getInverseDirection().y;
+	float lowerYIntersection = (lowerEnd.y - ray.getPosition().y)
+			* ray.getInverseDirection().y;
+	float upperYIntersection = (upperEnd.y - ray.getPosition().y)
+			* ray.getInverseDirection().y;
 
 	tmin = std::max(tmin, std::min(lowerYIntersection, upperYIntersection));
 	tmax = std::min(tmax, std::max(lowerYIntersection, upperYIntersection));
 
-	float loverZIntersection = (lowerEnd.z - ray.getPosition().z) * ray.getInverseDirection().z;
-	float upperZIntersection = (upperEnd.z - ray.getPosition().z) * ray.getInverseDirection().z;
+	float loverZIntersection = (lowerEnd.z - ray.getPosition().z)
+			* ray.getInverseDirection().z;
+	float upperZIntersection = (upperEnd.z - ray.getPosition().z)
+			* ray.getInverseDirection().z;
 
 	tmin = std::max(tmin, std::min(loverZIntersection, upperZIntersection));
 	tmax = std::min(tmax, std::max(loverZIntersection, upperZIntersection));
 
-    //tmin is intersection distance, if it is smaller than tmax
+	//tmin is intersection distance, if it is smaller than tmax
 	return tmax >= std::max(0.0f, tmin);
 }
 
@@ -266,10 +297,14 @@ bool Octree::isRayIntersects(const Ray& ray) const {
  * this function returns primitives that are
  * possibly intersecting with the ray.
  */
-void Octree::getIntersectingPrimitives(const Ray& ray, std::set<Primitive*>& primitiveSet) const {
+void Octree::getIntersectingPrimitives(const Ray& ray,
+		std::set<Primitive*>& primitiveSet) const {
 	//the camera might be in the box, in that case, the box itself is considered intersecting
 	bool isCameraIn = false;
-	if (ray.getPosition().x >= lowerEnd.x && ray.getPosition().x <= upperEnd.x && ray.getPosition().y >= lowerEnd.y && ray.getPosition().y <= upperEnd.y && ray.getPosition().z >= lowerEnd.z
+	if (ray.getPosition().x >= lowerEnd.x && ray.getPosition().x <= upperEnd.x
+			&& ray.getPosition().y >= lowerEnd.y
+			&& ray.getPosition().y <= upperEnd.y
+			&& ray.getPosition().z >= lowerEnd.z
 			&& ray.getPosition().z <= upperEnd.z) {
 		//the equals are needed, because event though calculating exact 0 is hard, giving it is easy
 		isCameraIn = true;
@@ -288,15 +323,18 @@ void Octree::getIntersectingPrimitives(const Ray& ray, std::set<Primitive*>& pri
 	}
 }
 
-void Octree::print(){
+void Octree::print() {
 	static std::string depth = "";
 	std::string oldDepth = depth;
 	std::ostringstream sstream;
-	for(std::vector<Primitive*>::iterator primIter=this->primitives.begin();primIter != this->primitives.end();++primIter){
+	for (std::vector<Primitive*>::iterator primIter = this->primitives.begin();
+			primIter != this->primitives.end(); ++primIter) {
 		sstream << (*primIter)->id << " ";
 	}
-	std::cout << depth << "node " << this->upperEnd <<","<<this->lowerEnd << " has " << this->primitives.size() << " objects: " << sstream.str()<<std::endl;
-	if(this->children[0]!=NULL){
+	std::cout << depth << "node " << this->upperEnd << "," << this->lowerEnd
+			<< " has " << this->primitives.size() << " objects: "
+			<< sstream.str() << std::endl;
+	if (this->children[0] != NULL) {
 		depth += "  ";
 		for (int i = 0; i < 8; ++i) {
 			this->children[i]->print();

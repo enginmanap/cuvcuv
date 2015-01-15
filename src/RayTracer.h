@@ -19,17 +19,18 @@
 #include "Vec3f.h"
 #include "Octree.h"
 
-
 class Octree;
 
 class RayTracer {
 private:
 	unsigned char shadowGridSize;
 	float corners[4][2];
-	bool isLightVisible(const Vec4f&, const Octree&, const Light&, float, float) const;
+	bool isLightVisible(const Vec4f&, const Octree&, const Light&, float,
+			float) const;
 public:
 	RayTracer(char);
-	Vec3f trace(const Ray&, const Octree&, const std::vector<Light>&, const unsigned int) const;
+	Vec3f trace(const Ray&, const Octree&, const std::vector<Light>&,
+			const unsigned int) const;
 	float traceToLight(const Vec4f&, const Octree&, const Light&) const;
 };
 

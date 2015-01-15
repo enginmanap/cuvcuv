@@ -7,13 +7,14 @@
 
 #include "FileReader.h"
 
-FileReader::FileReader(std::string filePath, std::string fileName):filePath(filePath), fileName(fileName) {
+FileReader::FileReader(std::string filePath, std::string fileName) :
+		filePath(filePath), fileName(fileName) {
 	std::string concat = filePath + fileName;
 
 	fileReadStream.open(concat.c_str());
 	if (!fileReadStream.is_open()) {
-		std::cerr << "file \"" << filePath << fileName << "\" could not open for reading"
-				<< std::endl;
+		std::cerr << "file \"" << filePath << fileName
+				<< "\" could not open for reading" << std::endl;
 		throw 1;
 	}
 }
@@ -44,15 +45,16 @@ bool FileReader::readLine(std::string &buffer) {
  * Returns: true if parameters assigment finished,
  * false if line finished before given count of parameters
  */
-bool FileReader::readFloatParams(std::stringstream &stringStream, float *parameters,
-		int& readParameterCount) {
+bool FileReader::readFloatParams(std::stringstream &stringStream,
+		float *parameters, int& readParameterCount) {
 	readParameterCount = MAX_PARAMS;
 	for (int param = 0; param < MAX_PARAMS; ++param) {
 		stringStream >> parameters[param];
 		if (stringStream.fail()) {
-			readParameterCount=param;
-			if(param == 0){
-				std::cerr << "reading failed at start, please check input." << std::endl;
+			readParameterCount = param;
+			if (param == 0) {
+				std::cerr << "reading failed at start, please check input."
+						<< std::endl;
 				return false;
 			}
 			return true;
@@ -72,7 +74,8 @@ bool FileReader::readFloatParams(std::stringstream &stringStream, float *paramet
  * Returns: true if parameters assigment finished,
  * false if line finished before given count of parameters
  */
-bool FileReader::readStringParams(std::stringstream &stringStream, std::string *parameters, int parameterCount){
+bool FileReader::readStringParams(std::stringstream &stringStream,
+		std::string *parameters, int parameterCount) {
 	for (int param = 0; param < parameterCount; ++param) {
 		stringStream >> parameters[param];
 		if (stringStream.fail()) {
@@ -82,8 +85,6 @@ bool FileReader::readStringParams(std::stringstream &stringStream, std::string *
 	}
 	return true;
 }
-
-
 
 FileReader::~FileReader() {
 //since scene is created by file reader, it should clean it up;

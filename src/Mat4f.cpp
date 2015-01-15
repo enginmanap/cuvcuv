@@ -7,8 +7,6 @@
 
 #include "Mat4f.h"
 
-
-
 /**
  * default constructor creates identity matrix
  */
@@ -34,7 +32,9 @@ Mat4f::Mat4f(float defaultValue) {
 	}
 }
 
-Mat4f::Mat4f(float xx,float xy,float xz,float xw,float yx,float yy,float yz,float yw,float zx,float zy,float zz,float zw,float wx,float wy ,float wz,float ww){
+Mat4f::Mat4f(float xx, float xy, float xz, float xw, float yx, float yy,
+		float yz, float yw, float zx, float zy, float zz, float zw, float wx,
+		float wy, float wz, float ww) {
 	this->rows[0][0] = xx;
 	this->rows[0][1] = xy;
 	this->rows[0][2] = xz;
@@ -92,7 +92,6 @@ Mat4f Mat4f::operator *(Mat4f& matrix) {
 	return result;
 }
 
-
 Vec4f& Mat4f::getRow(const int index) {
 	return rows[index];
 }
@@ -122,7 +121,7 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 
 			//should we swap rows? find the biggest row, that is not 0
 			for (int j = i; j < 4; ++j) {
-				if (copy[j][i] > biggestValue && copy[j][i]!=0) {
+				if (copy[j][i] > biggestValue && copy[j][i] != 0) {
 					biggestRowID = j;
 					biggestValue = copy[j][i];
 				}
@@ -173,79 +172,78 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 
 }
 
-Mat4f Mat4f::transpose() const{
+Mat4f Mat4f::transpose() const {
 
 	Mat4f trans;
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
-			trans[j][i] = this->getElement(i,j);
+			trans[j][i] = this->getElement(i, j);
 		}
 	}
 	return trans;
 }
 
-Mat4f Mat4f::operator+(const Mat4f& matrix) const{
+Mat4f Mat4f::operator+(const Mat4f& matrix) const {
 	Mat4f ret;
-		for (int i = 0; i < 4; ++i) {
-			for (int j = 0; j < 4; ++j) {
-				ret[i][j] = this->getElement(i,j) +  matrix.getElement(i,j);
-			}
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			ret[i][j] = this->getElement(i, j) + matrix.getElement(i, j);
 		}
-		return ret;
+	}
+	return ret;
 }
 
 Mat4f operator*(float multipler, const Mat4f& matrix) {
 	Mat4f ret;
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
-			ret[i][j] = multipler *  matrix.getElement(i,j);
+			ret[i][j] = multipler * matrix.getElement(i, j);
 		}
 	}
 	return ret;
 }
 
-Vec4f Mat4f::operator*(const Vec4f& vector)const {
-		Vec4f result;
-		for (int i = 0; i < 4; ++i) {
-				for (int k = 0; k < 4; ++k) {
-					result[i] += getElement(i,k) * vector.getElement(k);
-				}
+Vec4f Mat4f::operator*(const Vec4f& vector) const {
+	Vec4f result;
+	for (int i = 0; i < 4; ++i) {
+		for (int k = 0; k < 4; ++k) {
+			result[i] += getElement(i, k) * vector.getElement(k);
 		}
-		return result;
+	}
+	return result;
 }
 
 Vec4f operator*(const Vec4f& vector, const Mat4f& matrix) {
-		Vec4f result;
-		for (int i = 0; i < 4; ++i) {
-				for (int k = 0; k < 4; ++k) {
-					result[i] += matrix.getElement(k,i) * vector.getElement(k);
-				}
+	Vec4f result;
+	for (int i = 0; i < 4; ++i) {
+		for (int k = 0; k < 4; ++k) {
+			result[i] += matrix.getElement(k, i) * vector.getElement(k);
 		}
-		return result;
+	}
+	return result;
 }
 
 /**
  * assumes the forth element is 1;
  */
-Vec3f operator*(const Vec3f& vector,const Mat4f& matrix)  {
+Vec3f operator*(const Vec3f& vector, const Mat4f& matrix) {
 	Vec3f result;
 	for (int i = 0; i < 3; ++i) {
-			for (int k = 0; k < 3; ++k) {
-				result[i] += matrix.getElement(k,i) * vector.getElement(k);
-			}
-			result[i] += matrix.getElement(3,i);
+		for (int k = 0; k < 3; ++k) {
+			result[i] += matrix.getElement(k, i) * vector.getElement(k);
+		}
+		result[i] += matrix.getElement(3, i);
 	}
 	return result;
 }
 
-
-Vec3f Mat4f::operator*(const Vec3f& vector) const{
+Vec3f Mat4f::operator*(const Vec3f& vector) const {
 	Vec3f result;
 	for (int i = 0; i < 3; ++i) {
-			for (int k = 0; k < 3; ++k) {
-				result[i] += getElement(i,k) * vector.getElement(k);
-			}
-			result[i] += getElement(i,3);
+		for (int k = 0; k < 3; ++k) {
+			result[i] += getElement(i, k) * vector.getElement(k);
+		}
+		result[i] += getElement(i, 3);
 	}
 	return result;
 }

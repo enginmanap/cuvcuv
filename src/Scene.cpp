@@ -13,14 +13,16 @@ int Scene::materialCount = 0;
  * A scene starts definition starts with the sample size,
  * so we are setting height width, they will be passed to camera;
  */
-Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), sampleRate(1), shadowGrid(1), lightCount(0), currentAttenuation(Vec3f(1,0,0)), maxVertexCount(2000), currentVertex(0), SphereCount(0), triangleCount(0),maxDepth(5) {
+Scene::Scene(unsigned int height, unsigned int width) :
+		height(height), width(width), sampleRate(1), shadowGrid(1), lightCount(
+				0), currentAttenuation(Vec3f(1, 0, 0)), maxVertexCount(2000), currentVertex(
+				0), SphereCount(0), triangleCount(0), maxDepth(5) {
 	this->camera = NULL;
 	this->vertexVector.reserve(maxVertexCount);
 
 	currentMaterial = new Material(DEFAULT_MATERIAL_NAME);
 	materialMap[currentMaterial->getName()] = currentMaterial;
 	materialNames.push(currentMaterial->getName());
-
 
 	//mat->setShininess = 0.0f;
 	//mat->setAttenuation = Vec3f(1, 0, 0); these are default
@@ -33,7 +35,7 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 	this->spatialTree = NULL;
 
 	//TODO these are recreating if a setting found, there should be a better way
-	film = new Film(height,width,COLOR_DEPTH,sampleRate);
+	film = new Film(height, width, COLOR_DEPTH, sampleRate);
 	rayTracer = new RayTracer(1);
 
 }
@@ -53,13 +55,11 @@ Scene::~Scene() {
 
 	std::map<std::string, Material*>::iterator itr = materialMap.begin();
 	while (itr != materialMap.end()) {
-		   std::map<std::string, Material*>::iterator toErase = itr;
-		   ++itr;
-		   delete toErase->second;
-		   materialMap.erase(toErase);
+		std::map<std::string, Material*>::iterator toErase = itr;
+		++itr;
+		delete toErase->second;
+		materialMap.erase(toErase);
 	}
-
-
 
 	for (std::vector<Texture*>::iterator it = textures.begin();
 			it != textures.end(); ++it) {
@@ -71,20 +71,20 @@ Scene::~Scene() {
 	delete film;
 }
 
-void Scene::setShadowGrid(unsigned char shadowGrid){
-	 this->shadowGrid = shadowGrid;
-	 if(rayTracer != NULL)
-		 delete rayTracer;
+void Scene::setShadowGrid(unsigned char shadowGrid) {
+	this->shadowGrid = shadowGrid;
+	if (rayTracer != NULL)
+		delete rayTracer;
 
-	 rayTracer = new RayTracer(shadowGrid);
+	rayTracer = new RayTracer(shadowGrid);
 }
 
-void Scene::setSampleRate(unsigned char samplingRate){
-	 this->sampleRate = samplingRate;
-	 if(film != NULL)
-		 delete film;
+void Scene::setSampleRate(unsigned char samplingRate) {
+	this->sampleRate = samplingRate;
+	if (film != NULL)
+		delete film;
 
-	 film = new Film(height,width,COLOR_DEPTH,sampleRate);
+	film = new Film(height, width, COLOR_DEPTH, sampleRate);
 }
 
 bool Scene::setSaveFilename(std::string filename) {
@@ -102,12 +102,14 @@ bool Scene::pushTransform() {
 	materialNames.push(currentMaterial->getName());
 
 	std::ostringstream outputStringStream;
-	outputStringStream << DEFAULT_MATERIAL_NAME << "_"<< ++materialCount;
-	currentMaterial = new Material(outputStringStream.str(),currentMaterial->getAmbient(), currentMaterial->getDiffuse(), currentMaterial->getSpecular(), currentMaterial->getEmission(), currentMaterial->getShininess(), currentMaterial->getMapKd());
+	outputStringStream << DEFAULT_MATERIAL_NAME << "_" << ++materialCount;
+	currentMaterial = new Material(outputStringStream.str(),
+			currentMaterial->getAmbient(), currentMaterial->getDiffuse(),
+			currentMaterial->getSpecular(), currentMaterial->getEmission(),
+			currentMaterial->getShininess(), currentMaterial->getMapKd());
 	materialMap[currentMaterial->getName()] = currentMaterial;
 
 	//std::cout << "adding material with name" << currentMaterial->getName()<<std::endl;
-
 
 	return true;
 }
@@ -139,8 +141,7 @@ bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,
 		delete camera;
 	}
 	camera = new Camera(lookfromx, lookfromy, lookfromz, lookatx, lookaty,
-			lookatz, upx, upy, upz, fovy, this->height,
-			this->width);
+			lookatz, upx, upy, upz, fovy, this->height, this->width);
 	return true;
 }
 
@@ -152,7 +153,6 @@ bool Scene::createVertexSpace(int maxVertexCount) {
 	currentVertex = 0;
 	return true;
 }
-
 
 bool Scene::getSamplingSize(unsigned int& height, unsigned int& width) {
 	height = this->height;
@@ -198,17 +198,20 @@ bool Scene::setCurrentShininess(float shininess) {
 	return true;
 }
 
-bool Scene::addMaterial(std::vector<Material*>& materials){
+bool Scene::addMaterial(std::vector<Material*>& materials) {
 	for (unsigned int index = 0; index < materials.size(); ++index) {
-		if(materialMap[materials[index]->getName()]!=NULL){
+		if (materialMap[materials[index]->getName()] != NULL) {
 			//we had a material with same name
-			std::cout << "double definition of material " << materials[index]->getName() <<", last one will be kept" << std::endl;
+			std::cout << "double definition of material "
+					<< materials[index]->getName() << ", last one will be kept"
+					<< std::endl;
 			delete materialMap[materials[index]->getName()];
 			materialMap.erase(materials[index]->getName());
 		}
 		materialMap[materials[index]->getName()] = materials[index];
 		currentMaterial = materials[index];
-		std::cout << "new material " << materials[index]->getName() << " added." << std::endl;
+		std::cout << "new material " << materials[index]->getName() << " added."
+				<< std::endl;
 	}
 	materialNames.push(currentMaterial->getName());
 	return true;
@@ -223,8 +226,10 @@ bool Scene::setCurrentAttenuation(float constant, float lineer,
 }
 
 bool Scene::addVertex(float x, float y, float z) {
-	if (currentVertex == maxVertexCount){
-		std::cerr << "vertex vector resizing, using VertexCount command in scene definition can prevent this" << std::endl;
+	if (currentVertex == maxVertexCount) {
+		std::cerr
+				<< "vertex vector resizing, using VertexCount command in scene definition can prevent this"
+				<< std::endl;
 		maxVertexCount = maxVertexCount * 2;
 		vertexVector.resize(maxVertexCount);
 	}
@@ -245,7 +250,8 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 			&& vertice1 < currentVertex && vertice2 < currentVertex
 			&& vertice3 < currentVertex) {
 		TriangleBase* triangle = new TriangleBase(this->vertexVector[vertice1],
-				this->vertexVector[vertice2], this->vertexVector[vertice3],transformStack.top());
+				this->vertexVector[vertice2], this->vertexVector[vertice3],
+				transformStack.top());
 		triangle->setMaterial(currentMaterial);
 		//std::cout << "new triangle with material: " << currentMaterial->getName() << std::endl;
 		//triangle->setTransformation(transformStack.top());
@@ -253,13 +259,20 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 		triangleCount++;
 		return true;
 	} else {
-		std::cerr << "one of the vertices used is not defined ("<< currentVertex << ") ";
-		if(vertice1 < 0 ) std::cerr << "vertex 1 "<< vertice1;
-		if(vertice2 < 0 ) std::cerr << "vertex 2 "<< vertice2;
-		if(vertice3 < 0 ) std::cerr << "vertex 3 "<< vertice3;
-		if(vertice1 >= currentVertex) std::cerr << " vertex 1 bigger " << vertice1;
-		if(vertice2 >= currentVertex) std::cerr << " vertex 2 bigger " << vertice2;
-		if(vertice3 >= currentVertex) std::cerr << " vertex 3 bigger " << vertice3;
+		std::cerr << "one of the vertices used is not defined ("
+				<< currentVertex << ") ";
+		if (vertice1 < 0)
+			std::cerr << "vertex 1 " << vertice1;
+		if (vertice2 < 0)
+			std::cerr << "vertex 2 " << vertice2;
+		if (vertice3 < 0)
+			std::cerr << "vertex 3 " << vertice3;
+		if (vertice1 >= currentVertex)
+			std::cerr << " vertex 1 bigger " << vertice1;
+		if (vertice2 >= currentVertex)
+			std::cerr << " vertex 2 bigger " << vertice2;
+		if (vertice3 >= currentVertex)
+			std::cerr << " vertex 3 bigger " << vertice3;
 
 		std::cerr << std::endl;
 		return false;
@@ -267,7 +280,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 }
 
 bool Scene::addSphere(float x, float y, float z, float radius) {
-	Sphere* sphere = new Sphere(x, y, z, radius,transformStack.top());
+	Sphere* sphere = new Sphere(x, y, z, radius, transformStack.top());
 	sphere->setMaterial(currentMaterial);
 	primitives.push_back(sphere);
 	//sphere->setTransformation(transformStack.top());
@@ -283,7 +296,6 @@ bool Scene::addModel(Model* model) {
 	//TODO do we need to add a modelCount variable?
 	return true;
 }
-
 
 void Scene::buildOctree() {
 	std::cout << "generating spatial tree.." << std::endl;
@@ -309,7 +321,7 @@ void Scene::buildOctree() {
 			minbb.z = currentBBLower.z;
 	}
 	//The octree root node size will be equal to the scene size
-	this->spatialTree = new Octree(NULL, maxbb, minbb, primitives,10);//TODO 10 is hardcoded max depth
+	this->spatialTree = new Octree(NULL, maxbb, minbb, primitives, 10);	//TODO 10 is hardcoded max depth
 	std::cout << "spatial tree generated with dimentions: " << maxbb << ","
 			<< minbb << std::endl;
 	//this->spatialTree->print();
@@ -325,11 +337,12 @@ bool Scene::renderScene() {
 	Ray ray[sampleRate];
 #pragma omp parallel private(color,x,y,ray,morePixels)
 	{
-		morePixels = this->camera->getRays(x,y, sampleRate, ray);
+		morePixels = this->camera->getRays(x, y, sampleRate, ray);
 		while (morePixels) {
-			for(unsigned int i=0; i< sampleRate; ++i){
-				color = rayTracer->trace(ray[i], *spatialTree, lights, this->maxDepth);
-				this->film->setPixel(x,y,color);
+			for (unsigned int i = 0; i < sampleRate; ++i) {
+				color = rayTracer->trace(ray[i], *spatialTree, lights,
+						this->maxDepth);
+				this->film->setPixel(x, y, color);
 			}
 #pragma omp critical
 			morePixels = this->camera->getRays(x, y, sampleRate, ray);
@@ -342,7 +355,7 @@ bool Scene::addLight(float p1, float p2, float p3, float p4, float c1, float c2,
 		float c3) {
 	Vec4f lightPos(p1, p2, p3, p4);
 	Vec3f lightColor(c1, c2, c3);
-	lights.push_back(Light(lightPos,lightColor));
+	lights.push_back(Light(lightPos, lightColor));
 
 	lights.back().setAttenuation(this->currentAttenuation);
 

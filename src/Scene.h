@@ -25,7 +25,6 @@
 #include "Material.h"
 #include "Model.h"
 
-
 #ifndef COLOR_DEPTH
 #define COLOR_DEPTH 8
 #endif
@@ -36,17 +35,16 @@ class Scene {
 	Film* film;
 	unsigned char sampleRate, shadowGrid;
 
-	std::map<std::string,Material*> materialMap;
-	std::stack<std::string> materialNames;//this is necessery because we need to keep the name of material before pushTransform
+	std::map<std::string, Material*> materialMap;
+	std::stack<std::string> materialNames; //this is necessery because we need to keep the name of material before pushTransform
 	static int materialCount;
-	Material* currentMaterial;//this will change with push/pop of materialNames
+	Material* currentMaterial; //this will change with push/pop of materialNames
 
 	std::vector<Texture*> textures;
 
 	std::string saveFilename;
 
 	Camera *camera;
-
 
 	short lightCount;
 	std::vector<Light> lights;
@@ -65,7 +63,6 @@ class Scene {
 	Octree *spatialTree;
 
 	Vec3f temproryVector; //this is used in order not to create/destroy all elements
-
 
 public:
 
@@ -86,9 +83,18 @@ public:
 	bool setCurrentShininess(float);
 
 	bool addMaterial(std::vector<Material*>&);
-	void addTexture(std::vector<Texture*>& newTextures){textures.insert(textures.end(), newTextures.begin(),newTextures.end());};
-	Material* getMaterial(std::string& materialName) {return materialMap[materialName];};
-	Material* getMaterial() {return materialMap[materialNames.top()];};
+	void addTexture(std::vector<Texture*>& newTextures) {
+		textures.insert(textures.end(), newTextures.begin(), newTextures.end());
+	}
+	;
+	Material* getMaterial(std::string& materialName) {
+		return materialMap[materialName];
+	}
+	;
+	Material* getMaterial() {
+		return materialMap[materialNames.top()];
+	}
+	;
 
 	bool setCurrentAttenuation(float, float, float);
 
@@ -99,7 +105,9 @@ public:
 	bool createVertexSpace(int);
 	void printVertexes();
 
-	unsigned char* getPixels(unsigned int height, unsigned int width) {return this->film->getPixels(height,width);}
+	unsigned char* getPixels(unsigned int height, unsigned int width) {
+		return this->film->getPixels(height, width);
+	}
 
 	bool addVertex(float, float, float);
 	bool addTriangle(int, int, int);
@@ -114,7 +122,10 @@ public:
 	/**
 	 * returns the current transform
 	 */
-	Mat4f getTransform() {return transformStack.top();};
+	Mat4f getTransform() {
+		return transformStack.top();
+	}
+	;
 
 	void buildOctree();
 	bool renderScene();

@@ -15,12 +15,16 @@
 #include "Mat4f.h"
 #include "MaterialReader.h"
 
-class ModelReader : public FileReader {
+class ModelReader: public FileReader {
 	Model* model;
 	std::string filePath;
 	bool readFace(std::stringstream&, int*, int&);
 public:
-	ModelReader(std::string filePath, std::string filename): FileReader(filePath,filename), filePath(filePath) {this->model=NULL;};
+	ModelReader(std::string filePath, std::string filename) :
+			FileReader(filePath, filename), filePath(filePath) {
+		this->model = NULL;
+	}
+	;
 	/**
 	 * Scene parameter is used to add any materials and the(1) model
 	 * to the scene. returned pointer can be ignored.
