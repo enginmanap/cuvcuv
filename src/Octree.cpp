@@ -119,7 +119,7 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 		maxDepth = primitives.size()/2;
 	}
 
-	std::vector<Primitive*> contained[8], notContained; //TODO this should be done by addPrimitive method.
+	std::vector<Primitive*> contained[8], notContained;
 	if(maxDepth <= 1 && primitives.size() >= 10){
 		//this is not an error case, and it is common appearently
 		//std::cout << "not split due to maxDepth setting for primitive count " << primitives.size() << std::endl;
@@ -209,7 +209,7 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd, std::vector<Pri
 				children[subtree] = new Octree(this, up[subtree], down[subtree], contained[subtree], (maxDepth-1));
 			}
 			level = oldLevel;
-			//FIXME should newer happen, but it does
+			//This happens when the element is exactly matches a limit of node as a plane
 			this->primitives = notContained;
 		} else {
 			//if splitting was redudant, then skip splitting

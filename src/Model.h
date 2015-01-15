@@ -28,7 +28,7 @@ class Model : public Primitive {
 
 	Octree *spatialTree;
 	void generateBoundingBox();
-	Vec3f calculateNormal(const Vec4f& intersectionPoint) const {return Vec3f();};//FIXME this is a placeholder
+	Vec3f calculateNormal(const Vec4f& intersectionPoint) const {return Vec3f();};//this is a placeholder, it should newer called
 	bool verifyTriangleIndexes(int&, int&, int&);
 public:
 	Model(const Mat4f&);
