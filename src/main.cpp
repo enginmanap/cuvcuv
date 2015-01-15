@@ -25,7 +25,7 @@ void saveToFile(unsigned char pixels[], int height, int width, std::string filen
 #endif
 		std::cerr << "png export failed." << std::endl;
 	} else
-		std::cout << "png export finished." << std::endl;
+		std::cout << "export " << filename << " finished." << std::endl;
 
 }
 
