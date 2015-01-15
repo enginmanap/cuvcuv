@@ -8,18 +8,13 @@
 #include "RayTracer.h"
 
 #ifndef LIGHT_SIZE
-#define LIGHT_SIZE 1.0f
+#define LIGHT_SIZE 10.0f
 #endif //LIGHT_SIZE
 
 
-#ifndef SHADOW_RATE
-#define SHADOW_RATE 6
-#endif //SHADOW_RATE
-
-
-RayTracer::RayTracer(){
+RayTracer::RayTracer(char shadowGridSize):shadowGridSize(shadowGridSize){
 	float halfSize = LIGHT_SIZE / 2;
-	if(SHADOW_RATE > 2){//since 2x2 means randomize this
+	if(shadowGridSize > 2){//since 2x2 means randomize this
 		corners[0][0] = -1 * halfSize;corners[0][1] = -1 * halfSize;//check lower left
 		corners[1][0] =  halfSize;corners[1][1] =  halfSize;//check upper right
 		corners[2][0] = -1 * halfSize;corners[2][1] =  halfSize;//upper left
@@ -74,17 +69,17 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octr
 	float visibility = 0.0f;
 
 	if(isLightVisible(intersectionPoint, octree, light, 0, 0)){
-		visibility += 1.0/(SHADOW_RATE*SHADOW_RATE);
+		visibility = 1.0;
 	}
 
 	//set the corners specific values, so they can be tested beforehand
-	if(SHADOW_RATE > 2){
+	if(shadowGridSize > 2){
 		for(unsigned int i = 0; i < 4; ++i){
 			if(isLightVisible(intersectionPoint, octree, light, corners[i][0], corners[i][1])){
-				visibility += 1.0/(SHADOW_RATE*SHADOW_RATE);
+				visibility += 1.0;
 			}
 		}
-		if( visibility == 5.0/(SHADOW_RATE*SHADOW_RATE)) { //if all corners and center see light, no one will be blocked
+		if( visibility == 5.0) { //if all corners and center see light, no one will be blocked
 			//std::cout << "all visible " << std::endl;
 			return 1.0f;
 		} else if ( visibility == 0) { // if none of them see light, no one will see either
@@ -93,20 +88,20 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octr
 		}
 	}
 		//at this point we know there is a penumbra we calculate light
-		if(SHADOW_RATE >= 2){
-			float gridSize = LIGHT_SIZE / SHADOW_RATE;
+		if(shadowGridSize >= 2){
+			float gridSize = LIGHT_SIZE / shadowGridSize;
 
 			float offsetX,offsetY;
-			visibility -=1.0/(SHADOW_RATE*SHADOW_RATE);//remove center
-			for(unsigned int i = 0; i < SHADOW_RATE; ++i){
-				for(unsigned int j = 0; j < SHADOW_RATE; ++j){
+			visibility -=1.0;//remove center
+			for(unsigned char i = 0; i < shadowGridSize; ++i){
+				for(unsigned char j = 0; j < shadowGridSize; ++j){
 					//pass the corners
-					if(!((i==0 && j==0)||(i==SHADOW_RATE-1 && j==0)||(i==0 && j==SHADOW_RATE-1)||(i==SHADOW_RATE-1 && j==SHADOW_RATE-1))){
+					if(!((i==0 && j==0)||(i==shadowGridSize-1 && j==0)||(i==0 && j==shadowGridSize-1)||(i==shadowGridSize-1 && j==shadowGridSize-1))){
 						offsetX= ((rand()/float(RAND_MAX+1)*gridSize) + gridSize*i) - LIGHT_SIZE/2;
 						offsetY= ((rand()/float(RAND_MAX+1)*gridSize) + gridSize*j) - LIGHT_SIZE/2;
 
 						if(isLightVisible(intersectionPoint, octree, light, offsetX, offsetY)){
-							visibility += 1.0/(SHADOW_RATE*SHADOW_RATE);
+							visibility += 1.0;
 						}
 					}
 				}
@@ -114,7 +109,7 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint, const Octree& octr
 		}
 
 	//std::cout << "vis: " << visibility << std::endl;
-	return visibility;
+	return visibility/(shadowGridSize*shadowGridSize);//since we calculate gridsize^2 rays, and result must be between 0-1
 }
 
 /**

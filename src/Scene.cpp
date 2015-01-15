@@ -13,7 +13,7 @@ int Scene::materialCount = 0;
  * A scene starts definition starts with the sample size,
  * so we are setting height width, they will be passed to camera;
  */
-Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), sampleRate(1), lightCount(0), currentAttenuation(Vec3f(1,0,0)), maxVertexCount(2000), currentVertex(0), SphereCount(0), triangleCount(0),maxDepth(5) {
+Scene::Scene(unsigned int height, unsigned int width): height(height), width(width), sampleRate(1), shadowGrid(1), lightCount(0), currentAttenuation(Vec3f(1,0,0)), maxVertexCount(2000), currentVertex(0), SphereCount(0), triangleCount(0),maxDepth(5) {
 	this->camera = NULL;
 	this->vertexVector.reserve(maxVertexCount);
 
@@ -29,9 +29,12 @@ Scene::Scene(unsigned int height, unsigned int width): height(height), width(wid
 
 	transformStack.push(Mat4f()); //since default constructor generates identity matrix.
 
+	this->rayTracer = NULL;
 	this->spatialTree = NULL;
 
+	//TODO these are recreating if a setting found, there should be a better way
 	film = new Film(height,width,COLOR_DEPTH,sampleRate);
+	rayTracer = new RayTracer(1);
 
 }
 
@@ -63,10 +66,18 @@ Scene::~Scene() {
 		delete (*it);
 	}
 
+	delete rayTracer;
 	delete spatialTree;
 	delete film;
 }
 
+void Scene::setShadowGrid(unsigned char shadowGrid){
+	 this->shadowGrid = shadowGrid;
+	 if(rayTracer != NULL)
+		 delete rayTracer;
+
+	 rayTracer = new RayTracer(shadowGrid);
+}
 
 void Scene::setSampleRate(unsigned char samplingRate){
 	 this->sampleRate = samplingRate;
@@ -317,7 +328,7 @@ bool Scene::renderScene() {
 		morePixels = this->camera->getRays(x,y, sampleRate, ray);
 		while (morePixels) {
 			for(unsigned int i=0; i< sampleRate; ++i){
-				color = rayTracer.trace(ray[i], *spatialTree, lights, this->maxDepth);
+				color = rayTracer->trace(ray[i], *spatialTree, lights, this->maxDepth);
 				this->film->setPixel(x,y,color);
 			}
 #pragma omp critical

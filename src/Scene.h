@@ -34,7 +34,7 @@ class Scene {
 	unsigned int height, width;
 
 	Film* film;
-	unsigned char sampleRate;
+	unsigned char sampleRate, shadowGrid;
 
 	std::map<std::string,Material*> materialMap;
 	std::stack<std::string> materialNames;//this is necessery because we need to keep the name of material before pushTransform
@@ -61,7 +61,7 @@ class Scene {
 	std::stack<Mat4f> transformStack;
 
 	unsigned int maxDepth;
-	RayTracer rayTracer;
+	RayTracer* rayTracer;
 	Octree *spatialTree;
 
 	Vec3f temproryVector; //this is used in order not to create/destroy all elements
@@ -76,6 +76,7 @@ public:
 	virtual ~Scene();
 
 	bool getSamplingSize(unsigned int&, unsigned int&);
+	void setShadowGrid(unsigned char);
 	void setSampleRate(unsigned char samplingRate);
 
 	bool setCurrentAmbient(float, float, float);
@@ -83,6 +84,7 @@ public:
 	bool setCurrentDiffuse(float, float, float);
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
+
 	bool addMaterial(std::vector<Material*>&);
 	void addTexture(std::vector<Texture*>& newTextures){textures.insert(textures.end(), newTextures.begin(),newTextures.end());};
 	Material* getMaterial(std::string& materialName) {return materialMap[materialName];};

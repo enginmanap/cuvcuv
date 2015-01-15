@@ -232,6 +232,10 @@ Scene* SceneReader::readFile() {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				scene->setSampleRate((unsigned char) parameters[0]);
 			}
+		} else if (command == "shadowGrid") {
+			if (readFloatParams(stringStream, parameters, parameterCount)) {
+				scene->setShadowGrid((unsigned char) parameters[0]);
+			}
 		} else if (command == "mtllib") {
 			if (readStringParams(stringStream, stringParams, 1)) {
 				//create a material reader and read material lib
