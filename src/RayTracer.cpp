@@ -8,43 +8,14 @@
 #include "RayTracer.h"
 
 #ifndef LIGHT_SIZE
-#define LIGHT_SIZE 10.0f
+#define LIGHT_SIZE 2.0f
 #endif //LIGHT_SIZE
 
 RayTracer::RayTracer(char shadowGridSize) :
 		shadowGridSize(shadowGridSize) {
-	float halfSize = LIGHT_SIZE / 2;
-	if (shadowGridSize > 2) { //since 2x2 means randomize this
-		corners[0][0] = -1 * halfSize;
-		corners[0][1] = -1 * halfSize; //check lower left
-		corners[1][0] = halfSize;
-		corners[1][1] = halfSize; //check upper right
-		corners[2][0] = -1 * halfSize;
-		corners[2][1] = halfSize; //upper left
-		corners[3][0] = halfSize;
-		corners[3][1] = -1 * halfSize; //lower right
-	}
 }
 
-bool RayTracer::isLightVisible(const Vec4f& intersectionPoint,
-		const Octree& octree, const Light& light, float offsetX,
-		float offsetY) const {
-	Vec3f direction;
-	Vec4f lightPosition = light.getPosition();
-	float distanceToLight =
-			((Vec3f) (lightPosition - intersectionPoint)).length();
-	lightPosition.x += offsetX;
-	lightPosition.y += offsetY;
-	if (fabs(lightPosition.w) < EPSILON) {
-		direction = lightPosition;
-	} else {
-		Vec4f lightPos = lightPosition;
-		lightPos = (1 / lightPosition.w) * lightPos;
-		direction = lightPos - intersectionPoint;
-	}
-
-	Ray rayToLight(intersectionPoint, direction.normalize(), 0, 100);
-
+bool RayTracer::isLightVisible(const Ray& rayToLight, const float distanceToLight, const Octree& octree) const {
 	float intersectionDistance;
 	Primitive* placeHolder = NULL; //this primitive will not be used, but it is required
 	std::set<Primitive*> primitives;
@@ -72,17 +43,31 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 		const Octree& octree, const Light& light) const {
 	//calculate the mo
 	//we should cast number of rays, and average the visibility results
+	Vec3f direction;
+	Vec4f lightPosition = light.getPosition();
+	float distanceToLight =
+			((Vec3f) (lightPosition - intersectionPoint)).length();
+	if (fabs(lightPosition.w) < EPSILON) {
+		direction = lightPosition;
+	} else {
+		Vec4f lightPos = lightPosition;
+		lightPos = (1 / lightPosition.w) * lightPos;
+		direction = lightPos - intersectionPoint;
+	}
+	//calculate max derivation
+	float maxDerivation = (LIGHT_SIZE/2)/distanceToLight;
+	std::vector<Ray>shadowRays = Ray::generateDeriveredRays(intersectionPoint,direction,shadowGridSize,maxDerivation);
+
 	float visibility = 0.0f;
 
-	if (isLightVisible(intersectionPoint, octree, light, 0, 0)) {
+	if (isLightVisible(shadowRays[0], distanceToLight, octree)) {
 		visibility = 1.0;
 	}
 
 	//set the corners specific values, so they can be tested beforehand
 	if (shadowGridSize > 2) {
-		for (unsigned int i = 0; i < 4; ++i) {
-			if (isLightVisible(intersectionPoint, octree, light, corners[i][0],
-					corners[i][1])) {
+		for (unsigned int i = 1; i < 5; ++i) {
+			if (isLightVisible(shadowRays[i], distanceToLight, octree)) {
 				visibility += 1.0;
 			}
 		}
@@ -96,30 +81,16 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 	}
 	//at this point we know there is a penumbra we calculate light
 	if (shadowGridSize >= 2) {
-		float gridSize = LIGHT_SIZE / shadowGridSize;
-
-		float offsetX, offsetY;
 		visibility -= 1.0;			//remove center
-		for (unsigned char i = 0; i < shadowGridSize; ++i) {
-			for (unsigned char j = 0; j < shadowGridSize; ++j) {
+		for (unsigned char i = 0; i < shadowGridSize*shadowGridSize; ++i) {
 				//pass the corners
-				if (!((i == 0 && j == 0) || (i == shadowGridSize - 1 && j == 0)
-						|| (i == 0 && j == shadowGridSize - 1)
-						|| (i == shadowGridSize - 1 && j == shadowGridSize - 1))) {
-					offsetX = ((rand() / float(RAND_MAX + 1) * gridSize)
-							+ gridSize * i) - LIGHT_SIZE / 2;
-					offsetY = ((rand() / float(RAND_MAX + 1) * gridSize)
-							+ gridSize * j) - LIGHT_SIZE / 2;
-
-					if (isLightVisible(intersectionPoint, octree, light,
-							offsetX, offsetY)) {
+				if (!((i == 0) || (i == shadowGridSize - 1)	|| (i == (shadowGridSize - 1)*shadowGridSize)|| (i == shadowGridSize*shadowGridSize - 1))) {
+					if (isLightVisible(shadowRays[i], distanceToLight, octree)) {
 						visibility += 1.0;
 					}
 				}
-			}
 		}
 	}
-
 	//std::cout << "vis: " << visibility << std::endl;
 	return visibility / (shadowGridSize * shadowGridSize);//since we calculate gridsize^2 rays, and result must be between 0-1
 }
