@@ -16,6 +16,8 @@ INCLUDES := $(wildcard $(SOURCE_PATH)/*.h)
 OBJECTS  := $(SOURCES:$(SOURCE_PATH)/%.cpp=$(OBJECT_PATH)/%.o)
 rm       = rm -f
 
+all: $(OBJECTS) $(BINARY_PATH)/$(EXE)
+
 $(BINARY_PATH)/$(EXE): $(OBJECTS) | $(BINARY_PATH)
 	@$(LINKER) $@ $(OBJECTS) $(LDFLAGS) 
 	@echo "Linking complete!"
