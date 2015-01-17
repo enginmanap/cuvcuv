@@ -41,22 +41,22 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 	// gridsize 2 will mean 1 on each side, so we will /2 it
 	float perGridSize = maxDerivation/(gridSize/2);
 
-	deriveredRays.push_back(Ray(origin,direction,0,100));
+	deriveredRays.push_back(Ray(origin,w,0,100));
 
 	//set the corners max values, so they can be tested beforehand
-	if (gridSize > 2) {
+	if (gridSize >= 2) {
 		for (char i = 0; i < 2; ++i) {
 			for (char j = 0; j < 2; ++j) {
 				//2*i-1 means if 0 -1, if 1 1.
 				tempDirection = ((maxDerivation*((2*i)-1))*u) + ((maxDerivation*((2*j)-1))*v);
-				tempDirection = tempDirection + direction;
+				tempDirection = tempDirection + w;
 				deriveredRays.push_back(Ray(origin,tempDirection.normalize(),0,100));
 			}
 		}
 	}
 
 	//generate random rays for each grid cell, except corners.
-	if (gridSize >= 2) {
+	if (gridSize > 2) {
 
 		float offsetU, offsetV;
 
@@ -66,11 +66,21 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 				if (!((i == 0 && j == 0) || (i == gridSize - 1 && j == 0)|| (i == 0 && j == gridSize - 1)|| (i == gridSize - 1 && j == gridSize - 1))) {
 					offsetU = ((rand() / float(RAND_MAX + 1) * perGridSize) + perGridSize * i) - maxDerivation;
 					offsetV = ((rand() / float(RAND_MAX + 1) * perGridSize) + perGridSize * j) - maxDerivation;
-					tempDirection = direction + offsetU*u + offsetV*v;
+					tempDirection = w + offsetU*u + offsetV*v;
 					deriveredRays.push_back(Ray(origin,tempDirection.normalize(),0,100));
 				}
 			}
 		}
 	}
+	/*
+#pragma omp critical
+	{
+	std::cout <<"rays start "<< std::endl;
+	for(int i=0; i< deriveredRays.size();++i){
+		std::cout <<"ray dir: " << deriveredRays[i].getDirection() << std::endl;
+	}
+	}
+	std::cout <<"rays end "<< std::endl;
+*/
 	return deriveredRays;
 }

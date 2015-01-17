@@ -8,7 +8,7 @@
 #include "RayTracer.h"
 
 #ifndef LIGHT_SIZE
-#define LIGHT_SIZE 2.0f
+#define LIGHT_SIZE 5.0f
 #endif //LIGHT_SIZE
 
 RayTracer::RayTracer(char shadowGridSize) :
@@ -64,32 +64,23 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 		visibility = 1.0;
 	}
 
-	//set the corners specific values, so they can be tested beforehand
-	if (shadowGridSize > 2) {
-		for (unsigned int i = 1; i < 5; ++i) {
+	if (shadowGridSize > 1) {
+		//we start from 1 because 0 is already tested
+		for (unsigned char i = 1; i < shadowGridSize*shadowGridSize; ++i) {
 			if (isLightVisible(shadowRays[i], distanceToLight, octree)) {
 				visibility += 1.0;
 			}
-		}
-		if (visibility == 5.0) { //if all corners and center see light, no one will be blocked
-			//std::cout << "all visible " << std::endl;
-			return 1.0f;
-		} else if (visibility == 0) { // if none of them see light, no one will see either
-			//std::cout << "all blocked" << std::endl;
-			return 0.0f;
-		}
-	}
-	//at this point we know there is a penumbra we calculate light
-	if (shadowGridSize >= 2) {
-		visibility -= 1.0;			//remove center
-		for (unsigned char i = 0; i < shadowGridSize*shadowGridSize; ++i) {
-				//pass the corners
-				if (!((i == 0) || (i == shadowGridSize - 1)	|| (i == (shadowGridSize - 1)*shadowGridSize)|| (i == shadowGridSize*shadowGridSize - 1))) {
-					if (isLightVisible(shadowRays[i], distanceToLight, octree)) {
-						visibility += 1.0;
-					}
+			if(i == 4){
+				if (visibility == 5.0) { //if all corners and center see light, no one will be blocked
+					//std::cout << "all visible " << std::endl;
+					return 1.0f;
+				} else if (visibility == 0) { // if none of them see light, no one will see either
+					//std::cout << "all blocked" << std::endl;
+					return 0.0f;
 				}
+			}
 		}
+		visibility -= 1.0;//remove center
 	}
 	//std::cout << "vis: " << visibility << std::endl;
 	return visibility / (shadowGridSize * shadowGridSize);//since we calculate gridsize^2 rays, and result must be between 0-1
