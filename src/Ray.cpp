@@ -17,7 +17,6 @@ std::ostream& operator<<(std::ostream &strm, const Ray &ray) {
  * generates 1 ray per grid + center.
  * order:
  * 1-> center
- * 2-5-> corners
  * rest -> per grid random rays
  *
  * params:
