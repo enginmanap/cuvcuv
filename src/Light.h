@@ -20,12 +20,12 @@ private:
 	Vec4f position; //if 4th is zero, it means no position but direction
 	Vec3f color;
 	Vec3f attenuation;
+	float size;
 
 public:
-	Light();
-	Light(Vec4f& position, Vec3f& color) :
+	Light(Vec4f& position, float size, Vec3f& color) :
 			position(position), color(color), attenuation(
-					Vec3f(1.0f, 0.0f, 0.0f)) {
+					Vec3f(1.0f, 0.0f, 0.0f)),size(size){
 	}
 	bool setAttenuation(Vec3f&);
 	float getAttenuationFactor(float);
@@ -36,6 +36,10 @@ public:
 
 	const Vec4f& getPosition() const {
 		return position;
+	}
+
+	float getSize() const {
+		return size;
 	}
 };
 

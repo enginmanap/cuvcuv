@@ -72,7 +72,7 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 			}
 		}
 	}
-	/*
+/*
 #pragma omp critical
 	{
 	std::cout <<"rays start "<< std::endl;

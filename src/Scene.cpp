@@ -351,11 +351,11 @@ bool Scene::renderScene() {
 	return true;
 }
 
-bool Scene::addLight(float p1, float p2, float p3, float p4, float c1, float c2,
+bool Scene::addLight(float p1, float p2, float p3, float p4, float size, float c1, float c2,
 		float c3) {
 	Vec4f lightPos(p1, p2, p3, p4);
 	Vec3f lightColor(c1, c2, c3);
-	lights.push_back(Light(lightPos, lightColor));
+	lights.push_back(Light(lightPos, size, lightColor));
 
 	lights.back().setAttenuation(this->currentAttenuation);
 

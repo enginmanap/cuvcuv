@@ -114,7 +114,7 @@ public:
 	bool addSphere(float, float, float, float);
 	bool addModel(Model*);
 
-	bool addLight(float, float, float, float, float, float, float);
+	bool addLight(float, float, float, float, float, float, float, float);
 
 	bool pushTransform();
 	Mat4f popTransform();

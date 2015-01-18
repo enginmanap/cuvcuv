@@ -7,10 +7,6 @@
 
 #include "RayTracer.h"
 
-#ifndef LIGHT_SIZE
-#define LIGHT_SIZE 5.0f
-#endif //LIGHT_SIZE
-
 RayTracer::RayTracer(char shadowGridSize) :
 		shadowGridSize(shadowGridSize) {
 }
@@ -35,15 +31,18 @@ bool RayTracer::isLightVisible(const Ray& rayToLight, const float distanceToLigh
 }
 
 /**
- * returns true if the ray can reach light with out hitting
- * any objects. false if there are any obstacles.
+ * Generates shadowGrid^2 rays, and casts them.
+ * returns 1 if all the rays can reach light with out hitting
+ * any objects. returns 0 if none of them reaches, all elements
+ * between gets equal weight.
  *
  */
 float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 		const Octree& octree, const Light& light) const {
-	//calculate the mo
+
 	//we should cast number of rays, and average the visibility results
 	Vec3f direction;
+	bool isCenterVisible=true;
 	Vec4f lightPosition = light.getPosition();
 	float distanceToLight =
 			((Vec3f) (lightPosition - intersectionPoint)).length();
@@ -54,14 +53,21 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 		lightPos = (1 / lightPosition.w) * lightPos;
 		direction = lightPos - intersectionPoint;
 	}
-	//calculate max derivation
-	float maxDerivation = (LIGHT_SIZE/2)/distanceToLight;
-	std::vector<Ray>shadowRays = Ray::generateDeriveredRays(intersectionPoint,direction,shadowGridSize,maxDerivation);
+	std::vector<Ray>shadowRays;
+	if(shadowGridSize > 1 && light.getSize() > 0){//0 means point & directional light
+		//calculate max derivation
+		float maxDerivation = (light.getSize()/2)/distanceToLight;
+		shadowRays = Ray::generateDeriveredRays(intersectionPoint,direction,shadowGridSize,maxDerivation);
+	} else {
+		shadowRays.push_back(Ray(intersectionPoint,direction,0,100));
+	}
 
 	float visibility = 0.0f;
 
 	if (isLightVisible(shadowRays[0], distanceToLight, octree)) {
 		visibility = 1.0;
+	} else {
+		isCenterVisible = false;
 	}
 
 	if (shadowGridSize > 1) {
@@ -70,19 +76,22 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 			if (isLightVisible(shadowRays[i], distanceToLight, octree)) {
 				visibility += 1.0;
 			}
+			/*
+			 //FIXME this is causing errors if model is spiked or has sharp corners
 			if(i == 4){
-				if (visibility == 5.0) { //if all corners and center see light, no one will be blocked
+				if (visibility == 5.0f) { //if all corners and center see light, no one will be blocked
 					//std::cout << "all visible " << std::endl;
 					return 1.0f;
-				} else if (visibility == 0) { // if none of them see light, no one will see either
+				} else if (visibility == 0.0f) { // if none of them see light, no one will see either
 					//std::cout << "all blocked" << std::endl;
 					return 0.0f;
 				}
 			}
+			*/
 		}
-		visibility -= 1.0;//remove center
+		if(isCenterVisible) visibility -= 1.0;//remove center
 	}
-	//std::cout << "vis: " << visibility << std::endl;
+	//std::cout << "vis: " << visibility / (shadowGridSize * shadowGridSize) << std::endl;
 	return visibility / (shadowGridSize * shadowGridSize);//since we calculate gridsize^2 rays, and result must be between 0-1
 }
 

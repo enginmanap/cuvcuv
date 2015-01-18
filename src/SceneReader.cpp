@@ -117,9 +117,20 @@ Scene* SceneReader::readFile() {
 					std::cerr << "point light does not contain 6 floats, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
-					//notice the 1 as 4th param
+					//notice the 1 as 4th param it means this is point light
 					scene->addLight(parameters[0], parameters[1], parameters[2],
-							1, parameters[3], parameters[4], parameters[5]);
+							1,0, parameters[3], parameters[4], parameters[5]);
+				}
+			}
+		} else if (command == "lamp") {
+			if (readFloatParams(stringStream, parameters, parameterCount)) {
+				if (parameterCount < 7) {
+					std::cerr << "lamp light does not contain 7 floats, only "
+							<< parameterCount << " provided." << std::endl;
+				} else {
+					//this is a point light (4th param 1) and has size (5th param is 4th read)
+					scene->addLight(parameters[0], parameters[1], parameters[2],
+							1, parameters[3], parameters[4], parameters[5], parameters[6]);
 				}
 			}
 		} else if (command == "directional") {
@@ -131,7 +142,7 @@ Scene* SceneReader::readFile() {
 				} else {
 					//notice the 0 as 4th param, it means light has no position only direction
 					scene->addLight(parameters[0], parameters[1], parameters[2],
-							0, parameters[3], parameters[4], parameters[5]);
+							0,0, parameters[3], parameters[4], parameters[5]);
 				}
 			}
 		} else if (command == "attenuation") {
