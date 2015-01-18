@@ -49,7 +49,10 @@ public:
 
 	void setPosition(const Vec4f& position) {this->position = position;}
 
-	static std::vector<Ray> generateDeriveredRays(const Vec4f&,const Vec3f&,unsigned char, float);
+	static std::vector<Ray> generateDeriveredRays(const Vec4f& origin,const Vec3f& direction,unsigned char gridSize, float maxDerivation){
+		return generateDeriveredRays(origin,direction, Vec3f(0,1,0), gridSize, maxDerivation, maxDerivation);
+	}
+	static std::vector<Ray> generateDeriveredRays(const Vec4f&,const Vec3f&, const Vec3f&, unsigned char, float,float);
 
 };
 

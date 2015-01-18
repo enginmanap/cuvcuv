@@ -10,7 +10,7 @@
 Film::Film(unsigned int height, unsigned int width, unsigned char colorDepth,
 		unsigned char sampleRate) :
 		height(height), width(width), colorDepth(colorDepth), samplingRate(
-				sampleRate) {
+				sampleRate*sampleRate+1) {
 
 	this->colorRange = pow(2, colorDepth) - 1; //for 8 bits, this means 255
 
@@ -37,8 +37,9 @@ bool Film::setPixel(unsigned int& x, unsigned int& y, Vec3f& color) {
 	unsigned int index = (this->width * y + x); //FIXME why we are not handling as matrix
 	int currentSampleCount = this->sampleCounts[index]++;
 	if (currentSampleCount >= samplingRate) {
-		std::cerr << "sample rate limit" << x << "," << y
-				<< "passed, image is not altered." << std::endl;
+#pragma omp critical
+		std::cerr << "sample rate limit ("<< (int)samplingRate << ") passed for pixel " << x << "," << y
+				<< ", image is not altered." << std::endl;
 		return false;
 	} else {
 		//at this point, each element is 4 bytes, so index should have 4 bytes

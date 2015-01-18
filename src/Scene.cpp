@@ -334,18 +334,18 @@ bool Scene::renderScene() {
 	unsigned int x = 0, y = 0;
 	Vec3f color;
 	bool morePixels;
-	Ray ray[sampleRate];
-#pragma omp parallel private(color,x,y,ray,morePixels)
+	std::vector<Ray> rays;
+#pragma omp parallel private(color,x,y,rays,morePixels)
 	{
-		morePixels = this->camera->getRays(x, y, sampleRate, ray);
+		morePixels = this->camera->getRays(x, y, sampleRate, rays);
 		while (morePixels) {
-			for (unsigned int i = 0; i < sampleRate; ++i) {
-				color = rayTracer->trace(ray[i], *spatialTree, lights,
+			for (unsigned int i = 0; i < rays.size(); ++i) {
+				color = rayTracer->trace(rays[i], *spatialTree, lights,
 						this->maxDepth);
 				this->film->setPixel(x, y, color);
 			}
 #pragma omp critical
-			morePixels = this->camera->getRays(x, y, sampleRate, ray);
+			morePixels = this->camera->getRays(x, y, sampleRate, rays);
 		}
 	}
 	return true;

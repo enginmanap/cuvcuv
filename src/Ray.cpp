@@ -12,6 +12,7 @@ std::ostream& operator<<(std::ostream &strm, const Ray &ray) {
 			<< ray.getDirection() << ")";
 }
 
+
 /**
  * generates 1 ray per grid + center.
  * order:
@@ -28,18 +29,19 @@ std::ostream& operator<<(std::ostream &strm, const Ray &ray) {
  * returns:
  * vector of rays generated
  */
-std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& direction,unsigned char gridSize, float maxDerivation){
+std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& direction,const Vec3f& up, unsigned char gridSize, float maxUDerivation, float maxVDerivation){
 	//FIXME this vector should not be recreated per call, it should be a parameter
 
 	std::vector<Ray> deriveredRays;
 	Vec3f u,v, w, offseV;
-	Vec3f up(0,1,0), tempDirection;
+	Vec3f tempDirection;
 	w = direction.normalize();
 	u = Vec3fNS::normalize(Vec3fNS::cross(up, w));
 	v = Vec3fNS::cross(w, u);
 
 	// gridsize 2 will mean 1 on each side, so we will /2 it
-	float perGridSize = maxDerivation/(gridSize/2);
+	float perGridUSize = maxUDerivation/(gridSize/2);
+	float perGridVSize = maxVDerivation/(gridSize/2);
 
 	deriveredRays.push_back(Ray(origin,w,0,100));
 
@@ -48,7 +50,7 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 		for (char i = 0; i < 2; ++i) {
 			for (char j = 0; j < 2; ++j) {
 				//2*i-1 means if 0 -1, if 1 1.
-				tempDirection = ((maxDerivation*((2*i)-1))*u) + ((maxDerivation*((2*j)-1))*v);
+				tempDirection = ((maxUDerivation*((2*i)-1))*u) + ((maxVDerivation*((2*j)-1))*v);
 				tempDirection = tempDirection + w;
 				deriveredRays.push_back(Ray(origin,tempDirection.normalize(),0,100));
 			}
@@ -64,8 +66,8 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 			for (unsigned char j = 0; j < gridSize; ++j) {
 				//pass the corners
 				if (!((i == 0 && j == 0) || (i == gridSize - 1 && j == 0)|| (i == 0 && j == gridSize - 1)|| (i == gridSize - 1 && j == gridSize - 1))) {
-					offsetU = ((rand() / float(RAND_MAX + 1) * perGridSize) + perGridSize * i) - maxDerivation;
-					offsetV = ((rand() / float(RAND_MAX + 1) * perGridSize) + perGridSize * j) - maxDerivation;
+					offsetU = ((rand() / float(RAND_MAX + 1) * perGridUSize) + perGridUSize * i) - maxUDerivation;
+					offsetV = ((rand() / float(RAND_MAX + 1) * perGridVSize) + perGridVSize * j) - maxVDerivation;
 					tempDirection = w + offsetU*u + offsetV*v;
 					deriveredRays.push_back(Ray(origin,tempDirection.normalize(),0,100));
 				}
