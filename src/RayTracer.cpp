@@ -42,7 +42,6 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 
 	//we should cast number of rays, and average the visibility results
 	Vec3f direction;
-	bool isCenterVisible=true;
 	Vec4f lightPosition = light.getPosition();
 	float distanceToLight =
 			((Vec3f) (lightPosition - intersectionPoint)).length();
@@ -61,38 +60,30 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 	} else {
 		shadowRays.push_back(Ray(intersectionPoint,direction,0,100));
 	}
-
+	//at this point we know that
 	float visibility = 0.0f;
 
-	if (isLightVisible(shadowRays[0], distanceToLight, octree)) {
-		visibility = 1.0;
-	} else {
-		isCenterVisible = false;
+	//we start from 1 because 0 is already tested
+	for (unsigned char i = 0; i < shadowRays.size(); ++i) {
+		if (isLightVisible(shadowRays[i], distanceToLight, octree)) {
+			visibility += 1.0;
+		}
+		/*
+		 //FIXME this is causing errors if model is spiked or has sharp corners
+		if(i == 4){
+			if (visibility == 5.0f) { //if all corners and center see light, no one will be blocked
+				//std::cout << "all visible " << std::endl;
+				return 1.0f;
+			} else if (visibility == 0.0f) { // if none of them see light, no one will see either
+				//std::cout << "all blocked" << std::endl;
+				return 0.0f;
+			}
+		}
+		*/
 	}
 
-	if (shadowGridSize > 1) {
-		//we start from 1 because 0 is already tested
-		for (unsigned char i = 1; i < shadowGridSize*shadowGridSize; ++i) {
-			if (isLightVisible(shadowRays[i], distanceToLight, octree)) {
-				visibility += 1.0;
-			}
-			/*
-			 //FIXME this is causing errors if model is spiked or has sharp corners
-			if(i == 4){
-				if (visibility == 5.0f) { //if all corners and center see light, no one will be blocked
-					//std::cout << "all visible " << std::endl;
-					return 1.0f;
-				} else if (visibility == 0.0f) { // if none of them see light, no one will see either
-					//std::cout << "all blocked" << std::endl;
-					return 0.0f;
-				}
-			}
-			*/
-		}
-		if(isCenterVisible) visibility -= 1.0;//remove center
-	}
 	//std::cout << "vis: " << visibility / (shadowGridSize * shadowGridSize) << std::endl;
-	return visibility / (shadowGridSize * shadowGridSize);//since we calculate gridsize^2 rays, and result must be between 0-1
+	return visibility / (shadowRays.size());//since we calculate gridsize^2 rays, and result must be between 0-1
 }
 
 /**
