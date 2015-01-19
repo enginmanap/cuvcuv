@@ -19,18 +19,19 @@
 class Material {
 	std::string name;
 	Vec3f ambient, diffuse, specular, emission;
-	float shininess, dissolve;
+	float shininess, dissolve, refractionIndex;
 	Texture* map_Kd;
 	//transparency or dissolve is not used yet.
 public:
 	Material(std::string name) :
-			name(name), shininess(0.0f), dissolve(1.0f), map_Kd(NULL) {
+			name(name), shininess(0.0f), dissolve(1.0f), refractionIndex(1.0f), map_Kd(NULL) {
 	}
 	Material(std::string name, Vec3f ambient, Vec3f diffuse, Vec3f specular,
-			Vec3f emission, float shininess, float dissolve, Texture* map_Kd) :
+			Vec3f emission, float shininess, float dissolve, float refractionIndex, Texture* map_Kd) :
 			name(name), ambient(ambient), diffuse(diffuse), specular(specular), emission(
-					emission), shininess(shininess),dissolve(dissolve), map_Kd(map_Kd) {
+					emission), shininess(shininess),dissolve(dissolve), refractionIndex(refractionIndex), map_Kd(map_Kd) {
 		//the textures are managed by scene
+		//so we can safely copy the pointer
 	}
 	const Vec3f& getAmbient() const {
 		return ambient;
@@ -92,7 +93,13 @@ public:
 		this->dissolve = dissolve;
 	}
 
-	;
+	float getRefractionIndex() const {
+		return refractionIndex;
+	}
+
+	void setRefractionIndex(float refractionIndex) {
+		this->refractionIndex = refractionIndex;
+	}
 };
 
 #endif /* SRC_MATERIAL_H_ */

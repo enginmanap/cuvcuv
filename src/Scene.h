@@ -81,7 +81,8 @@ public:
 	bool setCurrentDiffuse(float, float, float);
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
-	void setCurrentDissolve(float dissolve){currentMaterial->setDissolve(dissolve);};
+	void setCurrentDissolve(float dissolve){currentMaterial->setDissolve(dissolve);}
+	void setCurrentRefractionIndex(float RefractionIndex){currentMaterial->setRefractionIndex(RefractionIndex);}
 
 	bool addMaterial(std::vector<Material*>&);
 	void addTexture(std::vector<Texture*>& newTextures) {

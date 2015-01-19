@@ -120,6 +120,15 @@ Scene* SceneReader::readFile() {
 						<< std::endl;
 			}
 
+		} else if (command == "Ni") {
+			if (readFloatParams(stringStream, parameters,
+					parameterCount)) {
+				scene->setCurrentRefractionIndex(parameters[0]);
+			} else {
+				std::cerr << "Ni command parameter could not be read"
+						<< std::endl;
+			}
+
 		} else if (command == "point") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 6) {

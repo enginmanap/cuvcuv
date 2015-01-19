@@ -143,6 +143,15 @@ std::vector<Material*> MaterialReader::readMaterialFile(
 						<< std::endl;
 			}
 
+		} else if (command == "Ni") {
+			if (readFloatParams(stringStream, floatParameters,
+					parameterCount)) {
+				currentMaterial->setRefractionIndex(floatParameters[0]);
+			} else {
+				std::cerr << "Ni command parameter could not be read"
+						<< std::endl;
+			}
+
 		} else if (command == "illum") {
 			//TODO implement setting illimunation model
 		} else

@@ -59,7 +59,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	bool raySide = Vec4fNS::dot(normal, ray.getDirection()) < 0; //is ray opposite side as normal, so it can reflect/get light
 	if (raySide) { //We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
 		//check if light is blocked or not
-		intersectionPoint = intersectionPoint + EPSILON  * 10.0f * normal;
+		intersectionPoint = intersectionPoint + EPSILON * 10.0f * normal;
 		//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
 
 		for (unsigned int i = 0; i < lights.size(); i++) {
@@ -118,16 +118,55 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			}
 		}
 	}
-	//these calculations are left because they are side free (also makes debugging easier)
+
+
+	//at this point, we are going to calculate transparency, so we should reverse the intersection point
+	//if we are passing thru the wrong way, we need to remove the added normal
+	if(raySide) {
+		intersectionPoint = intersectionPoint - EPSILON * 20.0f * normal;
+	} else {
+		intersectionPoint = intersectionPoint + EPSILON * 10.0f *normal;
+	}
+
+	//if refraction is defined
+	if(material->getRefractionIndex() != 1.0f){
+		if (depth > 0) {
+			float cosine1;
+			//FIXME we need to keep ray creating material refraction, 1.0f is wrong
+			float n = 1.0f / material->getRefractionIndex();
+			if(!raySide){
+				cosine1 = -1 * Vec3fNS::dot(-1* normal, ray.getDirection());
+			} else {
+				cosine1 = -1 * Vec3fNS::dot(normal, ray.getDirection());
+			}
+			float cosine2 = 1.0f - (n*n*(1.0f - cosine1 * cosine1));
+			if(cosine2 > 0.0f){
+				Vec3f refraction;
+				if(!raySide){
+					refraction = (n*ray.getDirection()) + (n * cosine1 - sqrtf(cosine2)) * (-1 *normal);
+				} else {
+					refraction = (n*ray.getDirection()) + (n * cosine1 - sqrtf(cosine2)) * normal;
+				}
+
+				Ray refractionRay(intersectionPoint, refraction, 0, 100);
+				Vec3f refractedColor = tracer->trace(refractionRay, octree,
+						lights, depth);
+				refractedColor = Vec3fNS::clamp(refractedColor, 0, 1);
+				//FIXME we need to add some factors to color and refracted color
+				color = color + refractedColor;
+
+			}
+
+		}
+	}
+
+	//these calculations are here because they are side free, but they are after refraction
 	color = color + material->getAmbient() + material->getEmission();
 
+	//we calculate dissolve after ambient/emission because they are effected by it.
+	//if a material is dissolved, it is transparent, but not refractive, so direction is same
 	if(material->getDissolve() < 1.0f){
 		if (depth > 0) {
-			if(raySide) {
-				intersectionPoint = intersectionPoint - EPSILON * 20.0f * normal;
-			} else {
-				intersectionPoint = intersectionPoint + EPSILON * 10.0f * normal;
-			}
 			Ray dissolveRay(intersectionPoint, ray.getDirection(), 0, 100);
 			Vec3f dissolveColor = tracer->trace(dissolveRay, octree,
 					lights, depth);
