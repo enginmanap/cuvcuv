@@ -106,7 +106,7 @@ bool Scene::pushTransform() {
 	currentMaterial = new Material(outputStringStream.str(),
 			currentMaterial->getAmbient(), currentMaterial->getDiffuse(),
 			currentMaterial->getSpecular(), currentMaterial->getEmission(),
-			currentMaterial->getShininess(), currentMaterial->getMapKd());
+			currentMaterial->getShininess(), currentMaterial->getDissolve(), currentMaterial->getMapKd());
 	materialMap[currentMaterial->getName()] = currentMaterial;
 
 	//std::cout << "adding material with name" << currentMaterial->getName()<<std::endl;

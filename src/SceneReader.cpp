@@ -111,6 +111,15 @@ Scene* SceneReader::readFile() {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				scene->setCurrentShininess(parameters[0]);
 			}
+		} else if (command == "d" || command == "Tr") {
+			if (readFloatParams(stringStream, parameters,
+					parameterCount)) {
+				scene->setCurrentDissolve(parameters[0]);
+			} else {
+				std::cerr << "Tr/d command parameter could not be read"
+						<< std::endl;
+			}
+
 		} else if (command == "point") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 6) {

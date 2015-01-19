@@ -81,20 +81,18 @@ public:
 	bool setCurrentDiffuse(float, float, float);
 	bool setCurrentSpecular(float, float, float);
 	bool setCurrentShininess(float);
+	void setCurrentDissolve(float dissolve){currentMaterial->setDissolve(dissolve);};
 
 	bool addMaterial(std::vector<Material*>&);
 	void addTexture(std::vector<Texture*>& newTextures) {
 		textures.insert(textures.end(), newTextures.begin(), newTextures.end());
 	}
-	;
 	Material* getMaterial(std::string& materialName) {
 		return materialMap[materialName];
 	}
-	;
 	Material* getMaterial() {
 		return materialMap[materialNames.top()];
 	}
-	;
 
 	bool setCurrentAttenuation(float, float, float);
 
@@ -125,7 +123,6 @@ public:
 	Mat4f getTransform() {
 		return transformStack.top();
 	}
-	;
 
 	void buildOctree();
 	bool renderScene();

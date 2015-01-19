@@ -19,17 +19,17 @@
 class Material {
 	std::string name;
 	Vec3f ambient, diffuse, specular, emission;
-	float shininess;
+	float shininess, dissolve;
 	Texture* map_Kd;
 	//transparency or dissolve is not used yet.
 public:
 	Material(std::string name) :
-			name(name), shininess(0.0f), map_Kd(NULL) {
+			name(name), shininess(0.0f), dissolve(1.0f), map_Kd(NULL) {
 	}
 	Material(std::string name, Vec3f ambient, Vec3f diffuse, Vec3f specular,
-			Vec3f emission, float shininess, Texture* map_Kd) :
+			Vec3f emission, float shininess, float dissolve, Texture* map_Kd) :
 			name(name), ambient(ambient), diffuse(diffuse), specular(specular), emission(
-					emission), shininess(shininess), map_Kd(map_Kd) {
+					emission), shininess(shininess),dissolve(dissolve), map_Kd(map_Kd) {
 		//the textures are managed by scene
 	}
 	const Vec3f& getAmbient() const {
@@ -83,6 +83,15 @@ public:
 	void setMapKd(Texture* mapKd) {
 		map_Kd = mapKd;
 	}
+
+	float getDissolve() const {
+		return dissolve;
+	}
+
+	void setDissolve(float dissolve) {
+		this->dissolve = dissolve;
+	}
+
 	;
 };
 

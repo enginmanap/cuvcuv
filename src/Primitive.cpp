@@ -59,7 +59,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	bool raySide = Vec4fNS::dot(normal, ray.getDirection()) < 0; //is ray opposite side as normal, so it can reflect/get light
 	if (raySide) { //We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
 		//check if light is blocked or not
-		intersectionPoint = intersectionPoint + EPSILON * 10.0f * normal;
+		intersectionPoint = intersectionPoint + EPSILON  * 10.0f * normal;
 		//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
 
 		for (unsigned int i = 0; i < lights.size(); i++) {
@@ -120,6 +120,24 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	}
 	//these calculations are left because they are side free (also makes debugging easier)
 	color = color + material->getAmbient() + material->getEmission();
+
+	if(material->getDissolve() < 1.0f){
+		if (depth > 0) {
+			if(raySide) {
+				intersectionPoint = intersectionPoint - EPSILON * 20.0f * normal;
+			} else {
+				intersectionPoint = intersectionPoint + EPSILON * 10.0f * normal;
+			}
+			Ray dissolveRay(intersectionPoint, ray.getDirection(), 0, 100);
+			Vec3f dissolveColor = tracer->trace(dissolveRay, octree,
+					lights, depth);
+			dissolveColor = Vec3fNS::clamp(dissolveColor, 0, 1);
+			//std::cout << "reflection " << reflectedColor << std::endl;
+			color = (material->getDissolve() * color) + ((1.0f - material->getDissolve()) * dissolveColor);
+
+		}
+	}
+
 	return color;
 }
 

@@ -134,8 +134,15 @@ std::vector<Material*> MaterialReader::readMaterialFile(
 				std::cerr << "newmtl command parameters could not be read"
 						<< std::endl;
 			}
-		} else if (command == "d") {
-			//TODO implement setting dissolved (transparency
+		} else if (command == "d" || command == "Tr") {
+			if (readFloatParams(stringStream, floatParameters,
+					parameterCount)) {
+				currentMaterial->setDissolve(floatParameters[0]);
+			} else {
+				std::cerr << "Tr/d command parameter could not be read"
+						<< std::endl;
+			}
+
 		} else if (command == "illum") {
 			//TODO implement setting illimunation model
 		} else
