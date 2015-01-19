@@ -58,7 +58,7 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 		float maxDerivation = (light.getSize()/2)/distanceToLight;
 		shadowRays = Ray::generateDeriveredRays(intersectionPoint,direction,shadowGridSize,maxDerivation);
 	} else {
-		shadowRays.push_back(Ray(intersectionPoint,direction,0,100));
+		shadowRays.push_back(Ray(intersectionPoint,direction.normalize(),0,100));
 	}
 	//at this point we know that
 	float visibility = 0.0f;
