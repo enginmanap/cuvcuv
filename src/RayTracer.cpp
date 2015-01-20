@@ -23,7 +23,8 @@ bool RayTracer::isLightVisible(const Ray& rayToLight, const float distanceToLigh
 			//found intersection, check if it is before the closest one
 			if (distanceToLight > intersectionDistance) {
 				//FIXME now we need to update this
-				return false;
+				if((*it)->getRefractionIndex() == 1.0)
+					return false;
 			}
 
 		}

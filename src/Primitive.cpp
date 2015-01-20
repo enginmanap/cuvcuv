@@ -36,6 +36,28 @@ Ray Primitive::generateTransformedRay(const Ray& ray) const {
 	return Ray(newPos, newDir, ray.getRefractionIndex(), ray.getDistance());
 }
 
+Vec3f Primitive::getColorForReflection(const Ray& ray, Vec4f& normal, Vec4f& intersectionPoint,
+		const Octree& octree, const std::vector<Light>& lights,
+		const unsigned int depth, const RayTracer* tracer) const {
+	//now we have the color for this object itself, calculate reflections.
+	if (fabs(material->getSpecular().x) > EPSILON
+			|| fabs(material->getSpecular().y) > EPSILON
+			|| fabs(material->getSpecular().z) > EPSILON) {
+		if (depth > 0) {
+
+			Vec4f reflectionDir = ray.getDirection()
+					- 2 * Vec4fNS::dot(ray.getDirection(), normal) * normal;
+			Ray reflectionRay(intersectionPoint, reflectionDir, ray.getRefractionIndex(), ray.getDistance());
+			Vec3f reflectedColor = tracer->trace(reflectionRay, octree,
+					lights, depth);
+			reflectedColor = Vec3fNS::clamp(reflectedColor, 0, 1);
+			//std::cout << "reflection " << reflectedColor << std::endl;
+			return material->getSpecular() * reflectedColor;
+		}
+	}
+	return Vec3f();
+}
+
 bool Primitive::setTransformation(const Mat4f& matrix) {
 	this->transformMatrix = matrix;
 	this->inverseTransformMat = Mat4f::inverse(matrix);
@@ -98,25 +120,6 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 
 			}
 		}
-		//now we have the color for this object itself, calculate reflections.
-		if (fabs(material->getSpecular().x) < EPSILON
-				&& fabs(material->getSpecular().y) < EPSILON
-				&& fabs(material->getSpecular().z) < EPSILON) {
-			//the object is not reflective, so stop here
-		} else {
-			if (depth > 0) {
-
-				Vec4f reflectionDir = ray.getDirection()
-						- 2 * Vec4fNS::dot(ray.getDirection(), normal) * normal;
-				Ray reflectionRay(intersectionPoint, reflectionDir, ray.getRefractionIndex(), ray.getDistance());
-				Vec3f reflectedColor = tracer->trace(reflectionRay, octree,
-						lights, depth);
-				reflectedColor = Vec3fNS::clamp(reflectedColor, 0, 1);
-				//std::cout << "reflection " << reflectedColor << std::endl;
-				color = color + material->getSpecular() * reflectedColor;
-
-			}
-		}
 	}
 
 
@@ -135,8 +138,6 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	if(material->getRefractionIndex() != 1.0f){
 		if (depth > 0) {
 			float cosineIntersection, refrectionFrom, refrectionTo;
-			//refraction index of ray coming, and refraction index of material
-
 			cosineIntersection = Vec3fNS::dot(ray.getDirection(),normal);
 			if(cosineIntersection > 0){
 				refrectionFrom = material->getRefractionIndex();
@@ -151,20 +152,30 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 
 			float cosineRefractionsq = 1.0f - ((refrectionFrom/refrectionTo)*(refrectionFrom/refrectionTo))*(1.0f - cosineIntersection * cosineIntersection);
 			if(cosineRefractionsq < 0.0f){//total reflection
-				//FIXME we are calculating reflection before this point, which is wrong.
+				color = color + material->getSpecular() * getColorForReflection(ray, normal, intersectionPoint,
+						octree, lights,	depth, tracer);
 			} else {
 				float cosineRefraction = sqrtf(cosineRefractionsq);
-				float fresnelCoef = (pow((refrectionFrom * cosineIntersection - refrectionTo * cosineRefraction) / (refrectionFrom * cosineIntersection + refrectionTo * cosineRefraction), 2.0f) + pow((refrectionTo * cosineIntersection- refrectionFrom * cosineRefraction) / (refrectionFrom * cosineRefraction + refrectionTo * cosineRefraction), 2.0f)) * 0.5f;
-				//FIXME we need to calculate both reflection and refraction, but reflection is not here yet
-				//fresnelCoef determines reflection/refraction
-				Vec3f refraction= (refrectionFrom/refrectionTo) * ray.getDirection() + ((refrectionFrom/refrectionTo)*cosineIntersection - cosineRefraction) * normal;
-				//we are updating refraction index of ray, and reseting distance
-				Ray refractionRay(intersectionPoint, refraction.normalize(), material->getRefractionIndex(), 0);
-				Vec3f refractedColor = tracer->trace(refractionRay, octree,
-						lights, depth);
-				refractedColor = Vec3fNS::clamp(refractedColor, 0, 1);
-				//FIXME we need to add some factors to color and refracted color
-				color = (0.5f)*color + refractedColor;
+				float fresnelCoef = (pow((refrectionFrom * cosineIntersection - refrectionTo * cosineRefraction) / (refrectionFrom * cosineIntersection + refrectionTo * cosineRefraction), 2.0f) +
+						pow((refrectionTo * cosineIntersection - refrectionFrom * cosineRefraction) / (refrectionFrom * cosineRefraction + refrectionTo * cosineRefraction), 2.0f)) * 0.5f;
+
+				Vec3f reflectedColor, refractedColor;
+				reflectedColor = material->getSpecular() * getColorForReflection(ray, normal, intersectionPoint,
+					octree, lights,	depth, tracer);
+				reflectedColor = Vec3fNS::clamp(reflectedColor,0,1);
+				if(fresnelCoef <= 1.0f){
+					Vec3f refraction= (refrectionFrom/refrectionTo) * ray.getDirection() + ((refrectionFrom/refrectionTo)*cosineIntersection - cosineRefraction) * normal;
+					//we are updating refraction index of ray, and reseting distance
+					Ray refractionRay(intersectionPoint, refraction.normalize(), material->getRefractionIndex(), 0);
+					refractedColor = tracer->trace(refractionRay, octree,
+							lights, depth);
+					refractedColor = Vec3fNS::clamp(refractedColor, 0, 1);
+				}
+				//FIXME we need to color for the distance ray was in the object
+				//if(fresnelCoef <= 1.0f)
+				//	std::cout << "fresnell " << fresnelCoef << std::endl;
+
+				color = (fresnelCoef)*(color + reflectedColor) + (1.0f - fresnelCoef)*refractedColor;
 
 			}
 
