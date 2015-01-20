@@ -123,7 +123,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	//at this point, we are going to calculate transparency, so we should reverse the intersection point
 	//if we are passing thru the wrong way, we need to remove the added normal
 	if(raySide) {
-		intersectionPoint = intersectionPoint - EPSILON * 20.0f * normal;
+		intersectionPoint = intersectionPoint + EPSILON * 2 * 10.0f * (Vec4f(0,0,0,0)- normal);
 	} else {
 		intersectionPoint = intersectionPoint + EPSILON * 10.0f *normal;
 	}
@@ -134,22 +134,30 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	//if refraction is defined
 	if(material->getRefractionIndex() != 1.0f){
 		if (depth > 0) {
-			float cosine1;
+			float cosineIntersection, refrectionFrom, refrectionTo;
 			//refraction index of ray coming, and refraction index of material
-			float refractionRate =  material->getRefractionIndex()/ray.getRefractionIndex();
-			if(!raySide){
-				cosine1 = -1.0f * Vec3fNS::dot(-1.0f* normal, ray.getDirection());
+
+			cosineIntersection = Vec3fNS::dot(ray.getDirection(),normal);
+			if(cosineIntersection > 0){
+				refrectionFrom = material->getRefractionIndex();
+				//FIXME this assumes objects wont be in each other
+				refrectionTo = 1.0f;
+				normal = (Vec4f(0,0,0,0)- normal);
 			} else {
-				cosine1 = -1.0f * Vec3fNS::dot(normal, ray.getDirection());
+				refrectionFrom = ray.getRefractionIndex();
+				refrectionTo = material->getRefractionIndex();
+				cosineIntersection = cosineIntersection * -1;
 			}
-			float cosine2sq = 1.0f - ((1.0f / (refractionRate*refractionRate))*(1.0f - cosine1 * cosine1));
-			if(cosine2sq > 0.0f){
-				Vec3f refraction;
-				if(!raySide){
-					refraction = (refractionRate*ray.getDirection()) + (refractionRate * cosine1 - sqrtf(cosine2sq)) * (-1.0f *normal);
-				} else {
-					refraction = (refractionRate*ray.getDirection()) + (refractionRate * cosine1 - sqrtf(cosine2sq)) * normal;
-				}
+
+			float cosineRefractionsq = 1.0f - ((refrectionFrom/refrectionTo)*(refrectionFrom/refrectionTo))*(1.0f - cosineIntersection * cosineIntersection);
+			if(cosineRefractionsq < 0.0f){//total reflection
+				//FIXME we are calculating reflection before this point, which is wrong.
+			} else {
+				float cosineRefraction = sqrtf(cosineRefractionsq);
+				float fresnelCoef = (pow((refrectionFrom * cosineIntersection - refrectionTo * cosineRefraction) / (refrectionFrom * cosineIntersection + refrectionTo * cosineRefraction), 2.0f) + pow((refrectionTo * cosineIntersection- refrectionFrom * cosineRefraction) / (refrectionFrom * cosineRefraction + refrectionTo * cosineRefraction), 2.0f)) * 0.5f;
+				//FIXME we need to calculate both reflection and refraction, but reflection is not here yet
+				//fresnelCoef determines reflection/refraction
+				Vec3f refraction= (refrectionFrom/refrectionTo) * ray.getDirection() + ((refrectionFrom/refrectionTo)*cosineIntersection - cosineRefraction) * normal;
 				//we are updating refraction index of ray, and reseting distance
 				Ray refractionRay(intersectionPoint, refraction.normalize(), material->getRefractionIndex(), 0);
 				Vec3f refractedColor = tracer->trace(refractionRay, octree,
