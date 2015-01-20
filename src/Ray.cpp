@@ -9,7 +9,7 @@
 
 std::ostream& operator<<(std::ostream &strm, const Ray &ray) {
 	return strm << "pos(" << ray.getPosition() << "), direction("
-			<< ray.getDirection() << ")";
+			<< ray.getDirection() << "), refraction index: " << ray.getRefractionIndex() << ", distance: " << ray.getDistance();
 }
 
 
@@ -28,7 +28,7 @@ std::ostream& operator<<(std::ostream &strm, const Ray &ray) {
  * returns:
  * vector of rays generated
  */
-std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& direction,const Vec3f& up, unsigned char gridSize, float maxUDerivation, float maxVDerivation){
+std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& direction,const Vec3f& up, float refractionIndex, unsigned char gridSize, float maxUDerivation, float maxVDerivation){
 	//FIXME this vector should not be recreated per call, it should be a parameter
 
 	std::vector<Ray> deriveredRays;
@@ -42,7 +42,7 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 	float perGridUSize = maxUDerivation/(gridSize/2);
 	float perGridVSize = maxVDerivation/(gridSize/2);
 
-	deriveredRays.push_back(Ray(origin,w,0,100));
+	deriveredRays.push_back(Ray(origin,w,refractionIndex,0));
 
 	//set the corners max values, so they can be tested beforehand
 	if (gridSize >= 2) {

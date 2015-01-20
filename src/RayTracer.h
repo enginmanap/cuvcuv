@@ -31,7 +31,7 @@ public:
 	RayTracer(char);
 	Vec3f trace(const Ray&, const Octree&, const std::vector<Light>&,
 			const unsigned int) const;
-	float traceToLight(const Vec4f&, const Octree&, const Light&) const;
+	float traceToLight(const Vec4f&, const Light&, float refractionIndex, const Octree&) const;
 };
 
 #endif /* SRC_RAYTRACER_H_ */

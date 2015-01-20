@@ -33,7 +33,7 @@ Ray Primitive::generateTransformedRay(const Ray& ray) const {
 	//since direction has 0 as last element, translate became 0 too
 	Vec4f newPos = ray.getPosition() * inverseTransformMat;
 	Vec4f newDir = ray.getDirection() * inverseTransformMat;
-	return Ray(newPos, newDir, 0, 100);
+	return Ray(newPos, newDir, ray.getRefractionIndex(), ray.getDistance());
 }
 
 bool Primitive::setTransformation(const Mat4f& matrix) {
@@ -76,7 +76,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			if (Vec4fNS::dot(normal, direction) > 0) {//is light on the same side as normal
 				//std::cout << "entered" << std::endl;
 				float ligthVisibility = tracer->traceToLight(intersectionPoint,
-						octree, *(&it));
+						*(&it), ray.getRefractionIndex(),octree);
 //#pragma omp critical
 //				std::cout << "light visibility is " << ligthVisibility << std::endl;
 				if (ligthVisibility) {
@@ -108,7 +108,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 
 				Vec4f reflectionDir = ray.getDirection()
 						- 2 * Vec4fNS::dot(ray.getDirection(), normal) * normal;
-				Ray reflectionRay(intersectionPoint, reflectionDir, 0, 100);
+				Ray reflectionRay(intersectionPoint, reflectionDir, ray.getRefractionIndex(), ray.getDistance());
 				Vec3f reflectedColor = tracer->trace(reflectionRay, octree,
 						lights, depth);
 				reflectedColor = Vec3fNS::clamp(reflectedColor, 0, 1);
@@ -128,40 +128,40 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 		intersectionPoint = intersectionPoint + EPSILON * 10.0f *normal;
 	}
 
+	//these calculations are here because they are side free, but they are after refraction
+	color = color + material->getAmbient() + material->getEmission();
+
 	//if refraction is defined
 	if(material->getRefractionIndex() != 1.0f){
 		if (depth > 0) {
 			float cosine1;
-			//FIXME we need to keep ray creating material refraction, 1.0f is wrong
-			float n = 1.0f / material->getRefractionIndex();
+			//refraction index of ray coming, and refraction index of material
+			float refractionRate =  material->getRefractionIndex()/ray.getRefractionIndex();
 			if(!raySide){
-				cosine1 = -1 * Vec3fNS::dot(-1* normal, ray.getDirection());
+				cosine1 = -1.0f * Vec3fNS::dot(-1.0f* normal, ray.getDirection());
 			} else {
-				cosine1 = -1 * Vec3fNS::dot(normal, ray.getDirection());
+				cosine1 = -1.0f * Vec3fNS::dot(normal, ray.getDirection());
 			}
-			float cosine2 = 1.0f - (n*n*(1.0f - cosine1 * cosine1));
-			if(cosine2 > 0.0f){
+			float cosine2sq = 1.0f - ((1.0f / (refractionRate*refractionRate))*(1.0f - cosine1 * cosine1));
+			if(cosine2sq > 0.0f){
 				Vec3f refraction;
 				if(!raySide){
-					refraction = (n*ray.getDirection()) + (n * cosine1 - sqrtf(cosine2)) * (-1 *normal);
+					refraction = (refractionRate*ray.getDirection()) + (refractionRate * cosine1 - sqrtf(cosine2sq)) * (-1.0f *normal);
 				} else {
-					refraction = (n*ray.getDirection()) + (n * cosine1 - sqrtf(cosine2)) * normal;
+					refraction = (refractionRate*ray.getDirection()) + (refractionRate * cosine1 - sqrtf(cosine2sq)) * normal;
 				}
-
-				Ray refractionRay(intersectionPoint, refraction, 0, 100);
+				//we are updating refraction index of ray, and reseting distance
+				Ray refractionRay(intersectionPoint, refraction.normalize(), material->getRefractionIndex(), 0);
 				Vec3f refractedColor = tracer->trace(refractionRay, octree,
 						lights, depth);
 				refractedColor = Vec3fNS::clamp(refractedColor, 0, 1);
 				//FIXME we need to add some factors to color and refracted color
-				color = color + refractedColor;
+				color = (0.5f)*color + refractedColor;
 
 			}
 
 		}
 	}
-
-	//these calculations are here because they are side free, but they are after refraction
-	color = color + material->getAmbient() + material->getEmission();
 
 	//we calculate dissolve after ambient/emission because they are effected by it.
 	//if a material is dissolved, it is transparent, but not refractive, so direction is same

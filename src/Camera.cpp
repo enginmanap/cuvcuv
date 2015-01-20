@@ -89,7 +89,7 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount,
 		Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 		direction = Vec3fNS::normalize(direction);
 		rays.clear();
-		std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(position,0.0),direction,up, rayCount,xChangeFactor*0.5f, yChangeFactor*0.5f);
+		std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(position,0.0),direction,up, 1.0f, rayCount,xChangeFactor*0.5f, yChangeFactor*0.5f);
 		rays.insert(rays.end(), temp.begin(),temp.end());
 		return true;
 	} else {

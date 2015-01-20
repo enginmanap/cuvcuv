@@ -22,6 +22,7 @@ bool RayTracer::isLightVisible(const Ray& rayToLight, const float distanceToLigh
 				&placeHolder)) {
 			//found intersection, check if it is before the closest one
 			if (distanceToLight > intersectionDistance) {
+				//FIXME now we need to update this
 				return false;
 			}
 
@@ -37,8 +38,8 @@ bool RayTracer::isLightVisible(const Ray& rayToLight, const float distanceToLigh
  * between gets equal weight.
  *
  */
-float RayTracer::traceToLight(const Vec4f& intersectionPoint,
-		const Octree& octree, const Light& light) const {
+float RayTracer::traceToLight(const Vec4f& intersectionPoint, const Light& light,
+		float refractionIndex, const Octree& octree) const {
 
 	//we should cast number of rays, and average the visibility results
 	Vec3f direction;
@@ -56,9 +57,9 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 	if(shadowGridSize > 1 && light.getSize() > 0){//0 means point & directional light
 		//calculate max derivation
 		float maxDerivation = (light.getSize()/2)/distanceToLight;
-		shadowRays = Ray::generateDeriveredRays(intersectionPoint,direction,shadowGridSize,maxDerivation);
+		shadowRays = Ray::generateDeriveredRays(intersectionPoint,direction,refractionIndex,shadowGridSize,maxDerivation);
 	} else {
-		shadowRays.push_back(Ray(intersectionPoint,direction.normalize(),0,100));
+		shadowRays.push_back(Ray(intersectionPoint,direction.normalize(),refractionIndex,0));
 	}
 	//at this point we know that
 	float visibility = 0.0f;
