@@ -92,7 +92,7 @@ public:
 		return materialMap[materialName];
 	}
 	Material* getMaterial() {
-		return materialMap[materialNames.top()];
+		return currentMaterial;
 	}
 
 	bool setCurrentAttenuation(float, float, float);
