@@ -51,7 +51,7 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 				//2*i-1 means if 0 -1, if 1 1.
 				tempDirection = ((maxUDerivation*((2*i)-1))*u) + ((maxVDerivation*((2*j)-1))*v);
 				tempDirection = tempDirection + w;
-				deriveredRays.push_back(Ray(origin,tempDirection.normalize(),0,100));
+				deriveredRays.push_back(Ray(origin,tempDirection.normalize(),refractionIndex,0));
 			}
 		}
 	}
@@ -68,7 +68,7 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 					offsetU = ((rand() / float(RAND_MAX + 1) * perGridUSize) + perGridUSize * i) - maxUDerivation;
 					offsetV = ((rand() / float(RAND_MAX + 1) * perGridVSize) + perGridVSize * j) - maxVDerivation;
 					tempDirection = w + offsetU*u + offsetV*v;
-					deriveredRays.push_back(Ray(origin,tempDirection.normalize(),0,100));
+					deriveredRays.push_back(Ray(origin,tempDirection.normalize(),refractionIndex,0));
 				}
 			}
 		}
