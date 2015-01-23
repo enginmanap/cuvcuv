@@ -68,7 +68,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	Vec4f normal(this->calculateNormal(intersectionPoint), 0);
 	Vec4f raySideIntersectionPoint, transparencyIntersectionPoint;
 	bool raySide = Vec4fNS::dot(normal, ray.getDirection()) < 0; //is ray opposite side as normal, so it can reflect/get light
-	if (raySide) { //We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
+	if (raySide || material->getRefractionIndex()!=1.0) { //We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
 		//check if light is blocked or not
 		raySideIntersectionPoint = intersectionPoint + EPSILON * 10.0f * normal;
 		//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
