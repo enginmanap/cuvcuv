@@ -165,8 +165,10 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 				//fresnels transparency factor
 				float fresnelTrans = (((2*refractionFrom*cosineIntersection)/(refractionFrom*cosineIntersection + refractionTo*cosineRefraction)) +
 						((2*refractionFrom*cosineIntersection)/(refractionFrom*cosineRefraction + refractionTo*cosineIntersection))) * 0.5;
-				//FIXME there is a reflection factor too, I did not implement it yet.
+				float fresnelReflec = (((refractionFrom*cosineIntersection - refractionTo*cosineRefraction)/(refractionFrom*cosineIntersection + refractionTo*cosineRefraction)) +
+						((refractionTo*cosineIntersection - refractionFrom*cosineRefraction)/(refractionFrom*cosineRefraction + refractionTo*cosineIntersection))) * 0.5;
 				Vec3f refractedColor;
+
 				reflectedColor = Vec3fNS::clamp(reflectedColor,0,1);
 				if(fresnelCoef <= 1.0f){
 					Vec3f refraction= (refractionFrom/refractionTo) * ray.getDirection() + ((refractionFrom/refractionTo)*cosineIntersection - cosineRefraction) * normal;
@@ -179,7 +181,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 				//FIXME we need to color for the distance that ray was in the object
 				//known as Beers law
 				if(refractedColor.length() > EPSILON){
-					color = (1.0 -fresnelTrans)*(color +  material->getSpecular() * getColorForReflection(ray, normal, raySideIntersectionPoint,
+					color = fresnelReflec*(color +  material->getSpecular() * getColorForReflection(ray, normal, raySideIntersectionPoint,
 							octree, lights,	depth, tracer));
 					color = color + (fresnelTrans)*refractedColor;
 				} else {
