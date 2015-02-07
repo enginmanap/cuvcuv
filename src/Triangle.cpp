@@ -26,20 +26,20 @@ Vec3f Triangle::calculateNormal(const Vec4f& intersectionPoint) const {
 		Vec3f intersection = intersectionPoint * this->inverseTransformMat;
 
 		Vec3f vectorIntersectionA = intersection - a;
-		float dotProductIABA = Vec3fNS::dot(vectorIntersectionA, vectorBA);
-		float dotProductIACA = Vec3fNS::dot(vectorIntersectionA, vectorCA);
-		float denom = dotProductBABA * dotProductCACA
+		double dotProductIABA = Vec3fNS::dot(vectorIntersectionA, vectorBA);
+		double dotProductIACA = Vec3fNS::dot(vectorIntersectionA, vectorCA);
+		double denom = dotProductBABA * dotProductCACA
 				- dotProductBACA * dotProductBACA;
-		float v = (dotProductCACA * dotProductIABA
+		double v = (dotProductCACA * dotProductIABA
 				- dotProductBACA * dotProductIACA) / denom;
-		float w = (dotProductBABA * dotProductIACA
+		double w = (dotProductBABA * dotProductIACA
 				- dotProductBACA * dotProductIABA) / denom;
-		float u = 1.0f - v - w;
+		double u = 1.0 - v - w;
 		//order is u->a, v->b, w->c
 		Vec3f normal = u * n1 + v * n2 + w * n3;
 
 		return Vec3fNS::normalize(
-				Vec4f(normal, 0.0f) * this->inverseMatrixTranspose);
+				Vec4f(normal, 0) * this->inverseMatrixTranspose);
 	}
 
 }
@@ -55,17 +55,17 @@ Vec3f Triangle::getDiffuse(const Vec3f& intersectionPoint) const {
 	Vec3f intersection = intersectionPoint * this->inverseTransformMat;
 
 	Vec3f vectorIntersectionA = intersection - a;
-	float dotProductIABA = Vec3fNS::dot(vectorIntersectionA, vectorBA);
-	float dotProductIACA = Vec3fNS::dot(vectorIntersectionA, vectorCA);
-	float denom = dotProductBABA * dotProductCACA
+	double dotProductIABA = Vec3fNS::dot(vectorIntersectionA, vectorBA);
+	double dotProductIACA = Vec3fNS::dot(vectorIntersectionA, vectorCA);
+	double denom = dotProductBABA * dotProductCACA
 			- dotProductBACA * dotProductBACA;
-	float v =
+	double v =
 			(dotProductCACA * dotProductIABA - dotProductBACA * dotProductIACA)
 					/ denom;
-	float w =
+	double w =
 			(dotProductBABA * dotProductIACA - dotProductBACA * dotProductIABA)
 					/ denom;
-	float u = 1.0f - v - w;
+	double u = 1.0 - v - w;
 	//order is u->a, v->b, w->c
 	Vec3f texelCoord = u * t1 + v * t2 + w * t3;
 	//std::cout << "u " << u << " v " << v << " w " << w << std::endl;

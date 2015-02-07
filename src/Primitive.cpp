@@ -12,18 +12,18 @@ unsigned int Primitive::lastID = 0;
 Vec3f Primitive::calculateColorPerLight(const Vec3f& direction,
 		const Vec3f& color, const Vec3f& normal, const Vec3f& halfVec,
 		const Vec3f& diffuse, const Vec3f& specular,
-		const float shininess) const {
+		const double shininess) const {
 
 	Vec3f lambert, phong;
 
-	float nDotl = Vec3fNS::dot(normal, direction);
-	float nDotH = Vec3fNS::dot(normal, halfVec);
+	double nDotl = Vec3fNS::dot(normal, direction);
+	double nDotH = Vec3fNS::dot(normal, halfVec);
 
 	lambert = diffuse * color;
-	lambert = std::max(nDotl, 0.0f) * lambert;
+	lambert = std::max(nDotl, 0.0) * lambert;
 
 	phong = specular * color;
-	phong = pow(std::max(nDotH, 0.0f), shininess) * phong;
+	phong = pow(std::max(nDotH, 0.0), shininess) * phong;
 
 	return lambert + phong;
 
@@ -59,7 +59,7 @@ bool Primitive::setMaterial(Material* mat) {
 	return true;
 }
 
-Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
+Vec3f Primitive::getColorForRay(const Ray& ray, double distance,
 		const Octree& octree, const std::vector<Light>& lights,
 		const unsigned int depth, const RayTracer* tracer) const {
 	Vec3f color;
@@ -75,8 +75,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	if (raySide || material->getRefractionIndex()!=1.0) { //We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
 	//if (raySide) { //We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
 		//check if light is blocked or not
-		raySideIntersectionPoint = intersectionPoint + EPSILON * 10.0f * coloringNormal;
-		//the 10.0f is to make epsilon bigger, or it might still be in Spheres.
+		raySideIntersectionPoint = intersectionPoint + EPSILON * coloringNormal;
 
 		for (unsigned int i = 0; i < lights.size(); i++) {
 			Light it = lights[i];
@@ -91,12 +90,12 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			}
 			if (Vec4fNS::dot(coloringNormal, direction) > 0) {//is light on the same side as normal
 				//std::cout << "entered" << std::endl;
-				float ligthVisibility = tracer->traceToLight(raySideIntersectionPoint,
+				double ligthVisibility = tracer->traceToLight(raySideIntersectionPoint,
 						*(&it), ray.getRefractionIndex(),octree);
 //#pragma omp critical
 //				std::cout << "light visibility is " << ligthVisibility << std::endl;
 				if (ligthVisibility) {
-					float lightDistance = ((Vec3f) (it.getPosition()
+					double lightDistance = ((Vec3f) (it.getPosition()
 							- raySideIntersectionPoint)).length();	//casting to vec3 because w is 0
 					Vec4f eyeDirn = Vec4fNS::normalize(
 							ray.getPosition() - raySideIntersectionPoint);
@@ -120,11 +119,11 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 	//at this point, we are going to calculate transparency, so we should reverse the intersection point
 	//if we are passing thru the wrong way, we need to remove the added normal
 	if(raySide) {
-		raySideIntersectionPoint = intersectionPoint + EPSILON * 10.0f * normal;
-		transparencyIntersectionPoint = intersectionPoint - EPSILON * 10.0f *normal;
+		raySideIntersectionPoint = intersectionPoint + EPSILON *  normal;
+		transparencyIntersectionPoint = intersectionPoint - EPSILON *normal;
 	} else {
-		transparencyIntersectionPoint = intersectionPoint + EPSILON * 10.0f * normal;
-		raySideIntersectionPoint = intersectionPoint - EPSILON * 10.0f *normal;
+		transparencyIntersectionPoint = intersectionPoint + EPSILON *  normal;
+		raySideIntersectionPoint = intersectionPoint - EPSILON  *normal;
 	}
 
 	//these calculations are here because they are side free, but they are after refraction
@@ -135,7 +134,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 
 
 		//if refraction is defined
-		if(material->getRefractionIndex() == 1.0f){
+		if(material->getRefractionIndex() == 1.0){
 			//since object is not refractive, we can apply reflection directly
 			//if there is a reflection
 			if(material->getSpecular().length() > EPSILON){
@@ -145,35 +144,35 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 			}
 		} else {
 			//we need to calculate refraction, and add it according to fresnel law
-			float cosineIntersection, refractionFrom, refractionTo;
+			double cosineIntersection, refractionFrom, refractionTo;
 			cosineIntersection = Vec3fNS::dot(ray.getDirection(),normal);
 			if(cosineIntersection > 0){
 				refractionFrom = material->getRefractionIndex();
 				//FIXME this assumes objects wont be in each other
-				refractionTo = 1.0f;
+				refractionTo = 1.0;
 				normal = -1 * normal;
 			} else {
 				refractionFrom = ray.getRefractionIndex();
 				refractionTo = material->getRefractionIndex();
 				cosineIntersection = cosineIntersection * -1;
 			}
-			float cosineRefractionsq = 1.0f - ((refractionFrom/refractionTo)*(refractionFrom/refractionTo))*(1.0f - cosineIntersection * cosineIntersection);
+			double cosineRefractionsq = 1.0 - ((refractionFrom/refractionTo)*(refractionFrom/refractionTo))*(1.0 - cosineIntersection * cosineIntersection);
 			//if the angle is bigger than critical, it will reflect only.
-			if(cosineRefractionsq < 0.0f){//total internal reflection
+			if(cosineRefractionsq < 0.0){//total internal reflection
 				color = color + material->getSpecular() * getColorForReflection(ray, normal, raySideIntersectionPoint,
 						octree, lights,	depth, tracer);
 			} else {
-				float cosineRefraction = sqrtf(cosineRefractionsq);
+				double cosineRefraction = sqrtf(cosineRefractionsq);
 				//fresnel  if there will be a reflection.
-				float fresnelCoef = (pow((refractionFrom * cosineIntersection - refractionTo * cosineRefraction) / (refractionFrom * cosineIntersection + refractionTo * cosineRefraction), 2.0f) +
-						pow((refractionTo * cosineIntersection - refractionFrom * cosineRefraction) / (refractionFrom * cosineRefraction + refractionTo * cosineRefraction), 2.0f)) * 0.5f;
+				double fresnelCoef = (pow((refractionFrom * cosineIntersection - refractionTo * cosineRefraction) / (refractionFrom * cosineIntersection + refractionTo * cosineRefraction), 2.0) +
+						pow((refractionTo * cosineIntersection - refractionFrom * cosineRefraction) / (refractionFrom * cosineRefraction + refractionTo * cosineRefraction), 2.0)) * 0.5;
 				//fresnels transparency factor
-				float fresnelTrans = (((2*refractionFrom*cosineIntersection)/(refractionFrom*cosineIntersection + refractionTo*cosineRefraction)) +
+				double fresnelTrans = (((2*refractionFrom*cosineIntersection)/(refractionFrom*cosineIntersection + refractionTo*cosineRefraction)) +
 						((2*refractionFrom*cosineIntersection)/(refractionFrom*cosineRefraction + refractionTo*cosineIntersection))) * 0.5;
 				//FIXME there is a reflection factor too, I did not implement it yet.
 				Vec3f refractedColor;
 				reflectedColor = Vec3fNS::clamp(reflectedColor,0,1);
-				if(fresnelCoef <= 1.0f){
+				if(fresnelCoef <= 1.0){
 					Vec3f refraction= (refractionFrom/refractionTo) * ray.getDirection() + ((refractionFrom/refractionTo)*cosineIntersection - cosineRefraction) * normal;
 					//we are updating refraction index of ray, and reseting distance
 					Ray refractionRay(transparencyIntersectionPoint, refraction.normalize(), material->getRefractionIndex(), 0);
@@ -193,14 +192,14 @@ Vec3f Primitive::getColorForRay(const Ray& ray, float distance,
 
 	//we calculate dissolve after ambient/emission because they are effected by it.
 	//if a material is dissolved, it is transparent, but not refractive, so direction is same
-	if(material->getDissolve() < 1.0f){
+	if(material->getDissolve() < 1.0){
 		if (depth > 0) {
 			Ray dissolveRay(raySideIntersectionPoint, ray.getDirection(), 0, 100);
 			Vec3f dissolveColor = tracer->trace(dissolveRay, octree,
 					lights, depth);
 			dissolveColor = Vec3fNS::clamp(dissolveColor, 0, 1);
 			//std::cout << "reflection " << reflectedColor << std::endl;
-			color = (material->getDissolve() * color) + ((1.0f - material->getDissolve()) * dissolveColor);
+			color = (material->getDissolve() * color) + ((1.0 - material->getDissolve()) * dissolveColor);
 
 		}
 	}

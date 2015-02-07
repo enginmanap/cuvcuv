@@ -11,7 +11,7 @@ Scene* SceneReader::readFile() {
 
 	bool isNameSet = false;
 	std::string command;
-	float parameters[MAX_PARAMS];
+	double parameters[MAX_PARAMS];
 	int parameterCount;
 
 	std::string stringParams[MAX_PARAMS];
@@ -53,7 +53,7 @@ Scene* SceneReader::readFile() {
 		if (command == "camera") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 10) {
-					std::cerr << "camera does not contain 10 floats, only "
+					std::cerr << "camera does not contain 10 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					scene->setCamera(parameters[0], parameters[1],
@@ -70,7 +70,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "Ka") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "Ka does not contain 3 floats, only "
+					std::cerr << "Ka does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					scene->setCurrentAmbient(parameters[0], parameters[1],
@@ -80,7 +80,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "Ke") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "Ke does not contain 3 floats, only "
+					std::cerr << "Ke does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					scene->setCurrentEmission(parameters[0], parameters[1],
@@ -90,7 +90,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "Kd") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "Kd does not contain 3 floats, only "
+					std::cerr << "Kd does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					scene->setCurrentDiffuse(parameters[0], parameters[1],
@@ -100,7 +100,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "Ks") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "Ks does not contain 3 floats, only "
+					std::cerr << "Ks does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					scene->setCurrentSpecular(parameters[0], parameters[1],
@@ -132,7 +132,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "point") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 6) {
-					std::cerr << "point light does not contain 6 floats, only "
+					std::cerr << "point light does not contain 6 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					//notice the 1 as 4th param it means this is point light
@@ -143,7 +143,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "lamp") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 7) {
-					std::cerr << "lamp light does not contain 7 floats, only "
+					std::cerr << "lamp light does not contain 7 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					//this is a point light (4th param 1) and has size (5th param is 4th read)
@@ -155,7 +155,7 @@ Scene* SceneReader::readFile() {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 6) {
 					std::cerr
-							<< "directional light does not contain 6 floats, only "
+							<< "directional light does not contain 6 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					//notice the 0 as 4th param, it means light has no position only direction
@@ -166,7 +166,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "attenuation") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "attenuation does not contain 3 floats, only "
+					std::cerr << "attenuation does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					scene->setCurrentAttenuation(parameters[0], parameters[1],
@@ -177,7 +177,7 @@ Scene* SceneReader::readFile() {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 4) {
 					std::cerr
-							<< "sphere definition does not contain 4 floats, only "
+							<< "sphere definition does not contain 4 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					scene->addSphere(parameters[0], parameters[1],
@@ -192,7 +192,7 @@ Scene* SceneReader::readFile() {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 3) {
 					std::cerr
-							<< "vertex definition does not contain 3 floats, only "
+							<< "vertex definition does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					scene->addVertex(parameters[0], parameters[1],
@@ -207,7 +207,7 @@ Scene* SceneReader::readFile() {
 				} else {
 					scene->addTriangle((int) parameters[0], (int) parameters[1],
 							(int) parameters[2]);
-					float fanCenter = parameters[0], previousVertex =
+					double fanCenter = parameters[0], previousVertex =
 							parameters[2];
 					for (int i = 3; i < parameterCount; ++i) {
 						scene->addTriangle((int) fanCenter, previousVertex,
@@ -219,7 +219,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "translate") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "translate does not contain 3 floats, only "
+					std::cerr << "translate does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					temproryMatrix = Transform::translate(parameters[0],
@@ -230,7 +230,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "scale") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "scale does not contain 3 floats, only "
+					std::cerr << "scale does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					temproryMatrix = Transform::scale(parameters[0],
@@ -241,7 +241,7 @@ Scene* SceneReader::readFile() {
 		} else if (command == "rotate") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				if (parameterCount < 4) {
-					std::cerr << "rotate does not contain 4 floats, only "
+					std::cerr << "rotate does not contain 4 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
 					temproryMatrix = Transform::rotate(parameters[0],

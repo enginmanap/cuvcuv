@@ -40,15 +40,15 @@ public:
 	bool createVertexSpace(int);
 	void printVertexes();
 
-	void addVertex(float x, float y, float z) {
+	void addVertex(double x, double y, double z) {
 		this->vertexVector.push_back(Vec3f(x, y, z));
 	}
 	;
-	void addVertexNormal(float x, float y, float z) {
+	void addVertexNormal(double x, double y, double z) {
 		this->vertexNormalVector.push_back(Vec3f(x, y, z));
 	}
 	;
-	void addVertexTextureCoordinate(float x, float y) {
+	void addVertexTextureCoordinate(double x, double y) {
 		this->vertexTextureCoordinateVector.push_back(Vec3f(x, y, 0));
 	}
 	;
@@ -57,7 +57,7 @@ public:
 
 	void buildOctree();
 
-	bool intersectiontest(Ray, float&, Primitive**) const;
+	bool intersectiontest(Ray, double&, Primitive**) const;
 
 };
 

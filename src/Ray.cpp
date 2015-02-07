@@ -28,7 +28,7 @@ std::ostream& operator<<(std::ostream &strm, const Ray &ray) {
  * returns:
  * vector of rays generated
  */
-std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& direction,const Vec3f& up, float refractionIndex, unsigned char gridSize, float maxUDerivation, float maxVDerivation){
+std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& direction,const Vec3f& up, double refractionIndex, unsigned char gridSize, double maxUDerivation, double maxVDerivation){
 	//FIXME this vector should not be recreated per call, it should be a parameter
 
 	std::vector<Ray> deriveredRays;
@@ -39,8 +39,8 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 	v = Vec3fNS::cross(w, u);
 
 	// gridsize 2 will mean 1 on each side, so we will /2 it
-	float perGridUSize = maxUDerivation/(gridSize/2);
-	float perGridVSize = maxVDerivation/(gridSize/2);
+	double perGridUSize = maxUDerivation/(gridSize/2);
+	double perGridVSize = maxVDerivation/(gridSize/2);
 
 	deriveredRays.push_back(Ray(origin,w,refractionIndex,0));
 
@@ -59,14 +59,14 @@ std::vector<Ray> Ray::generateDeriveredRays(const Vec4f& origin,const Vec3f& dir
 	//generate random rays for each grid cell, except corners.
 	if (gridSize > 2) {
 
-		float offsetU, offsetV;
+		double offsetU, offsetV;
 
 		for (unsigned char i = 0; i < gridSize; ++i) {
 			for (unsigned char j = 0; j < gridSize; ++j) {
 				//pass the corners
 				if (!((i == 0 && j == 0) || (i == gridSize - 1 && j == 0)|| (i == 0 && j == gridSize - 1)|| (i == gridSize - 1 && j == gridSize - 1))) {
-					offsetU = ((rand() / float(RAND_MAX + 1) * perGridUSize) + perGridUSize * i) - maxUDerivation;
-					offsetV = ((rand() / float(RAND_MAX + 1) * perGridVSize) + perGridVSize * j) - maxVDerivation;
+					offsetU = ((rand() / double(RAND_MAX + 1) * perGridUSize) + perGridUSize * i) - maxUDerivation;
+					offsetV = ((rand() / double(RAND_MAX + 1) * perGridVSize) + perGridVSize * j) - maxVDerivation;
 					tempDirection = w + offsetU*u + offsetV*v;
 					deriveredRays.push_back(Ray(origin,tempDirection.normalize(),refractionIndex,0));
 				}

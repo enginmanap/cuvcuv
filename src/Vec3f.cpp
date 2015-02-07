@@ -13,7 +13,7 @@ Vec3f Vec3f::normalize() const {
 
 Vec3f Vec3fNS::normalize(const Vec3f& vector) {
 	//calculate the vector size
-	float length = sqrt(
+	double length = sqrt(
 			(vector.x * vector.x) + (vector.y * vector.y)
 					+ (vector.z * vector.z));
 
@@ -29,11 +29,11 @@ Vec3f Vec3fNS::cross(const Vec3f& vector1, const Vec3f& vector2) {
 	return temp;
 }
 
-float Vec3fNS::dot(const Vec3f& vector1, const Vec3f& vector2) {
+double Vec3fNS::dot(const Vec3f& vector1, const Vec3f& vector2) {
 	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
 }
 
-Vec3f Vec3fNS::clamp(const Vec3f& vector, float min, float max) {
+Vec3f Vec3fNS::clamp(const Vec3f& vector, double min, double max) {
 	if (min > max) {
 		std::cerr << "clamping is not possible for min: " << min << " max"
 				<< max << std::endl;
@@ -79,12 +79,12 @@ Vec3f Vec3f::operator*(const Vec3f& vector2) const {
 	return temp;
 }
 
-Vec3f operator*(float i, const Vec3f& vector) {
+Vec3f operator*(double i, const Vec3f& vector) {
 
 	return Vec3f(i * vector.x, i * vector.y, i * vector.z);
 }
 
-float Vec3f::getElement(const int index) const {
+double Vec3f::getElement(const int index) const {
 	switch (index) {
 	case 0:
 		return x;
@@ -102,7 +102,7 @@ float Vec3f::getElement(const int index) const {
 	}
 }
 
-float& Vec3f::operator[](int index) {
+double& Vec3f::operator[](int index) {
 	switch (index) {
 	case 0:
 		return x;

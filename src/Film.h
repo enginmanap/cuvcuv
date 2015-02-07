@@ -19,7 +19,7 @@ class Film {
 	unsigned int height, width;
 	unsigned char colorDepth, samplingRate;
 
-	float colorRange;
+	double colorRange;
 public:
 	Film(unsigned int, unsigned int, unsigned char, unsigned char);
 	virtual ~Film();

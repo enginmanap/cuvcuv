@@ -24,14 +24,14 @@ class Octree;
 class RayTracer {
 private:
 	unsigned char shadowGridSize;
-	float corners[4][2];
-	bool isLightVisible(const Ray&, const float, const Octree&) const;
+	double corners[4][2];
+	bool isLightVisible(const Ray&, const double, const Octree&) const;
 
 public:
 	RayTracer(char);
 	Vec3f trace(const Ray&, const Octree&, const std::vector<Light>&,
 			const unsigned int) const;
-	float traceToLight(const Vec4f&, const Light&, float refractionIndex, const Octree&) const;
+	double traceToLight(const Vec4f&, const Light&, double refractionIndex, const Octree&) const;
 };
 
 #endif /* SRC_RAYTRACER_H_ */

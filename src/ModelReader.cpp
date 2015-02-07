@@ -48,7 +48,7 @@ Model* ModelReader::readModelFile(Scene& scene) {
 	model = new Model(scene.getTransform());
 	model->setMaterial(scene.getMaterial());
 	std::string command;
-	float parameters[MAX_PARAMS];
+	double parameters[MAX_PARAMS];
 	std::string stringParams[MAX_PARAMS];
 	int faceParameters[MAX_PARAMS * 3]; //this is for vertex, texture and normal
 	int parameterCount;
@@ -110,7 +110,7 @@ Model* ModelReader::readModelFile(Scene& scene) {
 						model->addTriangleBase(faceParameters[0],
 								faceParameters[1 * 3], faceParameters[2 * 3]);
 						//there might be more faces, we will interpret as GL_TRIANGLE_FAN
-						float fanCenter = faceParameters[0], previousVertex =
+						double fanCenter = faceParameters[0], previousVertex =
 								faceParameters[2 * 3];
 						for (int i = 3; i < parameterCount; ++i) {
 							model->addTriangleBase((int) fanCenter,

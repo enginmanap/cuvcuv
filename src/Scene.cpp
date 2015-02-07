@@ -24,7 +24,7 @@ Scene::Scene(unsigned int height, unsigned int width) :
 	materialMap[currentMaterial->getName()] = currentMaterial;
 	materialNames.push(currentMaterial->getName());
 
-	//mat->setShininess = 0.0f;
+	//mat->setShininess = 0.0;
 	//mat->setAttenuation = Vec3f(1, 0, 0); these are default
 
 	this->saveFilename = "output.png";
@@ -134,9 +134,9 @@ Mat4f Scene::addTransform(Mat4f& transform) {
 	return transformStack.top();
 }
 
-bool Scene::setCamera(float lookfromx, float lookfromy, float lookfromz,
-		float lookatx, float lookaty, float lookatz, float upx, float upy,
-		float upz, float fovy) {
+bool Scene::setCamera(double lookfromx, double lookfromy, double lookfromz,
+		double lookatx, double lookaty, double lookatz, double upx, double upy,
+		double upz, double fovy) {
 	if (camera != NULL) {
 		delete camera;
 	}
@@ -160,7 +160,7 @@ bool Scene::getSamplingSize(unsigned int& height, unsigned int& width) {
 	return true;
 }
 
-bool Scene::setCurrentEmission(float x, float y, float z) {
+bool Scene::setCurrentEmission(double x, double y, double z) {
 	temproryVector.x = x;
 	temproryVector.y = y;
 	temproryVector.z = z;
@@ -168,7 +168,7 @@ bool Scene::setCurrentEmission(float x, float y, float z) {
 	return true;
 }
 
-bool Scene::setCurrentAmbient(float x, float y, float z) {
+bool Scene::setCurrentAmbient(double x, double y, double z) {
 	temproryVector.x = x;
 	temproryVector.y = y;
 	temproryVector.z = z;
@@ -177,7 +177,7 @@ bool Scene::setCurrentAmbient(float x, float y, float z) {
 	return true;
 }
 
-bool Scene::setCurrentDiffuse(float x, float y, float z) {
+bool Scene::setCurrentDiffuse(double x, double y, double z) {
 	temproryVector.x = x;
 	temproryVector.y = y;
 	temproryVector.z = z;
@@ -185,7 +185,7 @@ bool Scene::setCurrentDiffuse(float x, float y, float z) {
 	return true;
 }
 
-bool Scene::setCurrentSpecular(float x, float y, float z) {
+bool Scene::setCurrentSpecular(double x, double y, double z) {
 	temproryVector.x = x;
 	temproryVector.y = y;
 	temproryVector.z = z;
@@ -193,7 +193,7 @@ bool Scene::setCurrentSpecular(float x, float y, float z) {
 	return true;
 }
 
-bool Scene::setCurrentShininess(float shininess) {
+bool Scene::setCurrentShininess(double shininess) {
 	currentMaterial->setShininess(shininess);
 	return true;
 }
@@ -217,15 +217,15 @@ bool Scene::addMaterial(std::vector<Material*>& materials) {
 	return true;
 }
 
-bool Scene::setCurrentAttenuation(float constant, float lineer,
-		float quadratic) {
+bool Scene::setCurrentAttenuation(double constant, double lineer,
+		double quadratic) {
 	this->currentAttenuation.x = constant;
 	this->currentAttenuation.y = lineer;
 	this->currentAttenuation.z = quadratic;
 	return true;
 }
 
-bool Scene::addVertex(float x, float y, float z) {
+bool Scene::addVertex(double x, double y, double z) {
 	if (currentVertex == maxVertexCount) {
 		std::cerr
 				<< "vertex vector resizing, using VertexCount command in scene definition can prevent this"
@@ -279,7 +279,7 @@ bool Scene::addTriangle(int vertice1, int vertice2, int vertice3) {
 	}
 }
 
-bool Scene::addSphere(float x, float y, float z, float radius) {
+bool Scene::addSphere(double x, double y, double z, double radius) {
 	Sphere* sphere = new Sphere(x, y, z, radius, transformStack.top());
 	sphere->setMaterial(currentMaterial);
 	primitives.push_back(sphere);
@@ -351,8 +351,8 @@ bool Scene::renderScene() {
 	return true;
 }
 
-bool Scene::addLight(float p1, float p2, float p3, float p4, float size, float c1, float c2,
-		float c3) {
+bool Scene::addLight(double p1, double p2, double p3, double p4, double size, double c1, double c2,
+		double c3) {
 	Vec4f lightPos(p1, p2, p3, p4);
 	Vec3f lightColor(c1, c2, c3);
 	lights.push_back(Light(lightPos, size, lightColor));

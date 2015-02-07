@@ -10,9 +10,9 @@
 #include <stdlib.h>
 #include <time.h>       /* time */
 
-Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
-		float lookaty, float lookatz, float upx, float upy, float upz,
-		float fovy, unsigned int height, unsigned int width) {
+Camera::Camera(double lookfromx, double lookfromy, double lookfromz, double lookatx,
+		double lookaty, double lookatz, double upx, double upy, double upz,
+		double fovy, unsigned int height, unsigned int width) {
 	position.x = lookfromx;
 	position.y = lookfromy;
 	position.z = lookfromz;
@@ -30,8 +30,8 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	this->fovy = fovy * M_PI / 180;
 	double d = (height * 0.5) / tan(this->fovy * 0.5);
 
-	this->fovx = (float) (2 * atan((width * 0.5) / d));
-	//this->fovx = this->fovy * ((float) width / (float) height);
+	this->fovx = (double) (2 * atan((width * 0.5) / d));
+	//this->fovx = this->fovy * ((double) width / (double) height);
 	std::cout << "fovy " << this->fovy << " fovx " << this->fovx << std::endl;
 
 	this->height = height;
@@ -46,8 +46,8 @@ Camera::Camera(float lookfromx, float lookfromy, float lookfromz, float lookatx,
 	u = Vec3fNS::normalize(Vec3fNS::cross(up, w));
 	v = Vec3fNS::cross(w, u);
 
-	halfWidth = (float) width / 2;
-	halfHeight = (float) height / 2;
+	halfWidth = (double) width / 2;
+	halfHeight = (double) height / 2;
 	xChangeFactor = tan(this->fovx / 2) / halfWidth;
 	yChangeFactor = tan(this->fovy / 2) / halfHeight;
 	srand(time(NULL));
@@ -81,15 +81,15 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount,
 	}
 
 	if (this->getPoint(x, y)) {
-		float horizontalChange = xChangeFactor
-				* ((float) x + (0.5f) - halfWidth);
+		double horizontalChange = xChangeFactor
+				* ((double) x + (0.5) - halfWidth);
 
-		float verticalChange = yChangeFactor
-				* (halfHeight - ((float) y + (0.5f)));
+		double verticalChange = yChangeFactor
+				* (halfHeight - ((double) y + (0.5)));
 		Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 		direction = Vec3fNS::normalize(direction);
 		rays.clear();
-		std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(position,0.0),direction,up, 1.0f, rayCount,xChangeFactor*0.5f, yChangeFactor*0.5f);
+		std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(position,0.0),direction,up, 1.0, rayCount,xChangeFactor*0.5, yChangeFactor*0.5);
 		rays.insert(rays.end(), temp.begin(),temp.end());
 		return true;
 	} else {

@@ -11,7 +11,7 @@ void Sphere::generateBoundingBox() {
 	//calculate the bounding box for this sphere
 
 	//we assume it was a sphere in 0,0,0 with radius 1, we will put real values in motion afterwards
-	float xRadius, yRadius, zRadius;
+	double xRadius, yRadius, zRadius;
 	xRadius = sqrt(
 			pow(this->transformMatrix.getElement(0, 0), 2)
 					+ pow(this->transformMatrix.getElement(1, 0), 2)
@@ -31,31 +31,31 @@ void Sphere::generateBoundingBox() {
 	zRadius *= this->radius;
 
 	//now calculate max and min points for bounding box. We are adding real position at this step
-	float xMax = xRadius + this->position.x
+	double xMax = xRadius + this->position.x
 			+ this->transformMatrix.getElement(3, 0);
-	float yMax = yRadius + this->position.y
+	double yMax = yRadius + this->position.y
 			+ this->transformMatrix.getElement(3, 1);
-	float zMax = zRadius + this->position.z
+	double zMax = zRadius + this->position.z
 			+ this->transformMatrix.getElement(3, 2);
 	this->bbUpper = Vec3f(xMax, yMax, zMax);
 
-	float xMin = -xRadius + this->position.x
+	double xMin = -xRadius + this->position.x
 			+ this->transformMatrix.getElement(3, 0);
-	float yMin = -yRadius + this->position.y
+	double yMin = -yRadius + this->position.y
 			+ this->transformMatrix.getElement(3, 1);
-	float zMin = -zRadius + this->position.z
+	double zMin = -zRadius + this->position.z
 			+ this->transformMatrix.getElement(3, 2);
 	this->bbLower = Vec3f(xMin, yMin, zMin);
 
-	float xCenter = (xMax + xMin) / 2;
-	float yCenter = (yMax + yMin) / 2;
-	float zCenter = (zMax + zMin) / 2;
+	double xCenter = (xMax + xMin) / 2;
+	double yCenter = (yMax + yMin) / 2;
+	double zCenter = (zMax + zMin) / 2;
 	this->bbCenter = Vec3f(xCenter, yCenter, zCenter);
 
 	this->bbwidths = Vec3f(xRadius, yRadius, zRadius);
 }
 
-Sphere::Sphere(float x, float y, float z, float rad, Mat4f& transformMat) {
+Sphere::Sphere(double x, double y, double z, double rad, Mat4f& transformMat) {
 	this->position.x = x;
 	this->position.y = y;
 	this->position.z = z;
@@ -81,37 +81,37 @@ Sphere::~Sphere() {
  *
  * params:
  * 		Ray: ray to test intersection
- * 		float: distance to intersect
+ * 		double: distance to intersect
  *
  * 	returns:
  * 		bool: if there is an intersection
  */
-bool Sphere::intersectiontest(Ray ray, float& distance,
+bool Sphere::intersectiontest(Ray ray, double& distance,
 		Primitive** intersectingPrimitive) const {
 	Ray transformedRay = generateTransformedRay(ray);
 	//the equation is:
 	// t^2 * (P1 * P1) + 2 * t * P1 * (P0 - C) + (P0 -C)^2 -r^2 = 0
 	Vec3f rayDirection = transformedRay.getDirection();
-	float p1s = Vec3fNS::dot(rayDirection, rayDirection);
+	double p1s = Vec3fNS::dot(rayDirection, rayDirection);
 	Vec3f rayPosition = transformedRay.getPosition();
 
 	Vec3f p0MinusC = rayPosition - this->position;
-	float p1timesp0mc = Vec3fNS::dot(rayDirection, p0MinusC);
+	double p1timesp0mc = Vec3fNS::dot(rayDirection, p0MinusC);
 	//now the formula is this:
 	//(distance * distance) * p1s + distance * (2*p1timesp0mc) + (p0MinusC * p0MinusC) - (this->radius * this->radius) = 0
 	//Assign a,b,c so later parts should be easier to follow;
 
-	float a = p1s;
-	float b = 2 * p1timesp0mc;
-	float c = Vec3fNS::dot(p0MinusC, p0MinusC) - (this->radius * this->radius);
+	double a = p1s;
+	double b = 2 * p1timesp0mc;
+	double c = Vec3fNS::dot(p0MinusC, p0MinusC) - (this->radius * this->radius);
 
 	//calculate the discriminant
 	// discriminant = b^2 - 4ac
-	float discriminant = b * b - 4 * a * c;
+	double discriminant = b * b - 4 * a * c;
 	//if d > 0, 2 solutions, if d=0 2 solutions are equal
 	// if d < 0 no real solutions
 
-	if (discriminant < EPSILON && discriminant > 0.0f) { // because float 0.0F is near impossible to get with calculation.
+	if (discriminant < EPSILON && discriminant > 0.0) { // because double 0.0F is near impossible to get with calculation.
 	//this means solutions are equal
 		distance = -1 * b / (2 * a);
 		if (distance < EPSILON) { //this means intersection within, we should pass
@@ -122,8 +122,8 @@ bool Sphere::intersectiontest(Ray ray, float& distance,
 		//solution1 = (-b + sqrt(discriminant)) / (2*a)
 		//solution2  = (-b - sqrt(discriminant)) / (2*a)
 		//we need to calculate both, because one positive, one negative is different then both positive
-		float distance1 = (-1 * b + sqrt(discriminant)) / (2 * a);
-		float distance2 = (-1 * b - sqrt(discriminant)) / (2 * a);
+		double distance1 = (-1 * b + sqrt(discriminant)) / (2 * a);
+		double distance2 = (-1 * b - sqrt(discriminant)) / (2 * a);
 		if (distance1 * distance2 < 0) {
 			//set the big one, because camera is in the sphere
 			if (distance1 > distance2)
@@ -132,7 +132,7 @@ bool Sphere::intersectiontest(Ray ray, float& distance,
 				distance = distance2;
 		} else {
 			//both solutions have same sign, we should eliminate negatives{
-			if (distance1 < 0.0f)
+			if (distance1 < 0.0)
 				return false;
 			//both solutions are positive, set the smaller one
 			if (distance1 > distance2)
@@ -155,6 +155,6 @@ Vec3f Sphere::calculateNormal(const Vec4f& position) const {
 	Vec3f normal = ((Vec3f) (position * this->inverseTransformMat))
 			- this->position;
 	return Vec3fNS::normalize(
-			Vec4f(normal, 0.0f) * this->inverseMatrixTranspose);
+			Vec4f(normal, 0.0) * this->inverseMatrixTranspose);
 
 }

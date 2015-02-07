@@ -19,7 +19,7 @@ private:
 	Mat4f inverseMatrixTranspose;
 
 	Vec3f vectorBA, vectorCA;
-	float dotProductBABA, dotProductBACA, dotProductCACA;
+	double dotProductBABA, dotProductBACA, dotProductCACA;
 
 	Vec3f getDiffuse(const Vec3f&) const;
 
@@ -48,8 +48,8 @@ public:
 	}
 	;
 
-	void setTextureCoordinates(float t11, float t12, float t21, float t22,
-			float t31, float t32) {
+	void setTextureCoordinates(double t11, double t12, double t21, double t22,
+			double t31, double t32) {
 		//FIXME this is just ugly
 		t1.x = t11;
 		t1.y = t12;

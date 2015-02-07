@@ -12,7 +12,7 @@
 #include "Vec4f.h"
 
 #ifndef EPSILON
-#define EPSILON 0.0001F
+#define EPSILON 0.000001F
 #endif
 
 class Light {
@@ -20,15 +20,15 @@ private:
 	Vec4f position; //if 4th is zero, it means no position but direction
 	Vec3f color;
 	Vec3f attenuation;
-	float size;
+	double size;
 
 public:
-	Light(Vec4f& position, float size, Vec3f& color) :
+	Light(Vec4f& position, double size, Vec3f& color) :
 			position(position), color(color), attenuation(
-					Vec3f(1.0f, 0.0f, 0.0f)),size(size){
+					Vec3f(1.0, 0.0, 0.0)),size(size){
 	}
 	bool setAttenuation(Vec3f&);
-	float getAttenuationFactor(float);
+	double getAttenuationFactor(double);
 
 	const Vec3f& getColor() const {
 		return color;
@@ -38,7 +38,7 @@ public:
 		return position;
 	}
 
-	float getSize() const {
+	double getSize() const {
 		return size;
 	}
 };

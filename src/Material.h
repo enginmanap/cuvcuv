@@ -19,15 +19,15 @@
 class Material {
 	std::string name;
 	Vec3f ambient, diffuse, specular, emission;
-	float shininess, dissolve, refractionIndex;
+	double shininess, dissolve, refractionIndex;
 	Texture* map_Kd;
 	//transparency or dissolve is not used yet.
 public:
 	Material(std::string name) :
-			name(name), shininess(0.0f), dissolve(1.0f), refractionIndex(1.0f), map_Kd(NULL) {
+			name(name), shininess(0.0), dissolve(1.0), refractionIndex(1.0), map_Kd(NULL) {
 	}
 	Material(std::string name, Vec3f ambient, Vec3f diffuse, Vec3f specular,
-			Vec3f emission, float shininess, float dissolve, float refractionIndex, Texture* map_Kd) :
+			Vec3f emission, double shininess, double dissolve, double refractionIndex, Texture* map_Kd) :
 			name(name), ambient(ambient), diffuse(diffuse), specular(specular), emission(
 					emission), shininess(shininess),dissolve(dissolve), refractionIndex(refractionIndex), map_Kd(map_Kd) {
 		//the textures are managed by scene
@@ -53,11 +53,11 @@ public:
 		return name;
 	}
 
-	float getShininess() const {
+	double getShininess() const {
 		return shininess;
 	}
 
-	void setShininess(float shininess) {
+	void setShininess(double shininess) {
 		this->shininess = shininess;
 	}
 
@@ -85,19 +85,19 @@ public:
 		map_Kd = mapKd;
 	}
 
-	float getDissolve() const {
+	double getDissolve() const {
 		return dissolve;
 	}
 
-	void setDissolve(float dissolve) {
+	void setDissolve(double dissolve) {
 		this->dissolve = dissolve;
 	}
 
-	float getRefractionIndex() const {
+	double getRefractionIndex() const {
 		return refractionIndex;
 	}
 
-	void setRefractionIndex(float refractionIndex) {
+	void setRefractionIndex(double refractionIndex) {
 		this->refractionIndex = refractionIndex;
 	}
 };
