@@ -111,20 +111,20 @@ bool Sphere::intersectiontest(Ray ray, double& distance,
 	//if d > 0, 2 solutions, if d=0 2 solutions are equal
 	// if d < 0 no real solutions
 
-	if (discriminant < EPSILON && discriminant > 0.0) { // because double 0.0F is near impossible to get with calculation.
+	if (discriminant > 0.0 && discriminant < EPSILON) { // because double 0.0F is near impossible to get with calculation.
 	//this means solutions are equal
 		distance = -1 * b / (2 * a);
 		if (distance < EPSILON) { //this means intersection within, we should pass
 			return false;
 		}
 		return true;
-	} else if (discriminant > 0) { //we know that it is not near 0, so positive is positive
+	} else if (discriminant > 0.0) { //we know that it is not near 0, so positive is positive
 		//solution1 = (-b + sqrt(discriminant)) / (2*a)
 		//solution2  = (-b - sqrt(discriminant)) / (2*a)
 		//we need to calculate both, because one positive, one negative is different then both positive
 		double distance1 = (-1 * b + sqrt(discriminant)) / (2 * a);
 		double distance2 = (-1 * b - sqrt(discriminant)) / (2 * a);
-		if (distance1 * distance2 < 0) {
+		if (distance1 * distance2 < 0.0) {
 			//set the big one, because camera is in the sphere
 			if (distance1 > distance2)
 				distance = distance1;
