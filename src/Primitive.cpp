@@ -66,16 +66,12 @@ Vec3f Primitive::getColorForRay(const Ray& ray, double distance,
 
 	Vec4f intersectionPoint = distance * ray.getDirection() + ray.getPosition();
 	Vec4f normal(this->calculateNormal(intersectionPoint), 0);
-	Vec4f coloringNormal = normal;
 	Vec4f raySideIntersectionPoint, transparencyIntersectionPoint;
 	bool raySide = Vec4fNS::dot(normal, ray.getDirection()) < 0; //is ray opposite side as normal, so it can reflect/get light
-	if(!raySide &&  material->getRefractionIndex()!=1.0){
-		coloringNormal = -1 * coloringNormal;
-	}
 	if (raySide || material->getRefractionIndex()!=1.0) { //We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
 	//if (raySide) { //We assume objects are one sided, if we hit the opposide side, we won't calculate light/diffuse.
 		//check if light is blocked or not
-		raySideIntersectionPoint = intersectionPoint + EPSILON * coloringNormal;
+		raySideIntersectionPoint = intersectionPoint + EPSILON * normal;
 
 		for (unsigned int i = 0; i < lights.size(); i++) {
 			Light it = lights[i];
@@ -88,7 +84,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, double distance,
 				lightPos = (1 / it.getPosition().w) * lightPos;
 				direction = Vec4fNS::normalize(lightPos - raySideIntersectionPoint);
 			}
-			if (Vec4fNS::dot(coloringNormal, direction) > 0) {//is light on the same side as normal
+			if (Vec4fNS::dot(normal, direction) > 0) {//is light on the same side as normal
 				//std::cout << "entered" << std::endl;
 				double ligthVisibility = tracer->traceToLight(raySideIntersectionPoint,
 						*(&it), ray.getRefractionIndex(),octree);
@@ -105,7 +101,7 @@ Vec3f Primitive::getColorForRay(const Ray& ray, double distance,
 							+ligthVisibility
 									* it.getAttenuationFactor(lightDistance)
 									* calculateColorPerLight(direction,
-											it.getColor(), coloringNormal, halfVec,
+											it.getColor(), normal, halfVec,
 											this->getDiffuse(raySideIntersectionPoint),
 											material->getSpecular(),
 											material->getShininess());
