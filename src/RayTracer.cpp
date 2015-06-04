@@ -11,8 +11,8 @@ RayTracer::RayTracer(char shadowGridSize) :
 		shadowGridSize(shadowGridSize) {
 }
 
-bool RayTracer::isLightVisible(const Ray& rayToLight, const float distanceToLight, const Octree& octree) const {
-	float intersectionDistance;
+bool RayTracer::isLightVisible(const Ray& rayToLight, const double distanceToLight, const Octree& octree) const {
+	double intersectionDistance;
 	Primitive* placeHolder = NULL; //this primitive will not be used, but it is required
 	std::set<Primitive*> primitives;
 	octree.getIntersectingPrimitives(rayToLight, primitives);
@@ -22,7 +22,9 @@ bool RayTracer::isLightVisible(const Ray& rayToLight, const float distanceToLigh
 				&placeHolder)) {
 			//found intersection, check if it is before the closest one
 			if (distanceToLight > intersectionDistance) {
-				return false;
+				//FIXME now we need to update this
+				if((*it)->getRefractionIndex() == 1.0)
+					return false;
 			}
 
 		}
@@ -37,13 +39,13 @@ bool RayTracer::isLightVisible(const Ray& rayToLight, const float distanceToLigh
  * between gets equal weight.
  *
  */
-float RayTracer::traceToLight(const Vec4f& intersectionPoint,
-		const Octree& octree, const Light& light) const {
+double RayTracer::traceToLight(const Vec4f& intersectionPoint, const Light& light,
+		double refractionIndex, const Octree& octree) const {
 
 	//we should cast number of rays, and average the visibility results
 	Vec3f direction;
 	Vec4f lightPosition = light.getPosition();
-	float distanceToLight =
+	double distanceToLight =
 			((Vec3f) (lightPosition - intersectionPoint)).length();
 	if (fabs(lightPosition.w) < EPSILON) {
 		direction = lightPosition;
@@ -55,13 +57,13 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 	std::vector<Ray>shadowRays;
 	if(shadowGridSize > 1 && light.getSize() > 0){//0 means point & directional light
 		//calculate max derivation
-		float maxDerivation = (light.getSize()/2)/distanceToLight;
-		shadowRays = Ray::generateDeriveredRays(intersectionPoint,direction,shadowGridSize,maxDerivation);
+		double maxDerivation = (light.getSize()/2)/distanceToLight;
+		shadowRays = Ray::generateDeriveredRays(intersectionPoint,direction,refractionIndex,shadowGridSize,maxDerivation);
 	} else {
-		shadowRays.push_back(Ray(intersectionPoint,direction.normalize(),0,100));
+		shadowRays.push_back(Ray(intersectionPoint,direction.normalize(),refractionIndex,0));
 	}
 	//at this point we know that
-	float visibility = 0.0f;
+	double visibility = 0.0;
 
 	//we start from 1 because 0 is already tested
 	for (unsigned char i = 0; i < shadowRays.size(); ++i) {
@@ -71,12 +73,12 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 		/*
 		 //FIXME this is causing errors if model is spiked or has sharp corners
 		if(i == 4){
-			if (visibility == 5.0f) { //if all corners and center see light, no one will be blocked
+			if (visibility == 5.0) { //if all corners and center see light, no one will be blocked
 				//std::cout << "all visible " << std::endl;
-				return 1.0f;
-			} else if (visibility == 0.0f) { // if none of them see light, no one will see either
+				return 1.0;
+			} else if (visibility == 0.0) { // if none of them see light, no one will see either
 				//std::cout << "all blocked" << std::endl;
-				return 0.0f;
+				return 0.0;
 			}
 		}
 		*/
@@ -101,7 +103,7 @@ float RayTracer::traceToLight(const Vec4f& intersectionPoint,
 Vec3f RayTracer::trace(const Ray& ray, const Octree& octree,
 		const std::vector<Light> &lights, const unsigned int depth) const {
 	//static unsigned int totalTests = 0, mostTests = 0;
-	float distance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
+	double distance = std::numeric_limits<double>::max(); // this is the maximum value double can have, min() returns min positive value.
 
 	Primitive* intersectingPrimitive = NULL;
 	Primitive* closestIntersectingPrimitive = NULL;
@@ -109,7 +111,7 @@ Vec3f RayTracer::trace(const Ray& ray, const Octree& octree,
 	std::set<Primitive*> primitives;
 	octree.getIntersectingPrimitives(ray, primitives);
 	if (!primitives.empty()) {
-		float intersectionDistance;
+		double intersectionDistance;
 		//totalTests += primitives.size();
 		//if (primitives.size() > mostTests) {
 		//	std::cout << "maximum tests " << primitives.size() << std::endl;
@@ -139,7 +141,7 @@ Vec3f RayTracer::trace(const Ray& ray, const Octree& octree,
 		return closestIntersectingPrimitive->getColorForRay(ray, distance,
 				octree, lights, depth - 1, this);
 	} else {
-		return Vec3f(0.0f, 0.0f, 0.0f);
+		return Vec3f(0.0, 0.0, 0.0);
 	}
 
 }

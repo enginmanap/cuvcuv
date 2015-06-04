@@ -21,7 +21,7 @@ std::vector<Material*> MaterialReader::readMaterialFile(
 		std::vector<Texture*>& textures) {
 
 	std::string command;
-	float floatParameters[MAX_PARAMS];
+	double doubleParameters[MAX_PARAMS];
 	std::string stringParameters[MAX_PARAMS];
 	std::string firstLine;
 	int parameterCount;
@@ -55,61 +55,61 @@ std::vector<Material*> MaterialReader::readMaterialFile(
 		std::stringstream stringStream(line);
 		stringStream >> command;
 		if (command == "Ka") { //ambient
-			if (readFloatParams(stringStream, floatParameters,
+			if (readFloatParams(stringStream, doubleParameters,
 					parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "Ka does not contain 3 floats, only "
+					std::cerr << "Ka does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
-					temporaryVector.x = floatParameters[0];
-					temporaryVector.y = floatParameters[1];
-					temporaryVector.z = floatParameters[2];
+					temporaryVector.x = doubleParameters[0];
+					temporaryVector.y = doubleParameters[1];
+					temporaryVector.z = doubleParameters[2];
 					currentMaterial->setAmbient(temporaryVector);
 				}
 			}
 		} else if (command == "Ke") { //emission
-			if (readFloatParams(stringStream, floatParameters,
+			if (readFloatParams(stringStream, doubleParameters,
 					parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "Ka does not contain 3 floats, only "
+					std::cerr << "Ka does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
-					temporaryVector.x = floatParameters[0];
-					temporaryVector.y = floatParameters[1];
-					temporaryVector.z = floatParameters[2];
+					temporaryVector.x = doubleParameters[0];
+					temporaryVector.y = doubleParameters[1];
+					temporaryVector.z = doubleParameters[2];
 					currentMaterial->setEmission(temporaryVector);
 				}
 			}
 		} else if (command == "Kd") { //diffuse
-			if (readFloatParams(stringStream, floatParameters,
+			if (readFloatParams(stringStream, doubleParameters,
 					parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "Ka does not contain 3 floats, only "
+					std::cerr << "Ka does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
-					temporaryVector.x = floatParameters[0];
-					temporaryVector.y = floatParameters[1];
-					temporaryVector.z = floatParameters[2];
+					temporaryVector.x = doubleParameters[0];
+					temporaryVector.y = doubleParameters[1];
+					temporaryVector.z = doubleParameters[2];
 					currentMaterial->setDiffuse(temporaryVector);
 				}
 			}
 		} else if (command == "Ks") { //specular
-			if (readFloatParams(stringStream, floatParameters,
+			if (readFloatParams(stringStream, doubleParameters,
 					parameterCount)) {
 				if (parameterCount < 3) {
-					std::cerr << "Ka does not contain 3 floats, only "
+					std::cerr << "Ka does not contain 3 doubles, only "
 							<< parameterCount << " provided." << std::endl;
 				} else {
-					temporaryVector.x = floatParameters[0];
-					temporaryVector.y = floatParameters[1];
-					temporaryVector.z = floatParameters[2];
+					temporaryVector.x = doubleParameters[0];
+					temporaryVector.y = doubleParameters[1];
+					temporaryVector.z = doubleParameters[2];
 					currentMaterial->setSpecular(temporaryVector);
 				}
 			}
 		} else if (command == "Ns") { //shininess
-			if (readFloatParams(stringStream, floatParameters,
+			if (readFloatParams(stringStream, doubleParameters,
 					parameterCount)) {
-				currentMaterial->setShininess(floatParameters[0]);
+				currentMaterial->setShininess(doubleParameters[0]);
 			}
 		} else if (command == "newmtl") { //shininess
 			if (readStringParams(stringStream, stringParameters, 1)) {
@@ -134,8 +134,24 @@ std::vector<Material*> MaterialReader::readMaterialFile(
 				std::cerr << "newmtl command parameters could not be read"
 						<< std::endl;
 			}
-		} else if (command == "d") {
-			//TODO implement setting dissolved (transparency
+		} else if (command == "d" || command == "Tr") {
+			if (readFloatParams(stringStream, doubleParameters,
+					parameterCount)) {
+				currentMaterial->setDissolve(doubleParameters[0]);
+			} else {
+				std::cerr << "Tr/d command parameter could not be read"
+						<< std::endl;
+			}
+
+		} else if (command == "Ni") {
+			if (readFloatParams(stringStream, doubleParameters,
+					parameterCount)) {
+				currentMaterial->setRefractionIndex(doubleParameters[0]);
+			} else {
+				std::cerr << "Ni command parameter could not be read"
+						<< std::endl;
+			}
+
 		} else if (command == "illum") {
 			//TODO implement setting illimunation model
 		} else

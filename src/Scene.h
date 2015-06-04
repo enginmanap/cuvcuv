@@ -67,8 +67,8 @@ class Scene {
 public:
 
 	Scene(unsigned int, unsigned int);
-	bool setCamera(float, float, float, float, float, float, float, float,
-			float, float);
+	bool setCamera(double, double, double, double, double, double, double, double,
+			double, double);
 
 	virtual ~Scene();
 
@@ -76,27 +76,26 @@ public:
 	void setShadowGrid(unsigned char);
 	void setSampleRate(unsigned char samplingRate);
 
-	bool setCurrentAmbient(float, float, float);
-	bool setCurrentEmission(float, float, float);
-	bool setCurrentDiffuse(float, float, float);
-	bool setCurrentSpecular(float, float, float);
-	bool setCurrentShininess(float);
+	bool setCurrentAmbient(double, double, double);
+	bool setCurrentEmission(double, double, double);
+	bool setCurrentDiffuse(double, double, double);
+	bool setCurrentSpecular(double, double, double);
+	bool setCurrentShininess(double);
+	void setCurrentDissolve(double dissolve){currentMaterial->setDissolve(dissolve);}
+	void setCurrentRefractionIndex(double RefractionIndex){currentMaterial->setRefractionIndex(RefractionIndex);}
 
 	bool addMaterial(std::vector<Material*>&);
 	void addTexture(std::vector<Texture*>& newTextures) {
 		textures.insert(textures.end(), newTextures.begin(), newTextures.end());
 	}
-	;
 	Material* getMaterial(std::string& materialName) {
 		return materialMap[materialName];
 	}
-	;
 	Material* getMaterial() {
-		return materialMap[materialNames.top()];
+		return currentMaterial;
 	}
-	;
 
-	bool setCurrentAttenuation(float, float, float);
+	bool setCurrentAttenuation(double, double, double);
 
 	bool setSaveFilename(std::string);
 	std::string getSaveFilename();
@@ -109,12 +108,12 @@ public:
 		return this->film->getPixels(height, width);
 	}
 
-	bool addVertex(float, float, float);
+	bool addVertex(double, double, double);
 	bool addTriangle(int, int, int);
-	bool addSphere(float, float, float, float);
+	bool addSphere(double, double, double, double);
 	bool addModel(Model*);
 
-	bool addLight(float, float, float, float, float, float, float, float);
+	bool addLight(double, double, double, double, double, double, double, double);
 
 	bool pushTransform();
 	Mat4f popTransform();
@@ -125,7 +124,6 @@ public:
 	Mat4f getTransform() {
 		return transformStack.top();
 	}
-	;
 
 	void buildOctree();
 	bool renderScene();

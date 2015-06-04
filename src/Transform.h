@@ -21,9 +21,9 @@ private:
 	Transform(); // this class is only static
 
 public:
-	static Mat4f scale(const float, const float, const float);
-	static Mat4f translate(const float, const float, const float);
-	static Mat4f rotate(const float, const float, const float, const float);
+	static Mat4f scale(const double, const double, const double);
+	static Mat4f translate(const double, const double, const double);
+	static Mat4f rotate(const double, const double, const double, const double);
 };
 
 #endif /* TRANSFORM_H_ */

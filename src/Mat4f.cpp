@@ -24,7 +24,7 @@ Mat4f::Mat4f() {
 	 */
 }
 
-Mat4f::Mat4f(float defaultValue) {
+Mat4f::Mat4f(double defaultValue) {
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
 			this->rows[i][j] = defaultValue;
@@ -32,9 +32,9 @@ Mat4f::Mat4f(float defaultValue) {
 	}
 }
 
-Mat4f::Mat4f(float xx, float xy, float xz, float xw, float yx, float yy,
-		float yz, float yw, float zx, float zy, float zz, float zw, float wx,
-		float wy, float wz, float ww) {
+Mat4f::Mat4f(double xx, double xy, double xz, double xw, double yx, double yy,
+		double yz, double yw, double zx, double zy, double zz, double zw, double wx,
+		double wy, double wz, double ww) {
 	this->rows[0][0] = xx;
 	this->rows[0][1] = xy;
 	this->rows[0][2] = xz;
@@ -75,7 +75,7 @@ Vec4f& Mat4f::operator[](const int index) {
 	}
 }
 
-float Mat4f::getElement(const int x, const int y) const {
+double Mat4f::getElement(const int x, const int y) const {
 	return rows[x].getElement(y);
 }
 
@@ -112,12 +112,12 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 	copy = matrix;
 
 	Vec4f row;
-	float portion;
+	double portion;
 	for (int i = 0; i < 4; ++i) {
 		if (fabs(copy[i][i]) < EPSILON) {
 			Vec4f temp = copy[i];
 			int biggestRowID = -1;
-			float biggestValue = std::numeric_limits<float>::max() * -1;
+			double biggestValue = std::numeric_limits<double>::max() * -1;
 
 			//should we swap rows? find the biggest row, that is not 0
 			for (int j = i; j < 4; ++j) {
@@ -146,7 +146,7 @@ Mat4f Mat4f::inverse(const Mat4f& matrix) {
 
 		row = copy[i];
 
-		if (fabs(row[i] - 1.0f) > EPSILON) { //if one, than we dont need to process
+		if (fabs(row[i] - 1.0) > EPSILON) { //if one, than we dont need to process
 
 			portion = 1 / row[i];
 			row = portion * row;
@@ -193,7 +193,7 @@ Mat4f Mat4f::operator+(const Mat4f& matrix) const {
 	return ret;
 }
 
-Mat4f operator*(float multipler, const Mat4f& matrix) {
+Mat4f operator*(double multipler, const Mat4f& matrix) {
 	Mat4f ret;
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
