@@ -134,6 +134,21 @@ std::vector<Material*> MaterialReader::readMaterialFile(
 				std::cerr << "newmtl command parameters could not be read"
 						<< std::endl;
 			}
+		} else if (command == "bump") { //shininess
+			if (readStringParams(stringStream, stringParameters, 1)) {
+				Texture* texture = NULL;
+				if (stringParameters[0].find_first_of("/") == 0) {
+					texture = new Texture(
+							filePath + stringParameters[0].substr(1));
+				} else {
+					texture = new Texture(filePath + stringParameters[0]);
+				}
+				currentMaterial->setMapBump(texture);
+				textures.push_back(texture);
+			} else {
+				std::cerr << "newmtl command parameters could not be read"
+						<< std::endl;
+			}
 		} else if (command == "d" || command == "Tr") {
 			if (readFloatParams(stringStream, doubleParameters,
 					parameterCount)) {

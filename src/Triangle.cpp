@@ -38,6 +38,28 @@ Vec3f Triangle::calculateNormal(const Vec4f& intersectionPoint) const {
 		//order is u->a, v->b, w->c
 		Vec3f normal = u * n1 + v * n2 + w * n3;
 
+		//if there is a normal map
+		if(this->material->getMapBump() != NULL){
+				/**
+				 * calculating barycentric coordinates
+				 * TODO this must be exported as another function
+				 */
+				Vec3f texelCoord = u * t1 + v * t2 + w * t3;
+				Vec3f normalChange = this->material->getMapBump()->getColor(texelCoord.x,
+						texelCoord.y);
+
+				//why this values work is a mystery for me.
+				normalChange.x = normalChange.x - 0.5;
+				normalChange.y = normalChange.y -0.5;
+				normalChange.z = normalChange.z- 1;
+
+				// do not normalize the change, it is not normal vector
+				//normal = (normal.normalize() + normalChange).normalize();
+				//add value from map to the normal
+				normal = normal + normalChange;
+				normal= normal.normalize();
+		}
+
 		return Vec3fNS::normalize(
 				Vec4f(normal, 0) * this->inverseMatrixTranspose);
 	}
