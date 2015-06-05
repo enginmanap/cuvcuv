@@ -34,8 +34,11 @@ public:
 	double& operator[](int); //it is not const, so we can assign to it.
 	double length() const {
 		return sqrt((x * x) + (y * y) + (z * z));
-	}
-	;
+	};
+	bool operator==(const Vec3f& compare) const
+		{
+		return (x==compare.x && y==compare.y && x==compare.y);
+		}
 
 };
 
