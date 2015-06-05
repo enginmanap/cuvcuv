@@ -15,24 +15,24 @@
 
 class Vec4f {
 public:
-	float x;
-	float y;
-	float z;
-	float w;
+	double x;
+	double y;
+	double z;
+	double w;
 	Vec4f() :
 			x(0), y(0), z(0), w(0) {
 	}
 	;
-	Vec4f(Vec3f vec, float w) :
+	Vec4f(Vec3f vec, double w) :
 			x(vec.x), y(vec.y), z(vec.z), w(w) {
 	}
 	;
-	Vec4f(float x, float y, float z, float w) :
+	Vec4f(double x, double y, double z, double w) :
 			x(x), y(y), z(z), w(w) {
 	}
 	;
 	Vec4f normalize() const;
-	float length();
+	double length();
 
 	Vec4f operator-(const Vec4f&) const;
 	Vec4f operator+(const Vec4f&);
@@ -43,7 +43,7 @@ public:
 	;
 
 	//these elements are here, so gcc can inline/optimise them. it can be forced, but I won't.
-	float getElement(const int index) const {
+	double getElement(const int index) const {
 		switch (index) {
 		case 0:
 			return x;
@@ -64,7 +64,7 @@ public:
 	}
 	;
 
-	float& operator[](int index) {
+	double& operator[](int index) {
 		switch (index) {
 		case 0:
 			return x;
@@ -87,13 +87,13 @@ public:
 };
 
 std::ostream& operator<<(std::ostream &strm, const Vec4f &vector);
-Vec4f operator*(float i, const Vec4f& vector);
+Vec4f operator*(double i, const Vec4f& vector);
 
 namespace Vec4fNS {
 
 Vec4f normalize(const Vec4f&);
-float dot(const Vec4f&, const Vec4f&);
-Vec4f clamp(const Vec4f&, float, float);
+double dot(const Vec4f&, const Vec4f&);
+Vec4f clamp(const Vec4f&, double, double);
 
 }
 

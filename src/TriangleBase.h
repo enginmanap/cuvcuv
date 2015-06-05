@@ -30,7 +30,7 @@ public:
 	}
 	;
 
-	bool intersectiontest(Ray, float&, Primitive**) const;
+	bool intersectiontest(Ray, double&, Primitive**) const;
 };
 
 #endif /* SRC_TRIANGLEBASE_H_ */

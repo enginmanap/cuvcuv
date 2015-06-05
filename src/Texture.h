@@ -9,7 +9,7 @@
 #define SRC_TEXTURE_H_
 
 #ifndef EPSILON
-#define EPSILON 0.001
+#define EPSILON 0.000001
 #endif
 
 #include <string>
@@ -25,7 +25,7 @@ public:
 	Texture(std::string);
 	virtual ~Texture();
 
-	Vec3f getColor(float, float) const;
+	Vec3f getColor(double, double) const;
 };
 
 #endif /* SRC_TEXTURE_H_ */

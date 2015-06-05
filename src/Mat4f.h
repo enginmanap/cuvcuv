@@ -14,7 +14,7 @@
 #include "Vec4f.h"
 
 #ifndef EPSILON
-#define EPSILON 0.001F
+#define EPSILON 0.000001F
 #endif
 
 class Mat4f {
@@ -22,12 +22,12 @@ private:
 	Vec4f rows[4];
 public:
 	Mat4f();
-	Mat4f(float, float, float, float, float, float, float, float, float, float,
-			float, float, float, float, float, float);
-	Mat4f(float);
+	Mat4f(double, double, double, double, double, double, double, double, double, double,
+			double, double, double, double, double, double);
+	Mat4f(double);
 
 	Vec4f& getRow(const int);
-	float getElement(const int, const int) const;
+	double getElement(const int, const int) const;
 	Vec4f& operator[](const int);
 	Mat4f operator+(const Mat4f&) const;
 	Mat4f operator*(Mat4f&);
@@ -38,7 +38,7 @@ public:
 };
 
 std::ostream& operator<<(std::ostream &strm, Mat4f &matrix);
-Mat4f operator*(float, const Mat4f&);
+Mat4f operator*(double, const Mat4f&);
 Vec4f operator*(const Vec4f&, const Mat4f&);
 Vec3f operator*(const Vec3f&, const Mat4f&);
 

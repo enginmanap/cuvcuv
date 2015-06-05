@@ -11,13 +11,13 @@ Vec4f Vec4f::normalize() const {
 	return Vec4fNS::normalize(*this);
 }
 
-float Vec4f::length() {
+double Vec4f::length() {
 	return sqrt(((x * x) + (y * y) + (z * z)) / (w * w));
 }
 
 Vec4f Vec4fNS::normalize(const Vec4f& vector) {
 	//calculate the vector size
-	float length = sqrt(
+	double length = sqrt(
 			(vector.x * vector.x) + (vector.y * vector.y)
 					+ (vector.z * vector.z) + (vector.w * vector.w));
 
@@ -27,12 +27,12 @@ Vec4f Vec4fNS::normalize(const Vec4f& vector) {
 	return temp;
 }
 
-float Vec4fNS::dot(const Vec4f& vector1, const Vec4f& vector2) {
+double Vec4fNS::dot(const Vec4f& vector1, const Vec4f& vector2) {
 	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z
 			+ vector1.w * vector2.w;
 }
 
-Vec4f Vec4fNS::clamp(const Vec4f& vector, float min, float max) {
+Vec4f Vec4fNS::clamp(const Vec4f& vector, double min, double max) {
 	if (min > max) {
 		std::cerr << "clamping is not possible for min: " << min << " max"
 				<< max << std::endl;
@@ -85,7 +85,7 @@ Vec4f Vec4f::operator*(const Vec4f& vector2) const {
 	return temp;
 }
 
-Vec4f operator*(float i, const Vec4f& vector) {
+Vec4f operator*(double i, const Vec4f& vector) {
 
 	return Vec4f(i * vector.x, i * vector.y, i * vector.z, i * vector.w);
 }

@@ -16,7 +16,7 @@
  * it should be closed except that.
  */
 void Octree::addWireframe(std::vector<Primitive*>& primitives) {
-	float width = 0.1f;
+	double width = 0.1;
 	//create small triangles at the lines of the tree
 	//get the 3 vertices
 	Vec3f vertice[10];
@@ -116,7 +116,7 @@ void Octree::addWireframe(std::vector<Primitive*>& primitives) {
 Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd,
 		std::vector<Primitive*>& primitives, unsigned char maxDepth) :
 		parent(parent), upperEnd(upperEnd), lowerEnd(lowerEnd), center(
-				(1.0f / 2) * (this->upperEnd + this->lowerEnd)) {
+				(1.0 / 2) * (this->upperEnd + this->lowerEnd)) {
 	//this variable is used for logging. With it we can intent based on the depth.
 	static std::string level = "";
 
@@ -146,7 +146,7 @@ Octree::Octree(Octree* parent, Vec3f& upperEnd, Vec3f& lowerEnd,
 		//std::cout << "not split due to maxDepth setting for primitive count " << primitives.size() << std::endl;
 	}
 	if (maxDepth > 1 && primitives.size() > 1
-			&& (upperEnd.x - lowerEnd.x > 0.1f)) {
+			&& (upperEnd.x - lowerEnd.x > 0.1)) {
 		//we should calculate children if we can split more
 
 		//calculate the sides
@@ -265,32 +265,32 @@ Octree::~Octree() {
 bool Octree::isRayIntersects(const Ray& ray) const {
 	//Vec4f directionInverse = ray.getInverseDirection();
 
-	float lowerXIntersection = (lowerEnd.x - ray.getPosition().x)
+	double lowerXIntersection = (lowerEnd.x - ray.getPosition().x)
 			* ray.getInverseDirection().x;
-	float upperXIntersection = (upperEnd.x - ray.getPosition().x)
+	double upperXIntersection = (upperEnd.x - ray.getPosition().x)
 			* ray.getInverseDirection().x;
 
-	float tmin = std::min(lowerXIntersection, upperXIntersection);
-	float tmax = std::max(lowerXIntersection, upperXIntersection);
+	double tmin = std::min(lowerXIntersection, upperXIntersection);
+	double tmax = std::max(lowerXIntersection, upperXIntersection);
 
-	float lowerYIntersection = (lowerEnd.y - ray.getPosition().y)
+	double lowerYIntersection = (lowerEnd.y - ray.getPosition().y)
 			* ray.getInverseDirection().y;
-	float upperYIntersection = (upperEnd.y - ray.getPosition().y)
+	double upperYIntersection = (upperEnd.y - ray.getPosition().y)
 			* ray.getInverseDirection().y;
 
 	tmin = std::max(tmin, std::min(lowerYIntersection, upperYIntersection));
 	tmax = std::min(tmax, std::max(lowerYIntersection, upperYIntersection));
 
-	float loverZIntersection = (lowerEnd.z - ray.getPosition().z)
+	double loverZIntersection = (lowerEnd.z - ray.getPosition().z)
 			* ray.getInverseDirection().z;
-	float upperZIntersection = (upperEnd.z - ray.getPosition().z)
+	double upperZIntersection = (upperEnd.z - ray.getPosition().z)
 			* ray.getInverseDirection().z;
 
 	tmin = std::max(tmin, std::min(loverZIntersection, upperZIntersection));
 	tmax = std::min(tmax, std::max(loverZIntersection, upperZIntersection));
 
 	//tmin is intersection distance, if it is smaller than tmax
-	return tmax >= std::max(0.0f, tmin);
+	return tmax >= std::max(0.0, tmin);
 }
 
 /**

@@ -240,18 +240,18 @@ typedef struct tagFIRGBA16 {
 /** 96-bit RGB Float
 */
 typedef struct tagFIRGBF {
-	float red;
-	float green;
-	float blue;
+	double red;
+	double green;
+	double blue;
 } FIRGBF;
 
 /** 128-bit RGBA Float
 */
 typedef struct tagFIRGBAF {
-	float red;
-	float green;
-	float blue;
-	float alpha;
+	double red;
+	double green;
+	double blue;
+	double alpha;
 } FIRGBAF;
 
 /** Data structure for COMPLEX type (complex number)
@@ -417,13 +417,13 @@ FI_ENUM(FREE_IMAGE_TYPE) {
 	FIT_INT16	= 3,	// array of short			: signed 16-bit
 	FIT_UINT32	= 4,	// array of unsigned long	: unsigned 32-bit
 	FIT_INT32	= 5,	// array of long			: signed 32-bit
-	FIT_FLOAT	= 6,	// array of float			: 32-bit IEEE floating point
-	FIT_DOUBLE	= 7,	// array of double			: 64-bit IEEE floating point
-	FIT_COMPLEX	= 8,	// array of FICOMPLEX		: 2 x 64-bit IEEE floating point
+	FIT_FLOAT	= 6,	// array of double			: 32-bit IEEE doubleing point
+	FIT_DOUBLE	= 7,	// array of double			: 64-bit IEEE doubleing point
+	FIT_COMPLEX	= 8,	// array of FICOMPLEX		: 2 x 64-bit IEEE doubleing point
 	FIT_RGB16	= 9,	// 48-bit RGB image			: 3 x 16-bit
 	FIT_RGBA16	= 10,	// 64-bit RGBA image		: 4 x 16-bit
-	FIT_RGBF	= 11,	// 96-bit RGB float image	: 3 x 32-bit IEEE floating point
-	FIT_RGBAF	= 12	// 128-bit RGBA float image	: 4 x 32-bit IEEE floating point
+	FIT_RGBF	= 11,	// 96-bit RGB double image	: 3 x 32-bit IEEE doubleing point
+	FIT_RGBAF	= 12	// 128-bit RGBA double image	: 4 x 32-bit IEEE doubleing point
 };
 
 /** Image color type used in FreeImage.
@@ -528,8 +528,8 @@ FI_ENUM(FREE_IMAGE_MDTYPE) {
 	FIDT_SSHORT		= 8,	// 16-bit signed integer 
 	FIDT_SLONG		= 9,	// 32-bit signed integer 
 	FIDT_SRATIONAL	= 10,	// 64-bit signed fraction 
-	FIDT_FLOAT		= 11,	// 32-bit IEEE floating point 
-	FIDT_DOUBLE		= 12,	// 64-bit IEEE floating point 
+	FIDT_FLOAT		= 11,	// 32-bit IEEE doubleing point 
+	FIDT_DOUBLE		= 12,	// 64-bit IEEE doubleing point 
 	FIDT_IFD		= 13,	// 32-bit unsigned integer (offset) 
 	FIDT_PALETTE	= 14,	// 32-bit RGBQUAD 
 	FIDT_LONG8		= 16,	// 64-bit unsigned integer 
@@ -658,12 +658,12 @@ typedef void (DLL_CALLCONV *FI_InitProc)(Plugin *plugin, int format_id);
 #define CUT_DEFAULT         0
 #define DDS_DEFAULT			0
 #define EXR_DEFAULT			0		//! save data as half with piz-based wavelet compression
-#define EXR_FLOAT			0x0001	//! save data as float instead of as half (not recommended)
+#define EXR_FLOAT			0x0001	//! save data as double instead of as half (not recommended)
 #define EXR_NONE			0x0002	//! save with no compression
 #define EXR_ZIP				0x0004	//! save with zlib compression, in blocks of 16 scan lines
 #define EXR_PIZ				0x0008	//! save with piz-based wavelet compression
-#define EXR_PXR24			0x0010	//! save with lossy 24-bit float compression
-#define EXR_B44				0x0020	//! save with lossy 44% float compression - goes to 22% when combined with EXR_LC
+#define EXR_PXR24			0x0010	//! save with lossy 24-bit double compression
+#define EXR_B44				0x0020	//! save with lossy 44% double compression - goes to 22% when combined with EXR_LC
 #define EXR_LC				0x0040	//! save images with one luminance and two chroma channels, rather than as RGB (lossy compression)
 #define FAXG3_DEFAULT		0
 #define GIF_DEFAULT			0

@@ -31,20 +31,20 @@ Texture::~Texture() {
 	stbi_image_free(image);
 }
 
-Vec3f Texture::getColor(float x, float y) const {
+Vec3f Texture::getColor(double x, double y) const {
 	//TODO implement bilinear/Trilinear filtering
 
 	// sometimes relative coordinates can be bigger than 1 caused by rounding errors etc.
 	// same goes for 0 too
 	if (x < 0 && x > -EPSILON) {
-		x = 0.0f;
+		x = 0.0;
 	} else if (x > 1 && x < 1 + EPSILON) {
-		x = 1.0f;
+		x = 1.0;
 	}
 	if (y < 0 && y > -EPSILON) {
-		y = 0.0f;
+		y = 0.0;
 	} else if (y > 1 && y < 1 + EPSILON) {
-		y = 1.0f;
+		y = 1.0;
 	}
 	//this case means the difference was bigger than epsilon
 	if (x > 1 || x < 0 || y > 1 || y < 0) {
@@ -68,6 +68,6 @@ Vec3f Texture::getColor(float x, float y) const {
 	 }
 	 */
 	//now we will  construct the color
-	return Vec3f((*pixel) / 255.0f, (*(pixel + 1)) / 255.0f,
-			(*(pixel + 2)) / 255.0f);
+	return Vec3f((*pixel) / 255.0, (*(pixel + 1)) / 255.0,
+			(*(pixel + 2)) / 255.0);
 }

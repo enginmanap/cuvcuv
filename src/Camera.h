@@ -20,16 +20,16 @@
 class Camera {
 private:
 	Vec3f position, look, up;
-	float fovy, fovx;
+	double fovy, fovx;
 	unsigned int height, width;
 	unsigned int currentPoint;
 	Vec3f w, u, v;
 
-	float xChangeFactor, yChangeFactor, halfWidth, halfHeight;
+	double xChangeFactor, yChangeFactor, halfWidth, halfHeight;
 	void getRay(unsigned int x, unsigned int y, Ray& ray);
-	void getRay(unsigned int, unsigned int, Ray&, float, float);
+	void getRay(unsigned int, unsigned int, Ray&, double, double);
 public:
-	Camera(float, float, float, float, float, float, float, float, float, float,
+	Camera(double, double, double, double, double, double, double, double, double, double,
 			unsigned int, unsigned int);
 	bool getPoint(unsigned int& x, unsigned int& y);
 	bool getRays(unsigned int&, unsigned int&, unsigned int, std::vector<Ray>&);

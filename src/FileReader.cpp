@@ -35,18 +35,18 @@ bool FileReader::readLine(std::string &buffer) {
 }
 
 /**
- * Reads given count of parameters and puts to float array,
+ * Reads given count of parameters and puts to double array,
  * if the line contains less parameters, prints error and returns false.
  *
  * @stringStream: line to parse, with out the command
- * @parameters:array of float that parameters will be put
+ * @parameters:array of double that parameters will be put
  * @parameterCount: number of parameters to read
  *
  * Returns: true if parameters assigment finished,
  * false if line finished before given count of parameters
  */
 bool FileReader::readFloatParams(std::stringstream &stringStream,
-		float *parameters, int& readParameterCount) {
+		double *parameters, int& readParameterCount) {
 	readParameterCount = MAX_PARAMS;
 	for (int param = 0; param < MAX_PARAMS; ++param) {
 		stringStream >> parameters[param];

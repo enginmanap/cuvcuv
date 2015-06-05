@@ -130,13 +130,13 @@ void Model::buildOctree() {
 	 * it should be a cube
 	 * /
 	 Vec3f lengths = bbUpper - bbLower;
-	 float sceneSize = std::max(lengths.x, std::max(lengths.y, lengths.z));
+	 double sceneSize = std::max(lengths.x, std::max(lengths.y, lengths.z));
 	 int treeRootSize = pow(2, std::ceil(log(sceneSize) / log(2))); //this generates smallest power of 2 that is big equal to size
 
 	 //now we have the size and min will be floored, so we can calculate max
-	 float treeRootMaxX = treeRootSize + std::floor(bbLower.x);
-	 float treeRootMaxY = treeRootSize + std::floor(bbLower.y);
-	 float treeRootMaxZ = treeRootSize + std::floor(bbLower.z);
+	 double treeRootMaxX = treeRootSize + std::floor(bbLower.x);
+	 double treeRootMaxY = treeRootSize + std::floor(bbLower.y);
+	 double treeRootMaxZ = treeRootSize + std::floor(bbLower.z);
 	 Vec3f treeMax(treeRootMaxX, treeRootMaxY, treeRootMaxZ);
 	 Vec3f treeMin(std::floor(bbLower.x), std::floor(bbLower.y),
 	 std::floor(bbLower.z));
@@ -176,10 +176,10 @@ void Model::generateBoundingBox() {
 			<< std::endl;
 }
 
-bool Model::intersectiontest(Ray ray, float& distance,
+bool Model::intersectiontest(Ray ray, double& distance,
 		Primitive** intersectingPrimitive) const {
-	float closestdistance = std::numeric_limits<float>::max(); // this is the maximum value float can have, min() returns min positive value.
-	float intersectionDistance;
+	double closestdistance = std::numeric_limits<double>::max(); // this is the maximum value double can have, min() returns min positive value.
+	double intersectionDistance;
 	std::set<Primitive*> primitives;
 	bool isIntersecting = false;
 
