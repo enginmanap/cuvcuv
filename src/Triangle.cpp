@@ -40,7 +40,7 @@ Vec3f Triangle::calculateNormal(const Vec4f& intersectionPoint) const {
 		return triangleNormal;
 	} else {
 		Vec3f bcCorrds = calculateBarycentricCoord(intersectionPoint);
-		Vec3f normal = bcCorrds.x * n1 + bcCorrds.y * n2 + bcCorrds.z * n3;
+		Vec3f normal = bcCorrds.u * n1 + bcCorrds.v * n2 + bcCorrds.w * n3;
 
 		//if there is a normal map
 		if(this->material->getMapBump() != NULL){
@@ -48,7 +48,7 @@ Vec3f Triangle::calculateNormal(const Vec4f& intersectionPoint) const {
 				 * calculating barycentric coordinates
 				 * TODO this must be exported as another function
 				 */
-				Vec3f texelCoord = bcCorrds.x * t1 + bcCorrds.y * t2 + bcCorrds.z * t3;
+				Vec3f texelCoord = bcCorrds.w * t1 + bcCorrds.v * t2 + bcCorrds.w * t3;
 				Vec3f normalChange = this->material->getMapBump()->getColor(texelCoord.x,
 						texelCoord.y);
 
@@ -78,7 +78,7 @@ Vec3f Triangle::getDiffuse(const Vec4f& intersectionPoint) const {
 
 	//order is u->a, v->b, w->c
 	Vec3f bcCorrds = calculateBarycentricCoord(intersectionPoint);
-	Vec3f texelCoord = bcCorrds.x * t1 + bcCorrds.y * t2 + bcCorrds.z * t3;
+	Vec3f texelCoord = bcCorrds.u * t1 + bcCorrds.v * t2 + bcCorrds.w * t3;
 
 	//std::cout << "u " << u << " v " << v << " w " << w << std::endl;
 	//std::cout << "map texel coordinates " << texelCoord.x << ", " <<texelCoord.y << std::endl;

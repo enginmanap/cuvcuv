@@ -14,9 +14,10 @@
 
 class Vec3f {
 public:
-	double x;
-	double y;
-	double z;
+	union{ double x, r, u;};
+	union{ double y, g, v;};
+	union{ double z, b, w;};
+
 	Vec3f() :
 			x(0), y(0), z(0) {
 	}
