@@ -38,7 +38,7 @@ protected:
 	Vec3f calculateColorPerLight(const Vec3f&, const Vec3f&, const Vec3f&,
 			const Vec3f&, const Vec3f&, const Vec3f&, const double) const;
 	virtual Vec3f calculateNormal(const Vec4f&) const = 0;
-	virtual Vec3f getDiffuse(const Vec3f&) const {
+	virtual Vec3f getDiffuse(const Vec4f&) const {
 		return this->material->getDiffuse();
 	}
 	Vec3f getColorForReflection(const Ray&, Vec4f&, Vec4f&,

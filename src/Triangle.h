@@ -21,7 +21,7 @@ private:
 	Vec3f vectorBA, vectorCA;
 	double dotProductBABA, dotProductBACA, dotProductCACA;
 
-	Vec3f getDiffuse(const Vec3f&) const;
+	Vec3f getDiffuse(const Vec4f&) const;
 
 public:
 	Triangle(const Vec3f& vertice1, const Vec3f& vertice2,
@@ -59,7 +59,7 @@ public:
 		t3.y = t32;
 	}
 	;
-
+	Vec3f calculateBarycentricCoord(const Vec4f&) const;
 	Vec3f calculateNormal(const Vec4f&) const;
 };
 
