@@ -50,27 +50,28 @@ void Model::printVertexes() {
  * @returns:
  * true if the indexes are valid, false if they are not.
  */
-bool Model::verifyTriangleIndexes(int& vertice1, int& vertice2, int& vertice3) {
-	int currentVertexMax = vertexVector.size();
+bool Model::verifyTriangleIndexes(const std::vector<Vec3f> &vector,
+		int& value1, int& value2, int& value3) {
+	int currentMaxValue = vector.size();
 	//negative index means starting from last. last vertice is -1
-	if (vertice1 < 0)
-		vertice1 = currentVertexMax + vertice1;
-	if (vertice2 < 0)
-		vertice2 = currentVertexMax + vertice2;
-	if (vertice3 < 0)
-		vertice3 = currentVertexMax + vertice3;
-	if (vertice1 < currentVertexMax && vertice2 < currentVertexMax
-			&& vertice3 < currentVertexMax) {
+	if (value1 < 0)
+		value1 = currentMaxValue + value1;
+	if (value2 < 0)
+		value2 = currentMaxValue + value2;
+	if (value3 < 0)
+		value3 = currentMaxValue + value3;
+	if (value1 < currentMaxValue && value2 < currentMaxValue
+			&& value3 < currentMaxValue) {
 		return true;
 	} else {
-		std::cerr << "one of the vertices used is not defined ("
-				<< currentVertexMax << ") ";
-		if (vertice1 >= currentVertexMax)
-			std::cerr << " vertex 1 bigger " << vertice1;
-		if (vertice2 >= currentVertexMax)
-			std::cerr << " vertex 2 bigger " << vertice2;
-		if (vertice3 >= currentVertexMax)
-			std::cerr << " vertex 3 bigger " << vertice3;
+		std::cerr << "one of the value used for face definition is not defined ("
+				<< currentMaxValue << ") ";
+		if (value1 >= currentMaxValue)
+			std::cerr << " value 1 bigger " << value1;
+		if (value2 >= currentMaxValue)
+			std::cerr << " value 2 bigger " << value2;
+		if (value3 >= currentMaxValue)
+			std::cerr << " value 3 bigger " << value3;
 
 		std::cerr << std::endl;
 		return false;
@@ -78,7 +79,7 @@ bool Model::verifyTriangleIndexes(int& vertice1, int& vertice2, int& vertice3) {
 }
 
 bool Model::addTriangleBase(int vertice1, int vertice2, int vertice3) {
-	if (verifyTriangleIndexes(vertice1, vertice2, vertice3)) {
+	if (verifyTriangleIndexes(this->vertexVector, vertice1, vertice2, vertice3)) {
 		TriangleBase* triangle = new TriangleBase(this->vertexVector[vertice1],
 				this->vertexVector[vertice2], this->vertexVector[vertice3],
 				this->transformMatrix);
@@ -95,7 +96,10 @@ bool Model::addTriangleBase(int vertice1, int vertice2, int vertice3) {
 
 bool Model::addTriangle(int vertice1, int vertice2, int vertice3, int normal1,
 		int normal2, int normal3, int texture1, int texture2, int texture3) {
-	if (verifyTriangleIndexes(vertice1, vertice2, vertice3)) {
+	//this if also rearranges negative indexes, so it has huge side effect.
+	if (verifyTriangleIndexes(this->vertexVector, vertice1, vertice2, vertice3) &&
+			verifyTriangleIndexes(this->vertexNormalVector, normal1, normal2, normal3) &&
+			verifyTriangleIndexes(this->vertexTextureCoordinateVector, texture1, texture2, texture3)) {
 		Triangle* triangle = new Triangle(this->vertexVector[vertice1],
 				this->vertexVector[vertice2], this->vertexVector[vertice3],
 				this->vertexNormalVector[normal1],

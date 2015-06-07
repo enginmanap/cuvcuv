@@ -31,7 +31,7 @@ class Model: public Primitive {
 		return Vec3f();
 	}
 	; //this is a placeholder, it should newer called
-	bool verifyTriangleIndexes(int&, int&, int&);
+	bool verifyTriangleIndexes(const std::vector<Vec3f>&,int&, int&, int&);
 public:
 	Model(const Mat4f&);
 
