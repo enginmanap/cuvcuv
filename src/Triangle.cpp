@@ -48,7 +48,7 @@ Vec3f Triangle::calculateNormal(const Vec4f& intersectionPoint) const {
 				 * calculating barycentric coordinates
 				 * TODO this must be exported as another function
 				 */
-				Vec3f texelCoord = bcCorrds.w * t1 + bcCorrds.v * t2 + bcCorrds.w * t3;
+				Vec3f texelCoord = bcCorrds.u * t1 + bcCorrds.v * t2 + bcCorrds.w * t3;
 				Vec3f normalChange = this->material->getMapBump()->getColor(texelCoord.x,
 						texelCoord.y);
 
