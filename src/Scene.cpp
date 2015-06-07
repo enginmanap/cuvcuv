@@ -106,7 +106,7 @@ bool Scene::pushTransform() {
 	currentMaterial = new Material(outputStringStream.str(),
 			currentMaterial->getAmbient(), currentMaterial->getDiffuse(),
 			currentMaterial->getSpecular(), currentMaterial->getEmission(),
-			currentMaterial->getShininess(), currentMaterial->getDissolve(), currentMaterial->getRefractionIndex(), currentMaterial->getMapKd());
+			currentMaterial->getShininess(), currentMaterial->getDissolve(), currentMaterial->getRefractionIndex(), currentMaterial->getMapKd(), currentMaterial->getMapBump());
 	materialMap[currentMaterial->getName()] = currentMaterial;
 
 	//std::cout << "adding material with name" << currentMaterial->getName()<<std::endl;
@@ -339,6 +339,9 @@ bool Scene::renderScene() {
 	{
 		morePixels = this->camera->getRays(x, y, sampleRate, rays);
 		while (morePixels) {
+//			if(x == 137 && y==258){
+//				std::cout<< "muz" << std::endl;
+//			}
 			for (unsigned int i = 0; i < rays.size(); ++i) {
 				color = rayTracer->trace(rays[i], *spatialTree, lights,
 						this->maxDepth);

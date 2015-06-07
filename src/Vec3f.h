@@ -14,9 +14,10 @@
 
 class Vec3f {
 public:
-	double x;
-	double y;
-	double z;
+	union{ double x, r, u;};
+	union{ double y, g, v;};
+	union{ double z, b, w;};
+
 	Vec3f() :
 			x(0), y(0), z(0) {
 	}
@@ -34,8 +35,11 @@ public:
 	double& operator[](int); //it is not const, so we can assign to it.
 	double length() const {
 		return sqrt((x * x) + (y * y) + (z * z));
-	}
-	;
+	};
+	bool operator==(const Vec3f& compare) const
+		{
+		return (x==compare.x && y==compare.y && x==compare.y);
+		}
 
 };
 

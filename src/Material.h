@@ -21,15 +21,17 @@ class Material {
 	Vec3f ambient, diffuse, specular, emission;
 	double shininess, dissolve, refractionIndex;
 	Texture* map_Kd;
+	Texture* map_Bump;
 	//transparency or dissolve is not used yet.
 public:
 	Material(std::string name) :
-			name(name), shininess(0.0), dissolve(1.0), refractionIndex(1.0), map_Kd(NULL) {
+			name(name), shininess(0.0), dissolve(1.0), refractionIndex(1.0), map_Kd(NULL), map_Bump(NULL) {
 	}
+	//FIXME this is stupid, we need copy constructor.
 	Material(std::string name, Vec3f ambient, Vec3f diffuse, Vec3f specular,
-			Vec3f emission, double shininess, double dissolve, double refractionIndex, Texture* map_Kd) :
+			Vec3f emission, double shininess, double dissolve, double refractionIndex, Texture* map_Kd, Texture* map_Bump) :
 			name(name), ambient(ambient), diffuse(diffuse), specular(specular), emission(
-					emission), shininess(shininess),dissolve(dissolve), refractionIndex(refractionIndex), map_Kd(map_Kd) {
+					emission), shininess(shininess),dissolve(dissolve), refractionIndex(refractionIndex), map_Kd(map_Kd), map_Bump(map_Bump) {
 		//the textures are managed by scene
 		//so we can safely copy the pointer
 	}
@@ -83,6 +85,14 @@ public:
 
 	void setMapKd(Texture* mapKd) {
 		map_Kd = mapKd;
+	}
+
+	Texture* getMapBump() const {
+		return map_Bump;
+	}
+
+	void setMapBump(Texture* mapBump) {
+		map_Bump = mapBump;
 	}
 
 	double getDissolve() const {
