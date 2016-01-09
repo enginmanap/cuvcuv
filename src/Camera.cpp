@@ -112,9 +112,9 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, un
 		double aperture = 1;
 		double uChange,vChange;
 
-		for(unsigned int i=0; i<36;i++){
-			uChange = (rand() / double(RAND_MAX + 1))*aperture;
-			vChange = sqrt(aperture* aperture - uChange*uChange);
+		for(unsigned int i=0; i<DOFRate;i++){
+			uChange = (rand() / double(RAND_MAX + 1) - 0.5) * aperture;
+			vChange = (rand() / double(RAND_MAX + 1) - 0.5) * aperture;
 
 			//now calculate direction from new origin to the focal point
 			tempOrigin = this->position + uChange * u + vChange * v;
