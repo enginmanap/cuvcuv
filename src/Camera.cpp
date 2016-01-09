@@ -108,8 +108,8 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, un
 		u = Vec3fNS::normalize(Vec3fNS::cross(up, w));
 		v = Vec3fNS::cross(w, u);
 
-		//lets assume we will have circle aperture
-		double aperture = 0.5;
+		//FIXME We should read this value as part of camera setup
+		double aperture = 1;
 		double uChange,vChange;
 
 		for(unsigned int i=0; i<36;i++){
