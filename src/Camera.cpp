@@ -40,9 +40,9 @@ Camera::Camera(double lookfromx, double lookfromy, double lookfromz, double look
 
 	//calculate the u,v,w
 
-	Vec3f positionMinusCenter = position - look;
+	FocalDistance = position - look;
 
-	w = Vec3fNS::normalize(positionMinusCenter);
+	w = Vec3fNS::normalize(FocalDistance);
 	u = Vec3fNS::normalize(Vec3fNS::cross(up, w));
 	v = Vec3fNS::cross(w, u);
 
@@ -50,6 +50,7 @@ Camera::Camera(double lookfromx, double lookfromy, double lookfromz, double look
 	halfHeight = (double) height / 2;
 	xChangeFactor = tan(this->fovx / 2) / halfWidth;
 	yChangeFactor = tan(this->fovy / 2) / halfHeight;
+
 	srand(time(NULL));
 }
 
@@ -81,6 +82,7 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount,
 	}
 
 	if (this->getPoint(x, y)) {
+
 		double horizontalChange = xChangeFactor
 				* ((double) x + (0.5) - halfWidth);
 
@@ -88,9 +90,46 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount,
 				* (halfHeight - ((double) y + (0.5)));
 		Vec3f direction = (verticalChange * v) + (horizontalChange * u) - w;
 		direction = Vec3fNS::normalize(direction);
+
+
+		//calculate focal point, and randomize the path, reverse.
+		Vec3f focalPoint = this->position + FocalDistance.length()* direction;
+
+		//std::cout << "direction" << direction << ", focal point " << focalPoint << std::endl;
+
 		rays.clear();
-		std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(position,0.0),direction,up, 1.0, rayCount,xChangeFactor*0.5, yChangeFactor*0.5);
-		rays.insert(rays.end(), temp.begin(),temp.end());
+		//std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(focalPoint,1.0),-1 * direction,up, 1.0, 4,0.0005,0.0005);
+		std::vector<Ray> temp;
+
+		//change ray origin based on direction u/w
+		Vec3f u,v, w, offseV;
+		Vec3f tempDirection, tempOrigin;
+		w = -1 * direction.normalize();
+		u = Vec3fNS::normalize(Vec3fNS::cross(up, w));
+		v = Vec3fNS::cross(w, u);
+
+		//lets assume we will have circle aperture
+		double aperture = 0.5;
+		double uChange,vChange;
+
+		for(unsigned int i=0; i<16;i++){
+			uChange = (rand() / double(RAND_MAX + 1))*aperture;
+			vChange = sqrt(aperture* aperture - uChange*uChange);
+
+			//now calculate direction from new origin to the focal point
+			tempOrigin = this->position + uChange * u + vChange * v;
+			tempDirection = (focalPoint - tempOrigin).normalize();
+
+			temp.push_back(Ray(tempOrigin,tempDirection,1.0,100));
+			//std::cout << temp[temp.size()-1] << ", target " << temp[temp.size()-1].getPosition() + FocalDistance.length() * temp[temp.size()-1].getDirection() << std::endl;
+
+		}
+
+
+		//std::cout << std::endl;
+
+        rays.insert(rays.end(), temp.begin(),temp.end());
+
 		return true;
 	} else {
 		return false;

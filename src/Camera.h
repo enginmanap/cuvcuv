@@ -19,13 +19,13 @@
 
 class Camera {
 private:
-	Vec3f position, look, up;
+	Vec3f position, look, up, FocalDistance;
 	double fovy, fovx;
 	unsigned int height, width;
 	unsigned int currentPoint;
 	Vec3f w, u, v;
 
-	double xChangeFactor, yChangeFactor, halfWidth, halfHeight;
+	double xChangeFactor, yChangeFactor, xChangeForFocal, yChangeForFocal, halfWidth, halfHeight;
 	void getRay(unsigned int x, unsigned int y, Ray& ray);
 	void getRay(unsigned int, unsigned int, Ray&, double, double);
 public:
