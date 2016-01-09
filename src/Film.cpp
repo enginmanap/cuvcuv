@@ -8,9 +8,9 @@
 #include "Film.h"
 
 Film::Film(unsigned int height, unsigned int width, unsigned char colorDepth,
-		unsigned char sampleRate) :
+		unsigned char sampleRate, unsigned char DOFRate ) :
 		height(height), width(width), colorDepth(colorDepth), samplingRate(
-				sampleRate*sampleRate+1) {
+				sampleRate*sampleRate+1), DOFRate(DOFRate*DOFRate) {
 
 	this->colorRange = pow(2, colorDepth) - 1; //for 8 bits, this means 255
 
@@ -36,7 +36,7 @@ unsigned char* Film::getPixels(unsigned int& height, unsigned int& width) {
 bool Film::setPixel(unsigned int& x, unsigned int& y, Vec3f& color) {
 	unsigned int index = (this->width * y + x); //FIXME why we are not handling as matrix
 	int currentSampleCount = this->sampleCounts[index]++;
-	if (currentSampleCount >= samplingRate) {
+	if (currentSampleCount >= samplingRate* DOFRate) {
 #pragma omp critical
 		std::cerr << "sample rate limit ("<< (int)samplingRate << ") passed for pixel " << x << "," << y
 				<< ", image is not altered." << std::endl;

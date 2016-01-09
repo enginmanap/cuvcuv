@@ -32,7 +32,7 @@ public:
 	Camera(double, double, double, double, double, double, double, double, double, double,
 			unsigned int, unsigned int);
 	bool getPoint(unsigned int& x, unsigned int& y);
-	bool getRays(unsigned int&, unsigned int&, unsigned int, std::vector<Ray>&);
+	bool getRays(unsigned int&, unsigned int&, unsigned int, unsigned int, std::vector<Ray>&);
 
 };
 

@@ -16,7 +16,7 @@ int Scene::materialCount = 0;
 Scene::Scene(unsigned int height, unsigned int width) :
 		height(height), width(width), sampleRate(1), shadowGrid(1), lightCount(
 				0), currentAttenuation(Vec3f(1, 0, 0)), maxVertexCount(2000), currentVertex(
-				0), SphereCount(0), triangleCount(0), maxDepth(5) {
+				0), SphereCount(0), triangleCount(0), maxDepth(5), DOFRate(6) {
 	this->camera = NULL;
 	this->vertexVector.reserve(maxVertexCount);
 
@@ -35,7 +35,7 @@ Scene::Scene(unsigned int height, unsigned int width) :
 	this->spatialTree = NULL;
 
 	//TODO these are recreating if a setting found, there should be a better way
-	film = new Film(height, width, COLOR_DEPTH, sampleRate);
+	film = new Film(height, width, COLOR_DEPTH, sampleRate, DOFRate);
 	rayTracer = new RayTracer(1);
 
 }
@@ -84,7 +84,7 @@ void Scene::setSampleRate(unsigned char samplingRate) {
 	if (film != NULL)
 		delete film;
 
-	film = new Film(height, width, COLOR_DEPTH, sampleRate);
+	film = new Film(height, width, COLOR_DEPTH, sampleRate, DOFRate);
 }
 
 bool Scene::setSaveFilename(std::string filename) {
@@ -337,7 +337,7 @@ bool Scene::renderScene() {
 	std::vector<Ray> rays;
 #pragma omp parallel private(color,x,y,rays,morePixels)
 	{
-		morePixels = this->camera->getRays(x, y, sampleRate, rays);
+		morePixels = this->camera->getRays(x, y, sampleRate, DOFRate, rays);
 		while (morePixels) {
 //			if(x == 137 && y==258){
 //				std::cout<< "muz" << std::endl;
@@ -348,7 +348,7 @@ bool Scene::renderScene() {
 				this->film->setPixel(x, y, color);
 			}
 #pragma omp critical
-			morePixels = this->camera->getRays(x, y, sampleRate, rays);
+			morePixels = this->camera->getRays(x, y, sampleRate, DOFRate, rays);
 		}
 	}
 	return true;

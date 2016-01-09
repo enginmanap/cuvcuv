@@ -74,7 +74,7 @@ bool Camera::getPoint(unsigned int& x, unsigned int& y) {
  * This method generates a vector of rays, formed as a grid, count determined by
  * rayCount
  */
-bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount,
+bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, unsigned int DOFRate,
 		std::vector<Ray>& rays) {
 	if (rayCount < 1) {
 		std::cerr << "requested ray count less than 1" << std::endl;
@@ -98,8 +98,8 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount,
 		//std::cout << "direction" << direction << ", focal point " << focalPoint << std::endl;
 
 		rays.clear();
-		//std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(focalPoint,1.0),-1 * direction,up, 1.0, 4,0.0005,0.0005);
-		std::vector<Ray> temp;
+		//std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(focalPoint,1.0),direction,up, 1.0, rayCount,xChangeFactor*0.5,yChangeFactor*0.5);
+		std::vector<Ray> focalRays;
 
 		//change ray origin based on direction u/w
 		Vec3f u,v, w, offseV;
@@ -112,7 +112,7 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount,
 		double aperture = 0.5;
 		double uChange,vChange;
 
-		for(unsigned int i=0; i<16;i++){
+		for(unsigned int i=0; i<36;i++){
 			uChange = (rand() / double(RAND_MAX + 1))*aperture;
 			vChange = sqrt(aperture* aperture - uChange*uChange);
 
@@ -120,15 +120,20 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount,
 			tempOrigin = this->position + uChange * u + vChange * v;
 			tempDirection = (focalPoint - tempOrigin).normalize();
 
-			temp.push_back(Ray(tempOrigin,tempDirection,1.0,100));
+			focalRays.push_back(Ray(tempOrigin,tempDirection,1.0,100));
 			//std::cout << temp[temp.size()-1] << ", target " << temp[temp.size()-1].getPosition() + FocalDistance.length() * temp[temp.size()-1].getDirection() << std::endl;
 
 		}
 
 
 		//std::cout << std::endl;
-
-        rays.insert(rays.end(), temp.begin(),temp.end());
+		
+		for(std::vector<Ray>::iterator rayIt = focalRays.begin();
+		rayIt != focalRays.end(); ++ rayIt){
+			std::vector<Ray> temp = Ray::generateDeriveredRays(rayIt->getPosition(),rayIt->getDirection(),up, 1.0, rayCount,xChangeFactor*0.5,yChangeFactor*0.5);
+			rays.insert(rays.end(), temp.begin(),temp.end());
+		}
+        
 
 		return true;
 	} else {

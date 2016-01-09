@@ -17,11 +17,11 @@ class Film {
 	unsigned char* sampleCounts;
 
 	unsigned int height, width;
-	unsigned char colorDepth, samplingRate;
+	unsigned char colorDepth, samplingRate, DOFRate;
 
 	double colorRange;
 public:
-	Film(unsigned int, unsigned int, unsigned char, unsigned char);
+	Film(unsigned int, unsigned int, unsigned char, unsigned char, unsigned char);
 	virtual ~Film();
 	bool setPixel(unsigned int&, unsigned int&, Vec3f&);
 	unsigned char* getPixels(unsigned int&, unsigned int&);

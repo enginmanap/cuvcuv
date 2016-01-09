@@ -63,7 +63,9 @@ class Scene {
 	Octree *spatialTree;
 
 	Vec3f temproryVector; //this is used in order not to create/destroy all elements
-
+	
+	//FIXME this should be read from scene file, it is preset for now
+	unsigned int DOFRate;
 public:
 
 	Scene(unsigned int, unsigned int);
