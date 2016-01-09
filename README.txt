@@ -38,7 +38,7 @@ Input:
 		size: Output resolution. Required. This command must be the first, and should not be repeated. Only first one is effective. 
 		sample: size 1920 1080
 
-		camera: camera definition. Required. first 3 real numbers are camera coordinates, second 3 are looking direction(auto normalisation) third 3 are up direction. last one is an integer, and it is field of view angle, for horizontal axis. only the last of these commands are effective, multiple cameras not supported.
+		camera: camera definition. Required. first 3 real numbers are camera coordinates, second 3 are looking direction(auto normalised) third 3 are up direction. last one is an integer, and it is field of view angle, for horizontal axis. only the last of these commands are effective, multiple cameras not supported.
 		sample: camera -10.5 20.5 5.5 0 18 0 0 1 0 45
 
 		output: filename for png output. if not given, a file with name of scene description will be used.
@@ -50,7 +50,7 @@ Input:
 		sampleRate: Antialiasing factor. Default is 1(disabled). The number is subpixel factor, so 2 will result 4 subpixel, and 3 will result 9.
 		sample: sampleRate 2
 
-		shadowGrid: Soft shadow factor. Default is 1(disabled). It defines how many rays should be used to determine penumbra. it defines side of square, so 2 means 4 rays, and 3 means 9.
+		shadowGrid: Soft shadow factor. Default is 1(disabled). It defines how many rays should be used to determine penumbra. it defines side of square, so 2 means 4 rays, and 3 means 9. Don't forget you need lamp lights for soft shadows.
 		sample: shadowGrid 6
 
 	Ligth definitions:
@@ -60,7 +60,7 @@ Input:
 
 		directional: A directional light. it has 6 parameters, first 3 real numbers are light direction(auto normalised), second is color. Color is not clamped, so each must be between 0-1.
 
-		lamp: it has 7 parameters, first 3 real numbers are position, fourth one is lamb size,  rest are color. Color is not clamped, so each must be between 0-1. This is only light type that casts soft shadows, and the lamb size is used to calculate size of penumbra.
+		lamp: it has 7 parameters, first 3 real numbers are position, fourth one is lamb size,  rest are color. Color is not clamped, so each must be between 0-1. This is only light type that casts soft shadows, and the lamb size is used to calculate size of penumbra. You need to add shadowGrid to have penumbra too.
 		sample: lamp 50 50 99 3 1 1 1
 
 		attenuation: Makes lights less bright with distance. takes three real parameters, first one is the constant attenuation, second one is distance related attenuation, and last one is distance square related attenuation. 
@@ -142,9 +142,10 @@ missing features:
 Major:	The application does not have any advanced memory management(paging/persistance etc.), if model or does not fit the memory, it will simply crash. You can lower maximum octree depth to make it use less memory, but it will result in worse performance. 
 
 Major:	caustics are missing. currently transparent objects does not cast any shadows. Implementing photon mapping.
-Major:	Normal mapping: It should be fairly easy to read the normals from textures, but it is not implemented because of time restrictions.
+Major:	Normal mapping: It should be fairly easy to read the normals from textures, but it is not implemented because of time restrictions. It is implemented.
 
-Minor:	Depth of field should be fairly easy to implement, but it is not implemented.
+Minor:	Depth of field should be fairly easy to implement, but it is not implemented. It is under development.
+
 Minor:	Sphere texturing: The texture loading is implemented, but since spheres are not used in obj, this feature was not implemented.
 
 
