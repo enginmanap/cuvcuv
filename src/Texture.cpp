@@ -36,7 +36,7 @@ Vec3f Texture::getColor(double x, double y) const {
 
 	// sometimes relative coordinates can be bigger than 1 caused by rounding errors etc.
 	// same goes for 0 too
-	if (x < 0 && x > -EPSILON) {
+/*	if (x < 0 && x > -EPSILON) {
 		x = 0.0;
 	} else if (x > 1 && x < 1 + EPSILON) {
 		x = 1.0;
@@ -46,6 +46,18 @@ Vec3f Texture::getColor(double x, double y) const {
 	} else if (y > 1 && y < 1 + EPSILON) {
 		y = 1.0;
 	}
+*/
+	//It turns out, 0<u/v<1 is not a rule, and we should implement a repeating
+	x =x - (long)x;
+	if(x < 0){
+		++x;
+	}
+
+	y =y - (long)y;
+	if(y < 0){
+		++y;
+	}
+
 	//this case means the difference was bigger than epsilon
 	if (x > 1 || x < 0 || y > 1 || y < 0) {
 #pragma omp critical
