@@ -115,8 +115,6 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, un
 			u = Vec3fNS::normalize(Vec3fNS::cross(up, w));
 			v = Vec3fNS::cross(w, u);
 
-			//FIXME We should read this value as part of camera setup
-			double aperture = 0.5;
 			double uChange,vChange;
 
 			// we will process DOF as grid too.
