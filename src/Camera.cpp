@@ -91,9 +91,6 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, un
 		direction = Vec3fNS::normalize(direction);
 
 
-		//calculate focal point, and randomize the path, reverse.
-		Vec3f focalPoint = this->position + FocalDistance.length()* direction;
-
 		//std::cout << "direction" << direction << ", focal point " << focalPoint << std::endl;
 
 		rays.clear();
@@ -106,6 +103,8 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, un
 
 		} else {
 		//this means we need to generate rays for depth of field too.
+            //calculate focal point, and randomize the path, reverse.
+            Vec3f focalPoint = this->position + FocalDistance.length()* direction;
 			std::vector<Ray> focalRays;
 
 			//change ray origin based on direction u/w
