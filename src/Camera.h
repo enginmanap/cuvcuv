@@ -24,6 +24,7 @@ private:
 	unsigned int height, width;
 	unsigned int currentPoint;
 	Vec3f w, u, v;
+	double aperture;
 
 	double xChangeFactor, yChangeFactor, xChangeForFocal, yChangeForFocal, halfWidth, halfHeight;
 	void getRay(unsigned int x, unsigned int y, Ray& ray);
@@ -31,8 +32,11 @@ private:
 public:
 	Camera(double, double, double, double, double, double, double, double, double, double,
 			unsigned int, unsigned int);
+
 	bool getPoint(unsigned int& x, unsigned int& y);
 	bool getRays(unsigned int&, unsigned int&, unsigned int, unsigned int, std::vector<Ray>&);
+
+    void setAperture(double aperture){this->aperture = aperture;}
 
 };
 

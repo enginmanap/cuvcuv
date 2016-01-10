@@ -14,7 +14,7 @@ int Scene::materialCount = 0;
  * so we are setting height width, they will be passed to camera;
  */
 Scene::Scene(unsigned int height, unsigned int width) :
-		height(height), width(width), sampleRate(1), shadowGrid(1), lightCount(
+		height(height), width(width), sampleRate(1), shadowGrid(1), aperture(0.0), lightCount(
 				0), currentAttenuation(Vec3f(1, 0, 0)), maxVertexCount(2000), currentVertex(
 				0), SphereCount(0), triangleCount(0), maxDepth(5), DOFRate(6) {
 	this->camera = NULL;
@@ -87,6 +87,13 @@ void Scene::setSampleRate(unsigned char samplingRate) {
 	film = new Film(height, width, COLOR_DEPTH, sampleRate, DOFRate);
 }
 
+void Scene::setAperture(double aperture) {
+	this->aperture = aperture;
+	if (camera != NULL){
+		camera->setAperture(aperture);
+	}
+}
+
 bool Scene::setSaveFilename(std::string filename) {
 	this->saveFilename = filename;
 	return true;
@@ -142,6 +149,7 @@ bool Scene::setCamera(double lookfromx, double lookfromy, double lookfromz,
 	}
 	camera = new Camera(lookfromx, lookfromy, lookfromz, lookatx, lookaty,
 			lookatz, upx, upy, upz, fovy, this->height, this->width);
+    camera->setAperture(aperture);
 	return true;
 }
 

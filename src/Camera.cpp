@@ -12,7 +12,7 @@
 
 Camera::Camera(double lookfromx, double lookfromy, double lookfromz, double lookatx,
 		double lookaty, double lookatz, double upx, double upy, double upz,
-		double fovy, unsigned int height, unsigned int width) {
+		double fovy, unsigned int height, unsigned int width): aperture(0.0) {
 	position.x = lookfromx;
 	position.y = lookfromy;
 	position.z = lookfromz;
@@ -37,7 +37,6 @@ Camera::Camera(double lookfromx, double lookfromy, double lookfromz, double look
 	this->height = height;
 	this->width = width;
 	this->currentPoint = 0;
-
 	//calculate the u,v,w
 
 	FocalDistance = position - look;
@@ -101,7 +100,7 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, un
 		//std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(focalPoint,1.0),direction,up, 1.0, rayCount,xChangeFactor*0.5,yChangeFactor*0.5);
 		
 		
-		if(DOFRate == 1) {
+		if(DOFRate == 1 || aperture == 0) {
 			std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(position, 1.0),direction,up, 1.0, rayCount,xChangeFactor*0.5,yChangeFactor*0.5);
 			rays.insert(rays.end(), temp.begin(),temp.end());
 
