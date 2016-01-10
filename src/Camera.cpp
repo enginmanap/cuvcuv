@@ -130,20 +130,14 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, un
 					tempOrigin = halfNegativePosition + (uChange + i*gridSize) * u + (vChange + j * gridSize) * v;
 					tempDirection = (focalPoint - tempOrigin).normalize();
 
-					focalRays.push_back(Ray(tempOrigin,tempDirection,1.0,100));
+                    std::vector<Ray> temp = Ray::generateDeriveredRays(Vec4f(tempOrigin,1.0),tempDirection,up, 1.0, rayCount,xChangeFactor*0.5,yChangeFactor*0.5);
+					//focalRays.push_back(Ray(tempOrigin,tempDirection,1.0,100));
+                    rays.insert(rays.end(), temp.begin(),temp.end());
 					//std::cout << temp[temp.size()-1] << ", target " << temp[temp.size()-1].getPosition() + FocalDistance.length() * temp[temp.size()-1].getDirection() << std::endl;
 				}
 
 			}
 
-
-			//std::cout << std::endl;
-			
-			for(std::vector<Ray>::iterator rayIt = focalRays.begin();
-			rayIt != focalRays.end(); ++ rayIt){
-				std::vector<Ray> temp = Ray::generateDeriveredRays(rayIt->getPosition(),rayIt->getDirection(),up, 1.0, rayCount,xChangeFactor*0.5,yChangeFactor*0.5);
-				rays.insert(rays.end(), temp.begin(),temp.end());
-			}
 		}
 
 		return true;
