@@ -122,14 +122,14 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, un
 			// we will process DOF as grid too.
 			//to be able to do this, we will use aperture, instead of subpixel
 			double gridSize = aperture / DOFRate;
-
+            Vec3f halfNegativePosition = this->position - (aperture/2) * u - (aperture/2) * v;
 			for(unsigned int i=0; i<DOFRate;i++){
 				for (unsigned int j = 0; j < DOFRate; ++j) {
-					uChange = (rand() / double(RAND_MAX + 1) - 0.5) * gridSize;
-					vChange = (rand() / double(RAND_MAX + 1) - 0.5) * gridSize;
+					uChange = (rand() / double(RAND_MAX + 1)) * gridSize;
+					vChange = (rand() / double(RAND_MAX + 1)) * gridSize;
 
 					//now calculate direction from new origin to the focal point
-					tempOrigin = this->position + (uChange + i*gridSize) * u + (vChange + j * gridSize) * v;
+					tempOrigin = halfNegativePosition + (uChange + i*gridSize) * u + (vChange + j * gridSize) * v;
 					tempDirection = (focalPoint - tempOrigin).normalize();
 
 					focalRays.push_back(Ray(tempOrigin,tempDirection,1.0,100));
