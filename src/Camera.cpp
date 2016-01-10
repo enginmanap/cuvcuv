@@ -117,20 +117,25 @@ bool Camera::getRays(unsigned int& x, unsigned int& y, unsigned int rayCount, un
 			v = Vec3fNS::cross(w, u);
 
 			//FIXME We should read this value as part of camera setup
-			double aperture = 0.25;
+			double aperture = 0.5;
 			double uChange,vChange;
 
-			
+			// we will process DOF as grid too.
+			//to be able to do this, we will use aperture, instead of subpixel
+			double gridSize = aperture / DOFRate;
+
 			for(unsigned int i=0; i<DOFRate;i++){
-				uChange = (rand() / double(RAND_MAX + 1) - 0.5) * aperture;
-				vChange = (rand() / double(RAND_MAX + 1) - 0.5) * aperture;
+				for (unsigned int j = 0; j < DOFRate; ++j) {
+					uChange = (rand() / double(RAND_MAX + 1) - 0.5) * gridSize;
+					vChange = (rand() / double(RAND_MAX + 1) - 0.5) * gridSize;
 
-				//now calculate direction from new origin to the focal point
-				tempOrigin = this->position + uChange * u + vChange * v;
-				tempDirection = (focalPoint - tempOrigin).normalize();
+					//now calculate direction from new origin to the focal point
+					tempOrigin = this->position + (uChange + i*gridSize) * u + (vChange + j * gridSize) * v;
+					tempDirection = (focalPoint - tempOrigin).normalize();
 
-				focalRays.push_back(Ray(tempOrigin,tempDirection,1.0,100));
-				//std::cout << temp[temp.size()-1] << ", target " << temp[temp.size()-1].getPosition() + FocalDistance.length() * temp[temp.size()-1].getDirection() << std::endl;
+					focalRays.push_back(Ray(tempOrigin,tempDirection,1.0,100));
+					//std::cout << temp[temp.size()-1] << ", target " << temp[temp.size()-1].getPosition() + FocalDistance.length() * temp[temp.size()-1].getDirection() << std::endl;
+				}
 
 			}
 
