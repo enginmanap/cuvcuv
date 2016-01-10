@@ -64,7 +64,6 @@ class Scene {
 
 	Vec3f temproryVector; //this is used in order not to create/destroy all elements
 	
-	//FIXME this should be read from scene file, it is preset for now
 	unsigned int DOFRate;
 public:
 
@@ -77,6 +76,7 @@ public:
 	bool getSamplingSize(unsigned int&, unsigned int&);
 	void setShadowGrid(unsigned char);
 	void setSampleRate(unsigned char samplingRate);
+	void setDOFRate(unsigned char);
 	void setAperture(double);
 
 	bool setCurrentAmbient(double, double, double);

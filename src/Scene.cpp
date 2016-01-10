@@ -16,7 +16,7 @@ int Scene::materialCount = 0;
 Scene::Scene(unsigned int height, unsigned int width) :
 		height(height), width(width), sampleRate(1), shadowGrid(1), aperture(0.0), lightCount(
 				0), currentAttenuation(Vec3f(1, 0, 0)), maxVertexCount(2000), currentVertex(
-				0), SphereCount(0), triangleCount(0), maxDepth(5), DOFRate(6) {
+				0), SphereCount(0), triangleCount(0), maxDepth(5), DOFRate(1) {
 	this->camera = NULL;
 	this->vertexVector.reserve(maxVertexCount);
 
@@ -87,11 +87,23 @@ void Scene::setSampleRate(unsigned char samplingRate) {
 	film = new Film(height, width, COLOR_DEPTH, sampleRate, DOFRate);
 }
 
+void Scene::setDOFRate(unsigned char DOFRate) {
+    this->DOFRate = DOFRate;
+    if (film != NULL)
+        delete film;
+
+    //FIXME this causes fim recreation multiple times, we should postpone until we need the film.
+    film = new Film(height, width, COLOR_DEPTH, sampleRate, DOFRate);
+    std::cout << "DOF rate is set to " << (int)DOFRate << std::endl;
+}
+
 void Scene::setAperture(double aperture) {
 	this->aperture = aperture;
 	if (camera != NULL){
 		camera->setAperture(aperture);
 	}
+
+    //std::cout << "Aperture is set to " << aperture << std::endl;
 }
 
 bool Scene::setSaveFilename(std::string filename) {
