@@ -28,6 +28,7 @@ Features:
 * Spatial partitioning (octree)
 * Anti aliasing (stochastic)
 * Soft shadows
+* Depth of Field
 
 Input: 
 	A scene description file is used to render, since OBJ format has only model information. Commands available are listed below.
@@ -38,8 +39,14 @@ Input:
 		size: Output resolution. Required. This command must be the first, and should not be repeated. Only first one is effective. 
 		sample: size 1920 1080
 
-		camera: camera definition. Required. first 3 real numbers are camera coordinates, second 3 are looking direction(auto normalised) third 3 are up direction. last one is an integer, and it is field of view angle, for horizontal axis. only the last of these commands are effective, multiple cameras not supported.
+		camera: camera definition. Required. first 3 real numbers are camera coordinates, second 3 are looking point  third 3 are up direction. last one is an integer, and it is field of view angle, for horizontal axis. only the last of these commands are effective, multiple cameras not supported.
 		sample: camera -10.5 20.5 5.5 0 18 0 0 1 0 45
+		
+		cameraAperture: Camera aperture setting. Default is 0, meaning there will be no depth of field. The size determines how blurry the forward and backward of looking point. DofRate must be set for acceptable results.
+		sample: cameraAperture 0.25
+		
+		DOFRate: how many samples will be used to simulate the depth of field effect. The value is subpixel rate, so 2 means 4 samples, and 3 means 9 etc. Camera aperture must be set.
+		sample: DOFRate 2
 
 		output: filename for png output. if not given, a file with name of scene description will be used.
         	sample: output render.png
@@ -64,7 +71,7 @@ Input:
 		sample: lamp 50 50 99 3 1 1 1
 
 		attenuation: Makes lights less bright with distance. takes three real parameters, first one is the constant attenuation, second one is distance related attenuation, and last one is distance square related attenuation. 
-		sample:1 0.2 0.1
+		sample:attenuation 1 0.2 0.1
 
 	Material definitions
 
@@ -72,10 +79,10 @@ Input:
 		Sample: Ka 0.5 0.7 0.7
 
 		Kd: Diffuse color in rgb. Takes three real parameters. It is shaded to give realistic color to objects.
-		Sample: Ka 0.7 0.7 0.5
+		Sample: Kd 0.7 0.7 0.5
 
 		Ks: Specular color in rgb. Takes three real parameters. This value gives a tint as defined to reflection.
-		Sample: Ka 0.7 0.5 0.7
+		Sample: Ks 0.7 0.5 0.7
 
 		Ns: Reflectivity factor. Takes one integer parameter. It is used to define how reflective the surface is. it takes values bigger than 0.
 		Sample: Ns 100
@@ -87,7 +94,7 @@ Input:
 	Object definitions:
 
 		sphere: Creates a sphere. First three real values are for center position, fourth real value is the radius of sphere.
-		Sample: 0.5 0.5 0.5 2.5
+		Sample: sphere 0.5 0.5 0.5 2.5
 
 		v: Used to define a vertex position. It takes three real values as parameter.
 		Sample: v 0.5 0.5 0.5
@@ -120,7 +127,7 @@ Input:
 		Sample: scale 0.25 0.25 0.25
 
 		translate: Model is moved given amount.
-		translate 5 0 0
+		translate translate 5 0 0
 
 		rotate: Model is rotated on an arbitrary axis. first 3 parameters are real values for axis definition. Last parameter is integer value for rotation in degrees.
 		Sample: rotate 0 1 0 45
@@ -141,10 +148,11 @@ missing features:
 
 Major:	The application does not have any advanced memory management(paging/persistance etc.), if model or does not fit the memory, it will simply crash. You can lower maximum octree depth to make it use less memory, but it will result in worse performance. 
 
-Major:	caustics are missing. currently transparent objects does not cast any shadows. Implementing photon mapping.
-Major:	Normal mapping: It should be fairly easy to read the normals from textures, but it is not implemented because of time restrictions. It is implemented.
+Major:	caustics are missing. currently transparent objects does not cast any shadows. Checking photon mapping for this.
 
-Minor:	Depth of field should be fairly easy to implement, but it is not implemented. It is under development.
+Major:	{{strikethrough|Normal mapping: It should be fairly easy to read the normals from textures, but it is not implemented because of time restrictions.}} It is implemented.
+
+Minor:	{{strikethrough|Depth of field should be fairly easy to implement, but it is not implemented. It is under development.}} It is implemented.
 
 Minor:	Sphere texturing: The texture loading is implemented, but since spheres are not used in obj, this feature was not implemented.
 
