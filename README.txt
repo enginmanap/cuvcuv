@@ -1,6 +1,6 @@
 Cuvcuv Raytracer
 
-This is a raytracer that can import multiple obj/mtl files, apply arbitrary transformations on them and render with high performance. Rendering is multithreaded using openmp.
+This is a raytracer that can import multiple obj/mtl files, apply arbitrary transformations on them and render with high performance. Rendering is multithreaded using openmp. for mor info, go to https://github.com/enginmanap/cuvcuv/wiki
 
 It supports unlimited vertex data and face definition with up to 20 vertex rendered as triangle fan, with per vertex normal and texture support. sphere primitive is also supported, in scene description. Antialiasing and soft shadows are supported using Monte carlo technique. Blinn-phong shading is available, so specular/diffuse light can be used, reflection and refraction is also available depending on material properties. Dissolve transparency is supported too.
 
