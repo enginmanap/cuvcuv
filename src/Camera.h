@@ -19,20 +19,24 @@
 
 class Camera {
 private:
-	Vec3f position, look, up;
+	Vec3f position, look, up, FocalDistance;
 	double fovy, fovx;
 	unsigned int height, width;
 	unsigned int currentPoint;
 	Vec3f w, u, v;
+	double aperture;
 
-	double xChangeFactor, yChangeFactor, halfWidth, halfHeight;
+	double xChangeFactor, yChangeFactor, xChangeForFocal, yChangeForFocal, halfWidth, halfHeight;
 	void getRay(unsigned int x, unsigned int y, Ray& ray);
 	void getRay(unsigned int, unsigned int, Ray&, double, double);
 public:
 	Camera(double, double, double, double, double, double, double, double, double, double,
 			unsigned int, unsigned int);
+
 	bool getPoint(unsigned int& x, unsigned int& y);
-	bool getRays(unsigned int&, unsigned int&, unsigned int, std::vector<Ray>&);
+	bool getRays(unsigned int&, unsigned int&, unsigned int, unsigned int, std::vector<Ray>&);
+
+    void setAperture(double aperture){this->aperture = aperture;}
 
 };
 

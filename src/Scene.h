@@ -34,7 +34,7 @@ class Scene {
 
 	Film* film;
 	unsigned char sampleRate, shadowGrid;
-
+	double aperture;
 	std::map<std::string, Material*> materialMap;
 	std::stack<std::string> materialNames; //this is necessery because we need to keep the name of material before pushTransform
 	static int materialCount;
@@ -63,7 +63,8 @@ class Scene {
 	Octree *spatialTree;
 
 	Vec3f temproryVector; //this is used in order not to create/destroy all elements
-
+	
+	unsigned int DOFRate;
 public:
 
 	Scene(unsigned int, unsigned int);
@@ -75,6 +76,8 @@ public:
 	bool getSamplingSize(unsigned int&, unsigned int&);
 	void setShadowGrid(unsigned char);
 	void setSampleRate(unsigned char samplingRate);
+	void setDOFRate(unsigned char);
+	void setAperture(double);
 
 	bool setCurrentAmbient(double, double, double);
 	bool setCurrentEmission(double, double, double);

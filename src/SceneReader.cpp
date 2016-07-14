@@ -261,6 +261,14 @@ Scene* SceneReader::readFile() {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				scene->setSampleRate((unsigned char) parameters[0]);
 			}
+		} else if (command == "DOFRate") {
+			if (readFloatParams(stringStream, parameters, parameterCount)) {
+				scene->setDOFRate(parameters[0]);
+			}
+		} else if (command == "cameraAperture") {
+			if (readFloatParams(stringStream, parameters, parameterCount)) {
+				scene->setAperture(parameters[0]);
+			}
 		} else if (command == "shadowGrid") {
 			if (readFloatParams(stringStream, parameters, parameterCount)) {
 				scene->setShadowGrid((unsigned char) parameters[0]);

@@ -14,9 +14,9 @@ int Scene::materialCount = 0;
  * so we are setting height width, they will be passed to camera;
  */
 Scene::Scene(unsigned int height, unsigned int width) :
-		height(height), width(width), sampleRate(1), shadowGrid(1), lightCount(
+		height(height), width(width), sampleRate(1), shadowGrid(1), aperture(0.0), lightCount(
 				0), currentAttenuation(Vec3f(1, 0, 0)), maxVertexCount(2000), currentVertex(
-				0), SphereCount(0), triangleCount(0), maxDepth(5) {
+				0), SphereCount(0), triangleCount(0), maxDepth(5), DOFRate(1) {
 	this->camera = NULL;
 	this->vertexVector.reserve(maxVertexCount);
 
@@ -35,7 +35,7 @@ Scene::Scene(unsigned int height, unsigned int width) :
 	this->spatialTree = NULL;
 
 	//TODO these are recreating if a setting found, there should be a better way
-	film = new Film(height, width, COLOR_DEPTH, sampleRate);
+	film = new Film(height, width, COLOR_DEPTH, sampleRate, DOFRate);
 	rayTracer = new RayTracer(1);
 
 }
@@ -84,7 +84,26 @@ void Scene::setSampleRate(unsigned char samplingRate) {
 	if (film != NULL)
 		delete film;
 
-	film = new Film(height, width, COLOR_DEPTH, sampleRate);
+	film = new Film(height, width, COLOR_DEPTH, sampleRate, DOFRate);
+}
+
+void Scene::setDOFRate(unsigned char DOFRate) {
+    this->DOFRate = DOFRate;
+    if (film != NULL)
+        delete film;
+
+    //FIXME this causes fim recreation multiple times, we should postpone until we need the film.
+    film = new Film(height, width, COLOR_DEPTH, sampleRate, DOFRate);
+    std::cout << "DOF rate is set to " << (int)DOFRate << std::endl;
+}
+
+void Scene::setAperture(double aperture) {
+	this->aperture = aperture;
+	if (camera != NULL){
+		camera->setAperture(aperture);
+	}
+
+    //std::cout << "Aperture is set to " << aperture << std::endl;
 }
 
 bool Scene::setSaveFilename(std::string filename) {
@@ -142,6 +161,7 @@ bool Scene::setCamera(double lookfromx, double lookfromy, double lookfromz,
 	}
 	camera = new Camera(lookfromx, lookfromy, lookfromz, lookatx, lookaty,
 			lookatz, upx, upy, upz, fovy, this->height, this->width);
+    camera->setAperture(aperture);
 	return true;
 }
 
@@ -337,7 +357,7 @@ bool Scene::renderScene() {
 	std::vector<Ray> rays;
 #pragma omp parallel private(color,x,y,rays,morePixels)
 	{
-		morePixels = this->camera->getRays(x, y, sampleRate, rays);
+		morePixels = this->camera->getRays(x, y, sampleRate, DOFRate, rays);
 		while (morePixels) {
 //			if(x == 137 && y==258){
 //				std::cout<< "muz" << std::endl;
@@ -348,7 +368,7 @@ bool Scene::renderScene() {
 				this->film->setPixel(x, y, color);
 			}
 #pragma omp critical
-			morePixels = this->camera->getRays(x, y, sampleRate, rays);
+			morePixels = this->camera->getRays(x, y, sampleRate, DOFRate, rays);
 		}
 	}
 	return true;
