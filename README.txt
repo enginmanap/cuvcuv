@@ -150,9 +150,9 @@ Major:	The application does not have any advanced memory management(paging/persi
 
 Major:	caustics are missing. currently transparent objects does not cast any shadows. Checking photon mapping for this.
 
-Major:	{{strikethrough|Normal mapping: It should be fairly easy to read the normals from textures, but it is not implemented because of time restrictions.}} It is implemented.
+Major:	~~Normal mapping: It should be fairly easy to read the normals from textures, but it is not implemented because of time restrictions.~~ It is implemented.
 
-Minor:	{{strikethrough|Depth of field should be fairly easy to implement, but it is not implemented. It is under development.}} It is implemented.
+Minor:	~~Depth of field should be fairly easy to implement, but it is not implemented. It is under development.~~ It is implemented.
 
 Minor:	Sphere texturing: The texture loading is implemented, but since spheres are not used in obj, this feature was not implemented.
 
